@@ -3,13 +3,13 @@ repos:
     hooks:
       - id: black
         name: black
-        entry: black .
+        entry: black COE tests
         language: system
-        always_run: true  
+        always_run: true
         types: [python]
       - id: flake8
         name: flake8
-        entry: flake8
+        entry: flake8 COE tests
         language: system
         pass_filenames: false
         always_run: true  
