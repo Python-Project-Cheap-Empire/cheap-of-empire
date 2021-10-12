@@ -3,11 +3,18 @@
     Contains the Class Entity, from which all content class inherit.
 """
 
-from typing import List
-
 
 class Entity:
-    def __init__(self, name: str, hp: int, positions: tuple, height: int, width: int, line_of_sight: int, img):
+    def __init__(
+        self,
+        name: str,
+        hp: int,
+        positions: tuple,
+        height: int,
+        width: int,
+        line_of_sight: int,
+        img,
+    ):
         self.name = name
         self.positions = positions
         self.height = height
