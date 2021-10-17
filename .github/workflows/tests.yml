@@ -6,7 +6,6 @@ on:
 
 jobs:
   build:
-    if: github.repository_owner == 'Python-Project-Cheap-Empire'
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
