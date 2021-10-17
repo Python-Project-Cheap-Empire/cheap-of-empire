@@ -2,13 +2,10 @@ name: tests
 
 on:
   push:
-    branches:
-      - main
   pull_request:
 
 jobs:
   build:
-    if: github.repository_owner == 'Python-Project-Cheap-Empire'
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
