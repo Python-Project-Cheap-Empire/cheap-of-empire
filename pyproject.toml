@@ -10,8 +10,16 @@ packages = [
     { include = "COE/UI" },
 ]
 
+[tool.black]
+include = '''
+/(
+  tests
+  | COE
+)/
+'''
+
 [tool.pytest.ini_options]
-addopts = "--cov=COE"
+addopts = "--cov=COE/ --cov-fail-under=80"
 testpaths = [
     "tests",
 ]
