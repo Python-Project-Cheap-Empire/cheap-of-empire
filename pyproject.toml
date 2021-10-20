@@ -18,6 +18,13 @@ include = '''
 )/
 '''
 
+extend-exclude = '''
+/(
+  COE/UI/interfaces/images
+  | COE/assets
+)/
+'''
+
 [tool.pytest.ini_options]
 addopts = "--cov=COE/ --cov-fail-under=80"
 testpaths = [
@@ -32,7 +39,9 @@ pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
 black = "^21.9b0"
 pygame = "^2.0.2"
+pygame-gui = "^0.5.7"
 tox = "^3.24.4"
+
 
 [tool.poetry.dev-dependencies]
 
