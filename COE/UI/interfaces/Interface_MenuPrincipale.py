@@ -1,6 +1,8 @@
 import pygame
 from pygame.locals import *
 import pygame_gui
+from COE.UI.interfaces.Interface_MenuOptions import MenuOptions
+from COE.UI.interfaces.Interface_MenuJouer import MenuJouer
 
 
 class MenuPrincipale:
@@ -56,10 +58,12 @@ class MenuPrincipale:
                 if isTest or event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                     if isTest or event.ui_element == self.bouttons[0]:
                         self.loop = False
+                    if isTest or event.ui_element == self.bouttons[1]:
+                        return MenuOptions(self.fenetre)
+                    if isTest or event.ui_element == self.bouttons[2]:
+                        return MenuJouer(self.fenetre)
+
             self.manager.process_events(event)
         if not self.loop:
             return None
         return self
-
-
-# pour qslhb
