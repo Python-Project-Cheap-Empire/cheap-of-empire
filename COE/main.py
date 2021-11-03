@@ -1,11 +1,13 @@
-from COE.UI.UI_Fenetre import Fenetre
+from COE.UI.window_ui import Window
+from COE.map.map import Map
 
 
 def main(istest=False):
-    fenetre = Fenetre()
-    while fenetre.get_loop():
-        fenetre.menu.loop = not istest
-        fenetre.display(istest)
+    window = Window()
+    map = Map()
+    while window.get_loop():
+        window.menu.loop = not istest
+        window.show(map, istest)
 
 
 if __name__ == "__main__":

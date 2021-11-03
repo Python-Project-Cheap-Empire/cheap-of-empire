@@ -1,10 +1,12 @@
-from COE.UI.UI_Fenetre import Fenetre
+from COE.UI.window_ui import Window
+from COE.map.map import Map
 
 
 def test_fenetre():
-    F = Fenetre()
+    map = Map()
+    F = Window()
     assert F.loop
-    assert F.display() is None
+    assert F.show(map) is None
     assert F.get_loop()
-    assert F.quitter() is None
+    assert F.quit() is None
     assert F.menu.loop
