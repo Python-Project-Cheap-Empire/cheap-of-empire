@@ -1,0 +1,2 @@
+class ZeroMapSizeException(Exception):
+    pass
