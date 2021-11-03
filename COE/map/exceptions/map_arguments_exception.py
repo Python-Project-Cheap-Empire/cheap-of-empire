@@ -1,0 +1,2 @@
+class MapArgumentsException(Exception):
+    pass

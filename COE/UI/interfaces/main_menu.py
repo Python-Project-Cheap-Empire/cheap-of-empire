@@ -1,27 +1,30 @@
 import pygame
-from pygame.locals import *
+from pygame.locals import QUIT
 import pygame_gui
-from COE.UI.interfaces.Interface_MenuOptions import MenuOptions
-from COE.UI.interfaces.Interface_MenuJouer import MenuJouer
+from COE.UI.interfaces.interface_menu_options import MenuOptions
+from COE.UI.interfaces.interface_play_menu import MenuPlay
 
 
-class MenuPrincipale:
-    def __init__(self, fenetre_):
-        self.fenetre = fenetre_
+class MainMenu:
+    def __init__(self, display_):
+        self.display_ = display_
+        self.menu_passed = False
         self.screen_size = pygame.display.get_surface().get_size()
+        self.width = self.screen_size[0]
+        self.height = self.screen_size[1]
         self.manager = pygame_gui.UIManager(self.screen_size)
-        self.bouttons = [
+        self.buttons = [
             pygame_gui.elements.UIButton(
                 relative_rect=pygame.Rect(
-                    (self.screen_size[0] / 2 - 200, self.screen_size[1] / 2 + 200),
+                    (self.width / 2 - 200, self.height / 2 + 200),
                     (400, 100),
                 ),
-                text="QUITTER",
+                text="QUIT",
                 manager=self.manager,
             ),
             pygame_gui.elements.UIButton(
                 relative_rect=pygame.Rect(
-                    (self.screen_size[0] / 2 - 200, self.screen_size[1] / 2 + 50),
+                    (self.width / 2 - 200, self.height / 2 + 50),
                     (400, 100),
                 ),
                 text="OPTIONS",
@@ -29,15 +32,15 @@ class MenuPrincipale:
             ),
             pygame_gui.elements.UIButton(
                 relative_rect=pygame.Rect(
-                    (self.screen_size[0] / 2 - 200, self.screen_size[1] / 2 - 100),
+                    (self.width / 2 - 200, self.height / 2 - 100),
                     (400, 100),
                 ),
-                text="JOUER",
+                text="PLAY",
                 manager=self.manager,
             ),
         ]
         self.img = [
-            pygame.image.load("COE/UI/interfaces/images/fond_menu.png").convert()
+            pygame.image.load("COE/UI/interfaces/images/background_menu.png").convert()
         ]
         self.img[0] = pygame.transform.scale(self.img[0], (500, 331))
         self.clock = pygame.time.Clock()
@@ -45,23 +48,23 @@ class MenuPrincipale:
 
     def display(self):
         time_delta = self.clock.tick(60) / 1000.0
-        self.fenetre.fill(0x000)
-        self.fenetre.blit(self.img[0], (self.screen_size[0] / 2 - 250, 0))
+        self.display_.fill(0x000)
+        self.display_.blit(self.img[0], (self.width / 2 - 250, 0))
         self.manager.update(time_delta)
-        self.manager.draw_ui(self.fenetre)
+        self.manager.draw_ui(self.display_)
 
     def event(self, isTest=False):
         for event in pygame.event.get():
-            if event.type == QUIT:  # stopper le programme si on click sur la crois
+            if event.type == QUIT:  # Stop the game if the QUIT button is clicked on
                 self.loop = False
             if isTest or event.type == pygame.USEREVENT:
                 if isTest or event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                    if isTest or event.ui_element == self.bouttons[0]:
+                    if isTest or event.ui_element == self.buttons[0]:
                         self.loop = False
-                    if isTest or event.ui_element == self.bouttons[1]:
-                        return MenuOptions(self.fenetre)
-                    if isTest or event.ui_element == self.bouttons[2]:
-                        return MenuJouer(self.fenetre)
+                    if isTest or event.ui_element == self.buttons[1]:
+                        return MenuOptions(self.display_)
+                    if isTest or event.ui_element == self.buttons[2]:
+                        return MenuPlay(self.display_)
 
             self.manager.process_events(event)
         if not self.loop:

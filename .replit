@@ -1,2 +1,4 @@
 language = "python3"
-run = "python main.py"
+run = "python COE/main.py"
+audio = true
+onBoot = "poetry install && git config credential.helper 'cache --timeout=10800'"
