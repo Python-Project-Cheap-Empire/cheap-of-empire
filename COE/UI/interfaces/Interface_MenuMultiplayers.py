@@ -3,7 +3,7 @@ from pygame.locals import *
 import pygame_gui
 
 
-class MenuJouer:
+class MenuMulti:
     def __init__(self, fenetre_):
         self.fenetre = fenetre_
         self.screen_size = pygame.display.get_surface().get_size()
@@ -17,22 +17,6 @@ class MenuJouer:
                 ),
                 text="BACK",
                 manager=self.manager,
-            ),
-            pygame_gui.elements.UIButton(
-                relative_rect=pygame.Rect(
-                    (self.ESM[0]+650, self.ESM[1]),
-                    (250, 75),
-                ),
-                text="NEW GAME",
-                manager=self.manager,
-            ),
-            pygame_gui.elements.UIButton(
-                relative_rect=pygame.Rect(
-                    (self.ESM[0]+650, self.ESM[1]+76),
-                    (250, 75),
-                ),
-                text="MULTIPLAYERS",
-                manager=self.manager,
             )
         ]
         self.img = [
@@ -40,15 +24,20 @@ class MenuJouer:
         ]
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
         self.clock = pygame.time.Clock()
+        self.font = pygame.font.Font(None, 50)
+        self.text = self.font.render('not available', True, (255, 0, 0))
+        self.text_menu = self.font.render('Multiplayers', True, (255, 255, 255))
 
     def display(self):
         time_delta = self.clock.tick(60) / 1000.0
         self.fenetre.fill(0x000)
-        pygame.draw.rect(self.fenetre, (99, 104, 107), (self.ESM[0], self.ESM[1], 600, 500))
-        pygame.draw.rect(self.fenetre, (99, 104, 107), (self.ESM[0]+650, self.ESM[1], 250, 151))
+        pygame.draw.rect(self.fenetre, (99, 104, 107), (self.ESM[0], self.ESM[1], 900, 500))
+
         self.fenetre.blit(self.img[0], (self.screen_size[0] - 275, 0))
         self.manager.update(time_delta)
         self.manager.draw_ui(self.fenetre)
+        self.fenetre.blit(self.text, (self.ESM[0]+50, self.ESM[1]+50))
+        self.fenetre.blit(self.text_menu, (self.ESM[0], 150))
 
     def event(self, isTest=False):
         for event in pygame.event.get():
@@ -57,22 +46,11 @@ class MenuJouer:
             if isTest or event.type == pygame.USEREVENT:
                 if isTest or event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                     if isTest or event.ui_element == self.bouttons[0]:
-                        from COE.UI.interfaces.Interface_MenuPrincipale import (
-                            MenuPrincipale,
+                        from COE.UI.interfaces.Interface_MenuJouer import (
+                            MenuJouer,
                         )
-                        return MenuPrincipale(self.fenetre)
 
-                    if isTest or event.ui_element == self.bouttons[1]:
-                        from COE.UI.interfaces.Interface_MenuNewGame import (
-                            MenuNewGame,
-                        )
-                        return MenuNewGame(self.fenetre)
-
-                    if isTest or event.ui_element == self.bouttons[2]:
-                        from COE.UI.interfaces.Interface_MenuMultiplayers import (
-                            MenuMulti,
-                        )
-                        return MenuMulti(self.fenetre)
+                        return MenuJouer(self.fenetre)
 
             self.manager.process_events(event)
         return self
