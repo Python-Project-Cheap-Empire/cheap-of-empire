@@ -4,9 +4,11 @@ import pygame_gui
 
 
 class MenuOptions:
-    def __init__(self, fenetre_):
-        self.fenetre = fenetre_
+    def __init__(self, display__):
+        self.display_ = display__
         self.screen_size = pygame.display.get_surface().get_size()
+        self.width = self.screen_size[0]
+        self.height = self.screen_size[1]
         self.manager = pygame_gui.UIManager(self.screen_size)
         self.bouttons = [
             pygame_gui.elements.ui_button.UIButton(
@@ -19,7 +21,7 @@ class MenuOptions:
             ),
             pygame_gui.elements.ui_button.UIButton(
                 relative_rect=pygame.Rect(
-                    (self.screen_size[0] / 2, self.screen_size[1] / 2),
+                    (self.width / 2, self.height / 2),
                     (100, 50),
                 ),
                 text="q",
@@ -27,7 +29,7 @@ class MenuOptions:
             ),
         ]
         self.img = [
-            pygame.image.load("COE/UI/interfaces/images/fond_menu.png").convert()
+            pygame.image.load("COE/UI/interfaces/images/background_menu.png").convert()
         ]
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
         self.clock = pygame.time.Clock()
@@ -35,10 +37,10 @@ class MenuOptions:
 
     def display(self):
         time_delta = self.clock.tick(60) / 1000.0
-        self.fenetre.fill(0x000)
-        self.fenetre.blit(self.img[0], (self.screen_size[0] - 275, 0))
+        self.display_.fill(0x000)
+        self.display_.blit(self.img[0], (self.width - 275, 0))
         self.manager.update(time_delta)
-        self.manager.draw_ui(self.fenetre)
+        self.manager.draw_ui(self.display_)
 
     def event(self, isTest=False):
         for event in pygame.event.get():
@@ -66,12 +68,12 @@ class MenuOptions:
                 if isTest or event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                     # si le boutton selectionner et back
                     if isTest or event.ui_element == self.bouttons[0]:
-                        from COE.UI.interfaces.Interface_MenuPrincipale import (
-                            MenuPrincipale,
+                        from COE.UI.interfaces.main_menu import (
+                            MainMenu,
                         )
 
                         # on retourne sur le menu principale
-                        return MenuPrincipale(self.fenetre)
+                        return MainMenu(self.display_)
 
                     # action pour le boutton de choix de touche
                     if isTest or event.ui_element == self.bouttons[1]:
