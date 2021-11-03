@@ -3,7 +3,6 @@ from COE.map.enum.cell_types import CellTypes
 from typing import List
 from math import sqrt
 import pygame
-from COE.UI.window_ui import Window
 
 
 class Cell:
@@ -14,15 +13,7 @@ class Cell:
         self.entities = entities
 
     @staticmethod
-    def get_pixel_cells_size(
-        diagonal_nb_cells=None, display_width=None, display_height=None
-    ):
-        if diagonal_nb_cells is None:
-            diagonal_nb_cells = Cell.diagonal_nb_cells
-        if display_width is None:
-            display_width = Window.width
-        if display_height is None:
-            display_height = Window.height
+    def get_pixel_cells_size(diagonal_nb_cells, display_width, display_height):
         return int(
             sqrt(
                 pow(
@@ -35,25 +26,19 @@ class Cell:
         )
 
     @staticmethod
-    def get_scaled_grass(pixel_cells_size=None):  # pragma: no cover
-        if pixel_cells_size is None:
-            pixel_cells_size = Cell.get_pixel_cells_size()
+    def get_scaled_grass(pixel_cells_size):  # pragma: no cover
         return pygame.transform.scale(
             CellTypes.GRASS.value, (pixel_cells_size, pixel_cells_size)
         )
 
     @staticmethod
-    def get_scaled_water(pixel_cells_size=None):  # pragma: no cover
-        if pixel_cells_size is None:
-            pixel_cells_size = Cell.get_pixel_cells_size()
+    def get_scaled_water(pixel_cells_size):  # pragma: no cover
         return pygame.transform.scale(
             CellTypes.WATER.value, (pixel_cells_size, pixel_cells_size)
         )
 
     @staticmethod
-    def get_scaled_blocks(pixel_cells_size=None):  # pragma: no cover
-        if pixel_cells_size is None:
-            pixel_cells_size = Cell.get_pixel_cells_size()
+    def get_scaled_blocks(pixel_cells_size):  # pragma: no cover
         return {
             "GRASS": Cell.get_scaled_grass(pixel_cells_size),
             "WATER": Cell.get_scaled_water(pixel_cells_size),
