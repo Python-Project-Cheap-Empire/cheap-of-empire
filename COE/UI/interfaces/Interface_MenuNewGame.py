@@ -8,7 +8,7 @@ class MenuNewGame:
         self.fenetre = fenetre_
         self.screen_size = pygame.display.get_surface().get_size()
         self.manager = pygame_gui.UIManager(self.screen_size)
-        self.ESM = (self.screen_size[0]/2-450, self.screen_size[0]/2-400)
+        self.ESM = (self.screen_size[0] / 2 - 450, self.screen_size[0] / 2 - 400)
         self.bouttons = [
             pygame_gui.elements.UIButton(
                 relative_rect=pygame.Rect(

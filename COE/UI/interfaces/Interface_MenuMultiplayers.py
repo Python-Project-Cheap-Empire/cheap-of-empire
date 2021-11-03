@@ -8,7 +8,7 @@ class MenuMulti:
         self.fenetre = fenetre_
         self.screen_size = pygame.display.get_surface().get_size()
         self.manager = pygame_gui.UIManager(self.screen_size)
-        self.ESM = (self.screen_size[0]/2-450, self.screen_size[0]/2-400)
+        self.ESM = (self.screen_size[0] / 2 - 450, self.screen_size[0] / 2 - 400)
         self.bouttons = [
             pygame_gui.elements.UIButton(
                 relative_rect=pygame.Rect(
@@ -25,18 +25,20 @@ class MenuMulti:
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 50)
-        self.text = self.font.render('not available', True, (255, 0, 0))
-        self.text_menu = self.font.render('Multiplayers', True, (255, 255, 255))
+        self.text = self.font.render("not available", True, (255, 0, 0))
+        self.text_menu = self.font.render("Multiplayers", True, (255, 255, 255))
 
     def display(self):
         time_delta = self.clock.tick(60) / 1000.0
         self.fenetre.fill(0x000)
-        pygame.draw.rect(self.fenetre, (99, 104, 107), (self.ESM[0], self.ESM[1], 900, 500))
+        pygame.draw.rect(
+            self.fenetre, (99, 104, 107), (self.ESM[0], self.ESM[1], 900, 500)
+        )
 
         self.fenetre.blit(self.img[0], (self.screen_size[0] - 275, 0))
         self.manager.update(time_delta)
         self.manager.draw_ui(self.fenetre)
-        self.fenetre.blit(self.text, (self.ESM[0]+50, self.ESM[1]+50))
+        self.fenetre.blit(self.text, (self.ESM[0] + 50, self.ESM[1] + 50))
         self.fenetre.blit(self.text_menu, (self.ESM[0], 150))
 
     def event(self, isTest=False):
