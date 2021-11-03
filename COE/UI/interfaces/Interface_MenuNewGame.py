@@ -28,7 +28,7 @@ class MenuNewGame:
     def display(self):
         time_delta = self.clock.tick(60) / 1000.0
         self.fenetre.fill(0x000)
-        # pygame.draw.rect(self.fenetre, (99, 104, 107), (self.ESM[0], self.ESM[1], 600, 500))
+        pygame.draw.rect(self.fenetre, (99, 104, 107), (self.ESM[0], self.ESM[1], 600, 500))
         self.fenetre.blit(self.img[0], (self.screen_size[0] - 275, 0))
         self.manager.update(time_delta)
         self.manager.draw_ui(self.fenetre)
