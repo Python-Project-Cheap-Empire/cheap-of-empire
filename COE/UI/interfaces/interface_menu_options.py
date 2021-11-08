@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 import pygame_gui
 
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 class MenuOptions:
     def __init__(self, display__):
@@ -29,7 +31,7 @@ class MenuOptions:
             ),
         ]
         self.img = [
-            pygame.image.load("COE/UI/interfaces/images/background_menu.png").convert()
+            pygame.image.load(script_dir+"/images/background_menu.png").convert()
         ]
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
         self.clock = pygame.time.Clock()

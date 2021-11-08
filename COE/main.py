@@ -1,6 +1,11 @@
-from COE.UI.window_ui import Window
-from COE.map.map import Map
+import os
+import sys
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(script_dir))
+
+from UI.window_ui import Window
+from map.map import Map
 
 def main(istest=False):
     window = Window()

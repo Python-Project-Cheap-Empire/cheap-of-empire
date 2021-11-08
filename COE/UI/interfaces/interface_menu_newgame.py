@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 import pygame_gui
 
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 class MenuNewGame:
     def __init__(self, display__):
@@ -17,10 +19,27 @@ class MenuNewGame:
                 ),
                 text="BACK",
                 manager=self.manager,
+            ),
+            pygame_gui.elements.UIButton(
+                relative_rect=pygame.Rect(
+                    (self.ESM[0]+650, self.ESM[1]),
+                    (250, 75),
+                ),
+                text="START GAME",
+                manager=self.manager,
             )
         ]
         self.img = [
-            pygame.image.load("COE/UI/interfaces/images/background_menu.png").convert()
+            pygame.image.load(script_dir+"/images/background_menu.png").convert()
+        ]
+        from COE.map.enum.map_sizes import MapSizes
+        self.DropDownMenus = [
+            pygame_gui.elements.UIDropDownMenu(
+                options_list=['Easy', 'Medium', 'Hard', 'Very Hard'],
+                starting_option='Medium',
+                relative_rect=pygame.Rect((350, 280), (250, 50)),
+                manager=self.manager
+            )
         ]
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
         self.clock = pygame.time.Clock()
@@ -30,6 +49,9 @@ class MenuNewGame:
         self.display_.fill(0x000)
         pygame.draw.rect(
             self.display_, (99, 104, 107), (self.ESM[0], self.ESM[1], 600, 500)
+        )
+        pygame.draw.rect(
+            self.display_, (99, 104, 107), (self.ESM[0] + 650, self.ESM[1], 250, 75)
         )
         self.display_.blit(self.img[0], (self.screen_size[0] - 275, 0))
         self.manager.update(time_delta)
@@ -45,7 +67,6 @@ class MenuNewGame:
                         from COE.UI.interfaces.interface_play_menu import (
                             MenuPlay,
                         )
-
                         return MenuPlay(self.display_)
 
             self.manager.process_events(event)
