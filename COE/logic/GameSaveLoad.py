@@ -6,7 +6,7 @@ class GameSaveLoad:
     Singleton class that is used to save/load game to/from file
     """
 
-    def __new__(cls):
+    def __new__(cls):  # cls refers to the class itself and not the instance like self
         """
         Initialize a instance of GameSaveLoad if not created.
         Else return the instance.
