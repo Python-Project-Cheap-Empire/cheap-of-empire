@@ -26,13 +26,10 @@ class Window:
     def show(self, map, isTest=False):
         self.clock.tick(60)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
-        if not self.menu.menu_passed:
-            self.menu.display()
-            self.menu = self.menu.event(isTest)
-            if self.menu is None:
-                self.loop = False
-        else:
-            map.draw_map(self.display)
+        self.menu.display()
+        self.menu = self.menu.event(isTest)
+        if self.menu is None:
+            self.loop = False
         pygame.display.update()
 
     def get_loop(self):
