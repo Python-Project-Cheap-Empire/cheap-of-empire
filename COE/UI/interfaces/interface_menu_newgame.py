@@ -32,15 +32,55 @@ class MenuNewGame:
         self.img = [
             pygame.image.load(script_dir+"/images/background_menu.png").convert()
         ]
+
+        # recuperation des informations pour la gereration de map
         from COE.map.enum.map_sizes import MapSizes
+        from COE.map.enum.map_types import MapTypes
+        from COE.map.enum.resources_rarity import ResourcesRarity
+        self.enumeration_size = []
+        self.enumeration_type = []
+        self.enumeration_ressources = []
+        for mapsize in MapSizes:
+            self.enumeration_size.append(mapsize)
+        for maptype in MapTypes:
+            self.enumeration_type.append(str(maptype))
+        for ressource in ResourcesRarity:
+            self.enumeration_ressources.append(str(ressource))
         self.DropDownMenus = [
             pygame_gui.elements.UIDropDownMenu(
-                options_list=['Easy', 'Medium', 'Hard', 'Very Hard'],
-                starting_option='Medium',
-                relative_rect=pygame.Rect((350, 280), (250, 50)),
+                options_list=[str(x)[9:] for x in self.enumeration_size],
+                starting_option=str(self.enumeration_size[0])[9:],
+                relative_rect=pygame.Rect((self.ESM[0]+100, self.ESM[1]+180), (250, 50)),
+                manager=self.manager
+            ),
+            pygame_gui.elements.UIDropDownMenu(
+                options_list=[str(x)[9:] for x in self.enumeration_type],
+                starting_option=str(self.enumeration_type[0])[9:],
+                relative_rect=pygame.Rect((self.ESM[0]+100, self.ESM[1]+60), (250, 50)),
+                manager=self.manager
+            ),
+            pygame_gui.elements.UIDropDownMenu(
+                options_list=[str(x)[16:] for x in self.enumeration_ressources],
+                starting_option=str(self.enumeration_ressources[0])[16:],
+                relative_rect=pygame.Rect((self.ESM[0]+100, self.ESM[1]+120), (250, 50)),
                 manager=self.manager
             )
         ]
+
+        # text input
+        self.text_input = [
+            pygame_gui.elements.ui_text_entry_line.UITextEntryLine (
+                relative_rect=pygame.Rect((self.ESM[0]+120, self.ESM[1]+7), (250, 50)),
+                manager=self.manager
+            )
+        ]
+
+        self.font = pygame.font.Font(None, 25)
+        self.texts = [
+            self.font.render("game name", True, (255, 255, 255)),
+            self.font.render("map size", True, (255, 255, 255))
+        ]
+
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
         self.clock = pygame.time.Clock()
 
@@ -54,6 +94,10 @@ class MenuNewGame:
             self.display_, (99, 104, 107), (self.ESM[0] + 650, self.ESM[1], 250, 75)
         )
         self.display_.blit(self.img[0], (self.screen_size[0] - 275, 0))
+
+        self.display_.blit(self.texts[0], (self.ESM[0]+10, self.ESM[1]+10))
+        self.display_.blit(self.texts[0], (self.ESM[0]+10, self.ESM[1]+50))
+
         self.manager.update(time_delta)
         self.manager.draw_ui(self.display_)
 
