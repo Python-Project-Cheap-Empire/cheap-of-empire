@@ -3,7 +3,9 @@ from pygame.locals import *
 import pygame_gui
 
 import os
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 class MenuNewGame:
     def __init__(self, display__):
@@ -22,21 +24,22 @@ class MenuNewGame:
             ),
             pygame_gui.elements.UIButton(
                 relative_rect=pygame.Rect(
-                    (self.ESM[0]+650, self.ESM[1]),
+                    (self.ESM[0] + 650, self.ESM[1]),
                     (250, 75),
                 ),
                 text="START GAME",
                 manager=self.manager,
-            )
+            ),
         ]
         self.img = [
-            pygame.image.load(script_dir+"/images/background_menu.png").convert()
+            pygame.image.load(script_dir + "/images/background_menu.png").convert()
         ]
 
         # recuperation des informations pour la gereration de map
         from COE.map.enum.map_sizes import MapSizes
         from COE.map.enum.map_types import MapTypes
         from COE.map.enum.resources_rarity import ResourcesRarity
+
         self.enumeration_size = []
         self.enumeration_type = []
         self.enumeration_ressources = []
@@ -50,35 +53,43 @@ class MenuNewGame:
             pygame_gui.elements.UIDropDownMenu(
                 options_list=[str(x)[9:] for x in self.enumeration_size],
                 starting_option=str(self.enumeration_size[0])[9:],
-                relative_rect=pygame.Rect((self.ESM[0]+100, self.ESM[1]+180), (250, 50)),
-                manager=self.manager
+                relative_rect=pygame.Rect(
+                    (self.ESM[0] + 100, self.ESM[1] + 180), (250, 50)
+                ),
+                manager=self.manager,
             ),
             pygame_gui.elements.UIDropDownMenu(
                 options_list=[str(x)[9:] for x in self.enumeration_type],
                 starting_option=str(self.enumeration_type[0])[9:],
-                relative_rect=pygame.Rect((self.ESM[0]+100, self.ESM[1]+60), (250, 50)),
-                manager=self.manager
+                relative_rect=pygame.Rect(
+                    (self.ESM[0] + 100, self.ESM[1] + 60), (250, 50)
+                ),
+                manager=self.manager,
             ),
             pygame_gui.elements.UIDropDownMenu(
                 options_list=[str(x)[16:] for x in self.enumeration_ressources],
                 starting_option=str(self.enumeration_ressources[0])[16:],
-                relative_rect=pygame.Rect((self.ESM[0]+100, self.ESM[1]+120), (250, 50)),
-                manager=self.manager
-            )
+                relative_rect=pygame.Rect(
+                    (self.ESM[0] + 100, self.ESM[1] + 120), (250, 50)
+                ),
+                manager=self.manager,
+            ),
         ]
 
         # text input
         self.text_input = [
-            pygame_gui.elements.ui_text_entry_line.UITextEntryLine (
-                relative_rect=pygame.Rect((self.ESM[0]+120, self.ESM[1]+7), (250, 50)),
-                manager=self.manager
+            pygame_gui.elements.ui_text_entry_line.UITextEntryLine(
+                relative_rect=pygame.Rect(
+                    (self.ESM[0] + 120, self.ESM[1] + 7), (250, 50)
+                ),
+                manager=self.manager,
             )
         ]
 
         self.font = pygame.font.Font(None, 25)
         self.texts = [
             self.font.render("game name", True, (255, 255, 255)),
-            self.font.render("map size", True, (255, 255, 255))
+            self.font.render("map size", True, (255, 255, 255)),
         ]
 
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
@@ -95,8 +106,8 @@ class MenuNewGame:
         )
         self.display_.blit(self.img[0], (self.screen_size[0] - 275, 0))
 
-        self.display_.blit(self.texts[0], (self.ESM[0]+10, self.ESM[1]+10))
-        self.display_.blit(self.texts[0], (self.ESM[0]+10, self.ESM[1]+50))
+        self.display_.blit(self.texts[0], (self.ESM[0] + 10, self.ESM[1] + 10))
+        self.display_.blit(self.texts[0], (self.ESM[0] + 10, self.ESM[1] + 50))
 
         self.manager.update(time_delta)
         self.manager.draw_ui(self.display_)
@@ -111,6 +122,7 @@ class MenuNewGame:
                         from COE.UI.interfaces.interface_play_menu import (
                             MenuPlay,
                         )
+
                         return MenuPlay(self.display_)
 
             self.manager.process_events(event)

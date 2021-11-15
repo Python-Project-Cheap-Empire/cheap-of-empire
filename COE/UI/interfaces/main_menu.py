@@ -5,7 +5,9 @@ from COE.UI.interfaces.interface_menu_options import MenuOptions
 from COE.UI.interfaces.interface_play_menu import MenuPlay
 
 import os
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 class MainMenu:
     def __init__(self, display_):
@@ -42,7 +44,7 @@ class MainMenu:
             ),
         ]
         self.img = [
-            pygame.image.load(script_dir+"/images/background_menu.png").convert()
+            pygame.image.load(script_dir + "/images/background_menu.png").convert()
         ]
         self.img[0] = pygame.transform.scale(self.img[0], (500, 331))
         self.clock = pygame.time.Clock()
