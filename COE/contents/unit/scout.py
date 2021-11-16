@@ -1,6 +1,5 @@
 from COE.contents.unit import Unit
 
-
 class Scout(Unit):
     def __init__(self):
         super().__init__(3, 0, 2, 1.5, 0, 0, 7)
@@ -10,3 +9,4 @@ class Scout(Unit):
     
     def cut(): 
         pass
+    
