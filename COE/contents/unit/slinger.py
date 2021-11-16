@@ -6,11 +6,5 @@ class Slinger(Unit):
 
     def move(): 
         pass
-    
     def throw_stone(): 
         pass
-    
-    
-    
-    
-    

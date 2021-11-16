@@ -6,12 +6,5 @@ class Scout(Unit):
     
     def move():
         pass
-    
     def cut(): 
         pass
-    
-    
-    
-    
-    
-    
