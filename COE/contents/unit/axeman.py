@@ -9,3 +9,9 @@ class Axeman(Unit):
     
     def cut(): 
         pass
+    
+    
+    
+    
+    
+    
