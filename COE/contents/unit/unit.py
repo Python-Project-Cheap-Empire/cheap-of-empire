@@ -21,11 +21,8 @@ class Unit(Entity):
         self.pierce_armor = pierce_armor
         self.line_of_sight = line_of_sight
 
-    def set_attack(self, damage):
-        self.attack_damage = damage
-
-    def attack(self, entity: Entity):
-        entity.take_damage(self.attack_damage)
-
+    # def set_attack(self, damage): self.attack_damage = damage
+  
+    # def attack(self, entity: Entity): entity.take_damage(self.attack_damage)
     def move():
         pass
