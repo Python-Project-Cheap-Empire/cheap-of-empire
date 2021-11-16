@@ -9,4 +9,3 @@ class Slinger(Unit):
     
     def throw_stone(): 
         pass
-    

@@ -9,4 +9,3 @@ class Scout(Unit):
     
     def cut(): 
         pass
-    
