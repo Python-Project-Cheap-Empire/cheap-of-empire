@@ -6,3 +6,4 @@ class LightTransport(Unit):
         self.garrison = 5
     def move():
         pass
+
