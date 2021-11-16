@@ -1,2 +1,0 @@
-class NotStandardizedMetricException(Exception):
-    pass

@@ -1,11 +1,10 @@
 import os
 import sys
+from UI.window_ui import Window
+from map.map import Map
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(script_dir))
-
-from UI.window_ui import Window
-from map.map import Map
 
 
 def main(istest=False):
