@@ -130,19 +130,3 @@ def test_small_wall():
     sw = SmallWall()
     assert sw.name == "Small Wall"
 
-
-test_archery_range()
-test_barrack()
-test_building()
-test_dock()
-test_farm()
-test_granary()
-test_market()
-test_military_building()
-test_stable()
-test_storage_building()
-test_storage_pit()
-test_technology_building()
-test_town_center()
-test_house()
-test_watch_tower()
