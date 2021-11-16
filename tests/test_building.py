@@ -1,3 +1,4 @@
+from COE.contents.entity import Entity
 from COE.contents.building import (
     ArcheryRange,
     Barrack,
@@ -12,6 +13,9 @@ from COE.contents.building import (
     StoragePit,
     TechnologyBuilding,
     TownCenter,
+    House,
+    WatchTower,
+    SmallWall,
 )
 
 
@@ -111,6 +115,22 @@ def test_town_center():
     assert tc.pending_units == ["Villager", "Villager"]
 
 
+def test_house():
+    h = House()
+    assert h.increase_max_population() == "Max pop +5"
+    assert h.decrease_max_population() == "Max pop -5"
+
+
+def test_watch_tower():
+    t = WatchTower()
+    assert t.attack(Entity("Enemy", 0, (0, 0), 1, 1, 1, "None")) == "Attacking..."
+
+
+def test_small_wall():
+    sw = SmallWall()
+    assert sw.name == "Small Wall"
+
+
 test_archery_range()
 test_barrack()
 test_building()
@@ -124,3 +144,5 @@ test_storage_building()
 test_storage_pit()
 test_technology_building()
 test_town_center()
+test_house()
+test_watch_tower()

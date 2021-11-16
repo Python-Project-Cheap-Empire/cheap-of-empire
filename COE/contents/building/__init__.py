@@ -11,6 +11,9 @@ from .storage_building import StorageBuilding
 from .storage_pit import StoragePit
 from .technology_building import TechnologyBuilding
 from .town_center import TownCenter
+from .house import House
+from .watch_tower import WatchTower
+from .small_wall import SmallWall
 
 __all__ = [
     "ArcheryRange",
@@ -26,4 +29,7 @@ __all__ = [
     "StoragePit",
     "TechnologyBuilding",
     "TownCenter",
+    "House",
+    "WatchTower",
+    "SmallWall",
 ]
