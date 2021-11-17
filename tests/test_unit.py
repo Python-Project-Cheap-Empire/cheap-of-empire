@@ -1,1 +1,9 @@
-# from COE.contents.unit.villager import Villager
+from COE.contents.unit.villager import Villager
+from COE.contents.unit.axeman import Axeman
+from COE.contents.unit.fishing_boat import FishingBoat
+from COE.contents.unit.light_transport import LightTransport
+from COE.contents.unit.scout import Scout
+from COE.contents.unit.scout_ship import ScoutShip
+from COE.contents.unit.slinger import Slinger
+from COE.contents.unit.trade_boat import TradeBoat
+from COE.contents.unit.bowman import Bowman
