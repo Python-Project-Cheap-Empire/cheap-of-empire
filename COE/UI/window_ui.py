@@ -27,6 +27,7 @@ class Window:
     def show(self, map, camera, isTest=False):
         self.clock.tick(60)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
+        # <<<<<<< HEAD
         if not self.menu.menu_passed:
             self.menu.display()
             self.menu = self.menu.event(isTest)
@@ -41,6 +42,11 @@ class Window:
                     print(res[0], res[1])
             camera.update()
             map.draw_map(self, camera)
+        # =======
+        # self.menu.display()
+        # self.menu = self.menu.event(isTest)
+        # if self.menu is None:
+        #     self.loop = False
         pygame.display.update()
 
     def get_loop(self):
