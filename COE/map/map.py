@@ -29,19 +29,59 @@ class Map:
             print("Map was generated using default value : ")
             print("Tiny size, continental and high resources rarity")
 
-    def draw_map(self, fenetre, camera=None):  # pragma: no cover
+    @staticmethod
+    def map_to_screen(
+        map_coordinates, x_camera_offset, y_camera_offset
+    ):  # pragma: no cover
+        width_pixel_size, height_pixel_size = Cell.get_pixel_cells_size()
+        half_width_pixel_size, half_height_pixel_size = (
+            width_pixel_size / 2,
+            height_pixel_size / 2,
+        )
+        x = (
+            (map_coordinates[0] - map_coordinates[1]) * half_width_pixel_size
+            + x_camera_offset
+            - half_width_pixel_size
+        )
+        y = (
+            map_coordinates[0] + map_coordinates[1]
+        ) * half_height_pixel_size + y_camera_offset
+        return x, y
+
+    @staticmethod
+    def screen_to_map(
+        screen_pixels, x_camera_offset, y_camera_offset
+    ):  # pragma: no cover
+        width_pixel_size, height_pixel_size = Cell.get_pixel_cells_size()
+        half_width_pixel_size, half_height_pixel_size = (
+            width_pixel_size / 2,
+            height_pixel_size / 2,
+        )
+        screen_x, screen_y = screen_pixels[0], screen_pixels[1]
+        x_without_offset, y_without_offset = (
+            screen_x - x_camera_offset,
+            screen_y - y_camera_offset,
+        )
+        x = (
+            x_without_offset / half_width_pixel_size
+            + y_without_offset / half_height_pixel_size
+        ) / 2
+        y = (
+            y_without_offset / half_height_pixel_size
+            - x_without_offset / half_width_pixel_size
+        ) / 2
+        return x, y
+
+    def draw_map(self, window, camera):  # pragma: no cover
         """Draw a map on the screen using the cells"""
-        pixel_cells_size = Cell.get_pixel_cells_size()
+        window.display.fill((0, 0, 0))
         blocks_dict = Cell.get_scaled_blocks()
-        map_size = self.size.value  # length == height because the map is square
-        x = y = -pixel_cells_size  # x pos
-        row_modulo = pixel_cells_size * map_size  #
-        column_modulo = pixel_cells_size * map_size
-        for row in self.cells:
-            y = (y + pixel_cells_size) % row_modulo
-            for column in row:
-                x = (x + pixel_cells_size) % column_modulo
-                fenetre.blit(blocks_dict[column.cell_type.name], (x, y))
+        x_camera_offset = camera.x_offset
+        y_camera_offset = camera.y_offset
+        for x, row in enumerate(self.cells):
+            for y, column in enumerate(row):
+                _x, _y = Map.map_to_screen((x, y), x_camera_offset, y_camera_offset)
+                window.display.blit(blocks_dict[column.cell_type.name], (_x, _y))
 
     @staticmethod
     def generate_map(

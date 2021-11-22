@@ -124,6 +124,8 @@ class MenuNewGame:
                         )
 
                         return MenuPlay(self.display_)
+                    elif isTest or event.ui_element == self.buttons[1]:
+                        pass
 
             self.manager.process_events(event)
         return self
