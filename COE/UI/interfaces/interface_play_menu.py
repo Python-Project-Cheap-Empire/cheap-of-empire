@@ -47,6 +47,37 @@ class MenuPlay:
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
         self.clock = pygame.time.Clock()
 
+        # recuperation des dossier de sauvegarde
+        self.save_url = script_dir + "/../../saves/"
+        self.saves = os.listdir(self.save_url)
+        self.nb_saves = 0
+        self.load_save_bp = []
+        for save in self.saves:
+            self.load_save_bp.append(
+                pygame_gui.elements.UIButton(
+                    relative_rect=pygame.Rect(
+                        (self.ESM[0], self.ESM[1] + self.nb_saves * 75),
+                        (570, 75),
+                    ),
+                    text=save,
+                    manager=self.manager,
+                )
+            )
+            self.nb_saves += 1
+        self.scroll_pourcent = (
+            1 if self.nb_saves * 75 <= 500 else (500 / (self.nb_saves * 75))
+        )
+        self.scroll_max = -4.5424 * (self.scroll_pourcent * 100) + 454.53
+        # initialisation de la scrollBar
+        self.scrole = pygame_gui.elements.ui_vertical_scroll_bar.UIVerticalScrollBar(
+            relative_rect=pygame.Rect(
+                (self.ESM[0] + 575, self.ESM[1]),
+                (25, 500),
+            ),
+            manager=self.manager,
+            visible_percentage=self.scroll_pourcent,
+        )
+
     def display(self):
         time_delta = self.clock.tick(60) / 1000.0
         self.display_.fill(0x000)
@@ -56,9 +87,39 @@ class MenuPlay:
         pygame.draw.rect(
             self.display_, (99, 104, 107), (self.ESM[0] + 650, self.ESM[1], 250, 151)
         )
+
+        if self.scrole.check_has_moved_recently():
+            offset = (
+                self.scrole.scroll_position
+                * (self.nb_saves * 75 - 500)
+                / self.scroll_max
+            )
+            temp = 0
+            for button in self.load_save_bp:
+                button.hide()
+            self.load_save_bp = []
+            for save in self.saves:
+                self.load_save_bp.append(
+                    pygame_gui.elements.UIButton(
+                        relative_rect=pygame.Rect(
+                            (self.ESM[0], self.ESM[1] + temp * 75 - offset),
+                            (570, 75),
+                        ),
+                        text=save,
+                        manager=self.manager,
+                    )
+                )
+                temp += 1
+
+        self.manager.draw_ui(self.display_)
+        pygame.draw.rect(
+            self.display_, (0, 0, 0), (self.ESM[0], self.ESM[1] + 500, 600, 250)
+        )
+        pygame.draw.rect(
+            self.display_, (0, 0, 0), (self.ESM[0], self.ESM[1] - 500, 600, 500)
+        )
         self.display_.blit(self.img[0], (self.width - 275, 0))
         self.manager.update(time_delta)
-        self.manager.draw_ui(self.display_)
 
     def event(self, isTest=False):
         for event in pygame.event.get():
