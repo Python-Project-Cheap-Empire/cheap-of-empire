@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import FULLSCREEN
 from COE.UI.interfaces.main_menu import MainMenu
+from COE.map.map import Map
 
 
 class Window:
@@ -23,13 +24,29 @@ class Window:
         pygame.quit()
         return None
 
-    def show(self, map, isTest=False):
+    def show(self, map, camera, isTest=False):
         self.clock.tick(60)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
-        self.menu.display()
-        self.menu = self.menu.event(isTest)
-        if self.menu is None:
-            self.loop = False
+        # <<<<<<< HEAD
+        if not self.menu.menu_passed:
+            self.menu.display()
+            self.menu = self.menu.event(isTest)
+            if self.menu is None:
+                self.loop = False
+        else:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONUP:
+                    res = Map.screen_to_map(
+                        (event.pos[0], event.pos[1]), camera.x_offset, camera.y_offset
+                    )
+                    print(res[0], res[1])
+            camera.update()
+            map.draw_map(self, camera)
+        # =======
+        # self.menu.display()
+        # self.menu = self.menu.event(isTest)
+        # if self.menu is None:
+        #     self.loop = False
         pygame.display.update()
 
     def get_loop(self):
