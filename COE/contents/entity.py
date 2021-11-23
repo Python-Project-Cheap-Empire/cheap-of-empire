@@ -14,8 +14,10 @@ class Entity:
         width: int,
         line_of_sight: int,
         img,
-    ):
+    ):  # pragma: no cover
+
         self.name = name
+        self.hp = hp
         self.positions = positions
         self.height = height
         self.width = width
