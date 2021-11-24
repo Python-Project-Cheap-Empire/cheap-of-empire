@@ -23,7 +23,7 @@ class Window:
         pygame.quit()
         return None
 
-    def show(self, map, isTest=False):
+    def show(self, isTest=False):
         self.clock.tick(60)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
         self.menu.display()
