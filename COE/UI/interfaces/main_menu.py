@@ -59,6 +59,10 @@ class MainMenu:
 
     def event(self, isTest=False):
         for event in pygame.event.get():
+            if (
+                event.type == pygame.MOUSEBUTTONUP
+            ):  # or MOUSEBUTTONDOWN depending on what you want.
+                print(event.pos)
             if event.type == QUIT:  # Stop the game if the QUIT button is clicked on
                 self.loop = False
             if isTest or event.type == pygame.USEREVENT:

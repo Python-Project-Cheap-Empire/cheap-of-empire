@@ -55,6 +55,7 @@ class MenuNewGame:
                 starting_option=str(self.enumeration_size[0])[9:],
                 relative_rect=pygame.Rect(
                     (self.ESM[0] + 240, self.ESM[1] + 95), (250, 50)
+                    #(self.ESM[0] + 100, self.ESM[1] + 180), (250, 50)
                 ),
                 manager=self.manager,
             ),
@@ -63,6 +64,7 @@ class MenuNewGame:
                 starting_option=str(self.enumeration_type[0])[9:],
                 relative_rect=pygame.Rect(
                     (self.ESM[0] + 240, self.ESM[1] + 140), (250, 50)
+                    #(self.ESM[0] + 100, self.ESM[1] + 60), (250, 50)
                 ),
                 manager=self.manager,
             ),
@@ -140,6 +142,7 @@ class MenuNewGame:
         self.display_.blit(self.texts[3], (self.ESM[0] + 50, self.ESM[1] + 210))
         self.display_.blit(self.texts[6], (self.ESM[0] + 50, self.ESM[1] + 300))
         self.display_.blit(self.texts[7], (self.ESM[0] + 50, self.ESM[1] + 350))
+        self.display_.blit(self.texts[0], (self.ESM[0] + 10, self.ESM[1] + 10))
 
         self.manager.update(time_delta)
         self.manager.draw_ui(self.display_)
@@ -156,16 +159,14 @@ class MenuNewGame:
                         )
 
                         return MenuPlay(self.display_)
-
                     if event.ui_element == self.buttons[1]:
                         if self.text_input[0].get_text() == "":
                             self.texts[0] = self.font.render(
                                 "Game Name", True, (255, 0, 0)
                             )
                         else:
-                            from COE.UI.interfaces.interface_loader import Loader
-
-                            return Loader(self.display_)
+                            from COE.UI.interfaces.interface_in_game import GameMenu
+                            return GameMenu(self.display_)
 
             self.manager.process_events(event)
         return self
