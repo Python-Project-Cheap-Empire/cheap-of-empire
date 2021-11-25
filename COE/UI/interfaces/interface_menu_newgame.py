@@ -54,9 +54,7 @@ class MenuNewGame:
                 options_list=[str(x)[9:] for x in self.enumeration_size],
                 starting_option=str(self.enumeration_size[0])[9:],
                 relative_rect=pygame.Rect(
-                    (self.ESM[0] + 240, self.ESM[1] + 95),
-                    (250, 50)
-                    # (self.ESM[0] + 100, self.ESM[1] + 180), (250, 50)
+                    (self.ESM[0] + 240, self.ESM[1] + 95), (250, 50)
                 ),
                 manager=self.manager,
             ),
@@ -64,9 +62,7 @@ class MenuNewGame:
                 options_list=[str(x)[9:] for x in self.enumeration_type],
                 starting_option=str(self.enumeration_type[0])[9:],
                 relative_rect=pygame.Rect(
-                    (self.ESM[0] + 240, self.ESM[1] + 140),
-                    (250, 50)
-                    # (self.ESM[0] + 100, self.ESM[1] + 60), (250, 50)
+                    (self.ESM[0] + 240, self.ESM[1] + 140), (250, 50)
                 ),
                 manager=self.manager,
             ),
