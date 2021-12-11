@@ -163,9 +163,9 @@ class MenuNewGame:
                                 "Game Name", True, (255, 0, 0)
                             )
                         else:
-                            from COE.UI.interfaces.interface_in_game import GameMenu
+                            from COE.UI.interfaces.game_render import GameRender
 
-                            return GameMenu(self.display_)
+                            return GameRender(self.display_)
 
             self.manager.process_events(event)
         return self

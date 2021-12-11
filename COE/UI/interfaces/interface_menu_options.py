@@ -41,7 +41,6 @@ class MenuOptions:
 
     def display(self):
         time_delta = self.clock.tick(60) / 1000.0
-        self.display_.fill(0x000)
         self.display_.blit(self.img[0], (self.width - 275, 0))
         self.manager.update(time_delta)
         self.manager.draw_ui(self.display_)
