@@ -43,7 +43,12 @@ def test_save_and_load():
 
     game_save = Game([player], map_game, 1.0, 1.0)
 
-    sl1.save_game(game_save, save_name)
+    try:
+        sl1.save_game(game_save, save_name)
+    except FileExistsError:
+        remove_file_for_test()
+        sl1.save_game(game_save, save_name)
+
     game_load = sl1.load_game(save_name)
 
     assert game_save.timer == game_load.timer

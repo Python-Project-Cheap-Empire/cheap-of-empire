@@ -7,7 +7,7 @@ class Barrack(MilitaryBuilding, TechnologyBuilding):
     def __init__(self):
         MilitaryBuilding.__init__(self, "", [])
         TechnologyBuilding.__init__(self, {})
-        Entity.__init__(self, "Barrack", 1200, (0, 0), 1, 1, 6, "none")
+        Entity.__init__(self, "Barrack", 1200, (0, 0), 1, 1, 6)
 
     def upgrade_technology(self):
         return "Upgrading..."

@@ -12,7 +12,15 @@ class Market(StorageBuilding, TechnologyBuilding):
     def __init__(self, enable_tribute: bool = False):
         StorageBuilding.__init__(self, 0, 0)
         TechnologyBuilding.__init__(self)
-        Entity.__init__(self, "Market", 1800, (0, 0), 1, 1, 6, "none")
+        Entity.__init__(
+            self,
+            "Market",
+            1800,
+            (0, 0),
+            1,
+            1,
+            6,
+        )
         self.enabled_tribute = enable_tribute
 
     def enable_tribute(self):

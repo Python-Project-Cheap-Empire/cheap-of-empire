@@ -41,7 +41,7 @@ def test_barrack():
 
 def test_building():
     b = Building()
-    assert b.img == "None"
+    # assert b.img == "None"
 
 
 def test_dock():
@@ -79,7 +79,7 @@ def test_market():
 
 def test_military_building():
     ml = MilitaryBuilding()
-    assert ml.img == "None"
+    # assert ml.img == "None"
 
 
 def test_stable():
@@ -104,7 +104,7 @@ def test_storage_pit():
 
 def test_technology_building():
     tb = TechnologyBuilding()
-    assert tb.img == "None"
+    # assert tb.img == "None"
 
 
 def test_town_center():
@@ -123,7 +123,7 @@ def test_house():
 
 def test_watch_tower():
     t = WatchTower()
-    assert t.attack(Entity("Enemy", 0, (0, 0), 1, 1, 1, "None")) == "Attacking..."
+    assert t.attack(Entity("Enemy", 0, (0, 0), 1, 1, 1)) == "Attacking..."
 
 
 def test_small_wall():
