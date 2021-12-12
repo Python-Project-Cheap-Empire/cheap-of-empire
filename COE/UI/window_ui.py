@@ -24,7 +24,7 @@ class Window:
         pygame.quit()
         return None
 
-    def show(self, map, camera, isTest=False):
+    def show(self, map, camera, scaled_blocks, isTest=False):
         self.clock.tick(60)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
         # <<<<<<< HEAD
@@ -41,7 +41,7 @@ class Window:
                     )
                     print(res[0], res[1])
             camera.update()
-            map.draw_map(self, camera)
+            map.draw_map(self, camera, scaled_blocks)
         # =======
         # self.menu.display()
         # self.menu = self.menu.event(isTest)

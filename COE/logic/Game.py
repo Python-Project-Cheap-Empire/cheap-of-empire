@@ -3,19 +3,17 @@ class Game:
     A class to represent a unique game
     """
 
-    def __init__(self, players: list, map_game, camera, timer, speed):
+    def __init__(self, players: list, map_game, timer, speed):
         """
         Constructs all the necessary attributes for the Game object.
 
         :param players: list
         :param map_game: Map
-        :param camera: Camera
         :param timer: Time
         :param speed: float
         """
         self.players = players
         self.map_game = map_game
-        self.camera = camera
         self.timer = timer
         self.speed = speed
 
