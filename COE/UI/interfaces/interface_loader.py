@@ -62,13 +62,13 @@ class Loader:
         self.manager.update(time_delta)
         self.manager.draw_ui(self.display_)
 
-    def event(self, isTest=False):
+    def event(self):
         for event in pygame.event.get():
             if event.type == QUIT:  # stopper le programme si on click sur la crois
                 self.loop = False
-            if isTest or event.type == pygame.USEREVENT:
-                if isTest or event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                    if isTest or event.ui_element == self.buttons[0]:
+            if event.type == pygame.USEREVENT:
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                    if event.ui_element == self.buttons[0]:
                         from COE.UI.interfaces.interface_menu_newgame import (
                             MenuNewGame,
                         )

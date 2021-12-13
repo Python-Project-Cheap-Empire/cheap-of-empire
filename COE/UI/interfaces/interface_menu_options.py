@@ -67,10 +67,10 @@ class MenuOptions:
                 self.loop = False
 
             # evennement des bouttons
-            if isTest or event.type == pygame.USEREVENT:
-                if isTest or event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+            if event.type == pygame.USEREVENT:
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                     # si le boutton selectionner et back
-                    if isTest or event.ui_element == self.bouttons[0]:
+                    if event.ui_element == self.bouttons[0]:
                         from COE.UI.interfaces.main_menu import (
                             MainMenu,
                         )
@@ -79,7 +79,7 @@ class MenuOptions:
                         return MainMenu(self.display_)
 
                     # action pour le boutton de choix de touche
-                    if isTest or event.ui_element == self.bouttons[1]:
+                    if event.ui_element == self.bouttons[1]:
                         if self.bouttons[1].text != "press key":
                             self.currante_key = self.bouttons[1].text
                             self.bouttons[1].set_text("press key")

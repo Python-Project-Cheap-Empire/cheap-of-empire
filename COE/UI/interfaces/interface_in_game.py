@@ -47,36 +47,41 @@ class GameMenu:
         self.pause = False
         self.clock = pygame.time.Clock()
 
-    def display(self):
-        time_delta = self.clock.tick(60) / 1000.0
-        self.manager.update(time_delta)
-        self.manager.draw_ui(self.display_)
-        if self.pause:
+    def display(self, pause):
+        if pause:
             s = pygame.Surface((self.width, self.height))
             s.set_alpha(128)
             s.fill((0, 0, 0))
             pygame.draw.rect(
                 self.display_, (99, 104, 107), (self.ESM[0], self.ESM[1], 600, 500)
             )
-            self.manager.draw_ui(self.display_)
             self.display_.blit(s, (0, 0))
 
-    def event(self, isTest=False):
+    def event(self, pause):
         for event in pygame.event.get():
-            if isTest or event.type == pygame.USEREVENT:
-                if isTest or event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                    if self.pause and event.ui_element == self.buttons[1]:
+            if event.type == pygame.USEREVENT:
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                    if pause and event.ui_element == self.buttons[1]:
                         return False
-                    if self.pause and event.ui_element == self.buttons[2]:
+                    if pause and event.ui_element == self.buttons[2]:
                         self.pause = False
-                        self.buttons[0].visible = 1
-                        self.buttons[1].visible = 0
-                        self.buttons[2].visible = 0
-                    if isTest or event.ui_element == self.buttons[0]:
+                        self.visibility_default_bp()
+                    if event.ui_element == self.buttons[0]:
                         self.pause = True
-                        self.buttons[0].visible = 0
-                        self.buttons[1].visible = 1
-                        self.buttons[2].visible = 1
-
+                        self.visibility_pause_bp()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.pause = True
+                    self.visibility_pause_bp()
             self.manager.process_events(event)
         return True
+
+    def visibility_pause_bp(self):
+        self.buttons[0].visible = 0
+        self.buttons[1].visible = 1
+        self.buttons[2].visible = 1
+
+    def visibility_default_bp(self):
+        self.buttons[0].visible = 1
+        self.buttons[1].visible = 0
+        self.buttons[2].visible = 0

@@ -23,11 +23,11 @@ class Window:
         pygame.quit()
         return None
 
-    def show(self, isTest=False):
+    def show(self):
         self.clock.tick(60)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
         self.menu.display()
-        self.menu = self.menu.event(isTest)
+        self.menu = self.menu.event()
         if self.menu is None:
             self.loop = False
         pygame.display.update()

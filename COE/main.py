@@ -7,11 +7,10 @@ sys.path.append(os.path.dirname(script_dir))
 from UI.window_ui import Window
 
 
-def main(istest=False):
+def main():
     window = Window()
     while window.get_loop():
-        window.menu.loop = not istest
-        window.show(istest)
+        window.show()
 
 
 if __name__ == "__main__":

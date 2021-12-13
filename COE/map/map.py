@@ -82,6 +82,9 @@ class Map:
                 _x, _y = Map.map_to_screen((x, y), x_camera_offset, y_camera_offset)
                 window.blit(blocks_dict[column.cell_type.name], (_x, _y))
 
+    def update(self, camera):
+        pass
+
     @staticmethod
     def generate_map(
         map_size: MapSizes = MapSizes.TINY,
