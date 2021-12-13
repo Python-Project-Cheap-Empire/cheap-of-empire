@@ -4,10 +4,16 @@ from .technology_building import TechnologyBuilding
 
 
 class Barrack(MilitaryBuilding, TechnologyBuilding):
-    def __init__(self):
-        MilitaryBuilding.__init__(self, "", [])
-        TechnologyBuilding.__init__(self, {})
-        Entity.__init__(self, "Barrack", 1200, (0, 0), 1, 1, 6)
+    def __init__(self, position: tuple):
+        super().__init__(
+            name="Barrack",
+            hp=1200,
+            positions=position,
+            height=1,
+            width=1,
+            line_of_sight=6,
+            required={},
+        )
 
     def upgrade_technology(self):
         return "Upgrading..."

@@ -18,6 +18,7 @@ class Entity(Sprite):
         height: int,
         width: int,
         line_of_sight: int,
+        **kwargs
     ):  # pragma: no cover
         Sprite.__init__(self)
         self.name = name

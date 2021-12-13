@@ -6,6 +6,12 @@ from .building import Building
 
 
 class SmallWall(Building):
-    def __init__(self):
-        Building.__init__(self)
-        Entity.__init__(self, "Small Wall", 240, (0, 0), 1, 1, 1)
+    def __init__(self, position: tuple):
+        super().__init__(
+            name="Small Wall",
+            hp=100,
+            positions=position,
+            width=1,
+            height=1,
+            line_of_sight=1,
+        )
