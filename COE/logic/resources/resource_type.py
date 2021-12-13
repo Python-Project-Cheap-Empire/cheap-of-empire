@@ -9,6 +9,7 @@ class ResourceType(Enum):
         Gold
         Stone
     """
+
     WOOD = 1
     FOOD = 2
     GOLD = 3
