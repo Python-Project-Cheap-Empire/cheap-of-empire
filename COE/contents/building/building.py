@@ -18,7 +18,7 @@ class Building(Entity):
         required_age: int = None,
         required_building: set = {},
     ):
-        Entity.__init__(self, "Building", 0, (0, 0), 1, 1, 1, "None")
+        Entity.__init__(self, "Building", 0, (0, 0), 1, 1, 1)
         self.is_buildable = is_buildable
         self.required_researches = required_researches
         self.required_age = required_age

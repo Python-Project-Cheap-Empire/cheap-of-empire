@@ -11,7 +11,6 @@ class Unit(Entity):
         height: int,
         width: int,
         line_of_sight: int,
-        img,
         attack_damage: int,
         range: int,
         speed: float,
@@ -20,7 +19,7 @@ class Unit(Entity):
         pierce_armor: int,
         player: Player,
     ):  # pragma: no cover
-        super().__init__(name, hp, positions, height, width, line_of_sight, img)
+        super().__init__(name, hp, positions, height, width, line_of_sight)
         self.attack_damage = attack_damage
         self.range = range
         self.speed = speed

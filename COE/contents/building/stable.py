@@ -8,7 +8,7 @@ class Stable(MilitaryBuilding, TechnologyBuilding):
     def __init__(self):
         MilitaryBuilding.__init__(self, "", pending_units=[])
         TechnologyBuilding.__init__(self, required=set([""]))
-        Entity.__init__(self, "Stable", 1500, (0, 0), 1, 1, 6, "none")
+        Entity.__init__(self, "Stable", 1500, (0, 0), 1, 1, 6)
 
     def upgrade_technology(self):
         return "Upgrading..."

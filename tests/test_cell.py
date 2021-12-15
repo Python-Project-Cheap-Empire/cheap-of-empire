@@ -4,7 +4,7 @@ from COE.contents.entity import Entity
 
 
 def test_init():
-    e = Entity("Tree", 10, (10, -10), 1, 1, 10, "")
+    e = Entity("Tree", 10, (10, -10), 1, 1, 10)
     c = Cell(CellTypes.GRASS, [[e]])
     assert c.cell_type == CellTypes.GRASS
     assert c.entities == [[e]]

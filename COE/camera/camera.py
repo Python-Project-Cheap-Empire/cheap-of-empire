@@ -5,7 +5,7 @@ class Camera:  # pragma: no cover
     def __init__(self, window):
         self.x_offset = 0
         self.y_offset = 0
-        self.speed = 20
+        self.speed = 40
         self.width = window[0]
         self.height = window[1]
 

@@ -1,4 +1,7 @@
 from . import Game
+import os
+from pathlib import Path
+import pickle
 
 
 class GameSaveLoad:
@@ -11,7 +14,7 @@ class GameSaveLoad:
         Initialize a instance of GameSaveLoad if not created.
         Else return the instance.
         """
-        cls._sl_path = "/save"
+        cls._sl_path = os.path.join(Path(__file__).parent.parent.parent, "save\\")
         if not hasattr(cls, "instance"):
             cls.instance = super(GameSaveLoad, cls).__new__(cls)
         return cls.instance
@@ -23,7 +26,11 @@ class GameSaveLoad:
         :param save_name : str
         :return: Nothing
         """
-        pass
+        if not os.path.exists(self.path):
+            os.mkdir(self.path)
+
+        with open(os.path.join(self.path, save_name), "xb") as file:
+            pickle.dump(current_game, file)
 
     def load_game(self, save_name: str) -> Game:
         """
@@ -31,7 +38,9 @@ class GameSaveLoad:
         :param save_name : str
         :return: Game object
         """
-        pass
+        with open(os.path.join(self.path, save_name), "rb") as file:
+            loaded_game = pickle.load(file)
+        return loaded_game
 
     @property
     def path(self) -> str:

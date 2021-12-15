@@ -17,7 +17,7 @@ class Granary(StorageBuilding, TechnologyBuilding):
     def __init__(self):
         StorageBuilding.__init__(self, 0, 9999)
         TechnologyBuilding.__init__(self)
-        Entity.__init__(self, "Granary", 500, (0, 0), 1, 1, 6, "none")
+        Entity.__init__(self, "Granary", 500, (0, 0), 1, 1, 6)
 
     def upgrade_technology(self):
         return "Upgrading..."

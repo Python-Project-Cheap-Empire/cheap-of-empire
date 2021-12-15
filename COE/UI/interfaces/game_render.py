@@ -8,30 +8,25 @@ from COE.camera.camera import Camera
 from COE.UI.interfaces.interface_in_game import GameMenu
 from COE.UI.interfaces.interface_play_menu import MenuPlay
 
+from COE.logic.Game import Game
+
 import os
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 class GameRender:
-    def __init__(self, display_):
+    def __init__(self, display_, game):
         self.display_ = display_
-        self.clock = pygame.time.Clock()
-        self.loop = True
-        self.screen_size = pygame.display.get_surface().get_size()
-        self.width = self.screen_size[0]
-        self.height = self.screen_size[1]
-        self.camera = Camera([self.width, self.height])
-        self.map = Map()
+        self.clock = pygame.time.Clock(60)
+        self.game = game
         self.pause = False
         self.manager = pygame_gui.UIManager(self.screen_size)
         self.menu = GameMenu(self.display_, self.manager)
-        self.entities = []
 
     def run(self):
         self.playing = True
         while self.playing:
-            self.clock.tick(60)
             self.events()
             self.update()
             self.draw()
