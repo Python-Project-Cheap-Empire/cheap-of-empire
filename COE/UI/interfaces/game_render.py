@@ -9,7 +9,10 @@ from COE.UI.interfaces.interface_in_game import GameMenu
 from COE.UI.interfaces.interface_play_menu import MenuPlay
 
 from COE.logic.Game import Game
+<<<<<<< HEAD
 from map.cell import Cell
+=======
+>>>>>>> 6576316167ef4f3da76c69b4893b11a066181ce3
 
 import os
 
@@ -19,12 +22,17 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 class GameRender:
     def __init__(self, display_, game):
         self.display_ = display_
+<<<<<<< HEAD
         self.clock = pygame.time.Clock()
+=======
+        self.clock = pygame.time.Clock(60)
+>>>>>>> 6576316167ef4f3da76c69b4893b11a066181ce3
         self.game = game
         self.pause = False
         self.screen_size = pygame.display.get_surface().get_size()
         self.manager = pygame_gui.UIManager(self.screen_size)
         self.menu = GameMenu(self.display_, self.manager)
+<<<<<<< HEAD
         self.width = self.screen_size[0]
         self.height = self.screen_size[1]
         cell = Cell(None, None)
@@ -35,6 +43,15 @@ class GameRender:
         self.events()
         self.update()
         self.draw()
+=======
+
+    def run(self):
+        self.playing = True
+        while self.playing:
+            self.events()
+            self.update()
+            self.draw()
+>>>>>>> 6576316167ef4f3da76c69b4893b11a066181ce3
 
     def events(self):
         self.playing = self.menu.event(self.pause)

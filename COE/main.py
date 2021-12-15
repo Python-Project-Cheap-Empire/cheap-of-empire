@@ -9,11 +9,11 @@ from logic import Game
 from UI.interfaces.game_render import GameRender
 from UI.interfaces.interface_play_menu import MenuPlay
 
+
 # pour generer une map
 from logic.Player import Player
 from map.map import Map
 from camera.camera import Camera
-
 
 def main():
     window = Window()
@@ -61,7 +61,6 @@ def main():
                 game_render.run()
             window.playing = False
             window.menu = MenuPlay(window.display)
-
 
 if __name__ == "__main__":
     main()
