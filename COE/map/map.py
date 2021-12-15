@@ -72,7 +72,7 @@ class Map:
         ) / 2
         return x, y
 
-    def draw_map(self, window, camera):  # pragma: no cover
+    def draw_map(self, window, camera, scaled_blocks):  # pragma: no cover
         """Draw a map on the screen using the cells"""
         for x, row in enumerate(self.cells):
             for y, column in enumerate(row):
