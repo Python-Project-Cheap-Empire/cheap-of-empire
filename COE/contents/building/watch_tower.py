@@ -5,7 +5,7 @@ from .building import Building
 class WatchTower(Building):
     def __init__(self):
         Building.__init__(self)
-        Entity.__init__(self, "Watch Tower", 1020, (0, 0), 1, 1, 6, "None")
+        Entity.__init__(self, "Watch Tower", 1020, (0, 0), 1, 1, 6)
 
     def attack(
         self,
@@ -16,7 +16,6 @@ class WatchTower(Building):
             height=1,
             width=1,
             line_of_sight=1,
-            img="None",
         ),
     ) -> str:
         return "Attacking..."

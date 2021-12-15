@@ -1,4 +1,12 @@
+import os.path
+from pathlib import Path
+
 from COE.logic.GameSaveLoad import GameSaveLoad
+from COE.logic.Game import Game
+from COE.map.map import Map
+from COE.logic.Player import Player
+from COE.contents.unit.villager import Villager
+from COE.contents.building.storage_building import StorageBuilding
 
 
 def test_singleton():
@@ -10,4 +18,49 @@ def test_singleton():
 
 def test_get_path():
     sl1 = GameSaveLoad()
-    assert "/save" == sl1.path
+    root_dir = Path(__file__).parent.parent
+
+    assert sl1.path == os.path.join(root_dir, "save\\")
+
+
+def remove_file_for_test():
+    sl1 = GameSaveLoad()
+    save_name = "pytest_save"
+    if os.path.exists(os.path.join(sl1.path, save_name)):
+        os.remove(os.path.join(sl1.path, save_name))
+
+
+def test_save_and_load():
+    sl1 = GameSaveLoad()
+    save_name = "pytest_save"
+
+    player = Player("Toto", [], [], None, None)
+    villager = Villager((0, 0), player)
+    storage = StorageBuilding(500, 50)
+    player.buildings.append(storage)
+    player.units.append(villager)
+    map_game = Map()
+
+    game_save = Game([player], map_game, 1.0, 1.0)
+
+    try:
+        sl1.save_game(game_save, save_name)
+    except FileExistsError:
+        remove_file_for_test()
+        sl1.save_game(game_save, save_name)
+
+    game_load = sl1.load_game(save_name)
+
+    assert game_save.timer == game_load.timer
+    assert game_save.speed == game_load.speed
+    assert game_save.players[0].username == game_load.players[0].username
+
+    save_cells = game_save.map_game.cells
+    load_cells = game_load.map_game.cells
+    assert all(
+        save_cells[i][j].cell_type == load_cells[i][j].cell_type
+        for i in range(len(save_cells))
+        for j in range(len(save_cells[i]))
+    )
+
+    os.remove(os.path.join(sl1.path, save_name))

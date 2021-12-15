@@ -72,15 +72,12 @@ class Map:
         ) / 2
         return x, y
 
-    def draw_map(self, window, camera):  # pragma: no cover
+    def draw_map(self, window, camera, scaled_blocks):  # pragma: no cover
         """Draw a map on the screen using the cells"""
-        blocks_dict = Cell.get_scaled_blocks()
-        x_camera_offset = camera.x_offset
-        y_camera_offset = camera.y_offset
         for x, row in enumerate(self.cells):
             for y, column in enumerate(row):
-                _x, _y = Map.map_to_screen((x, y), x_camera_offset, y_camera_offset)
-                window.blit(blocks_dict[column.cell_type.name], (_x, _y))
+                _x, _y = Map.map_to_screen((x, y), camera.x_offset, camera.y_offset)
+                window.blit(scaled_blocks[column.cell_type.name], (_x, _y))
 
     def update(self, camera):
         pass

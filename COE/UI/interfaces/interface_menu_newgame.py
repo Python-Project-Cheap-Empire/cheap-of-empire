@@ -116,6 +116,7 @@ class MenuNewGame:
 
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
         self.clock = pygame.time.Clock()
+        self.playing = False
 
     def display(self):
         if self.text_input[0].get_text() != "":
@@ -163,9 +164,10 @@ class MenuNewGame:
                                 "Game Name", True, (255, 0, 0)
                             )
                         else:
-                            from COE.UI.interfaces.game_render import GameRender
-
-                            return GameRender(self.display_)
+                            self.playing = True
 
             self.manager.process_events(event)
         return self
+
+    def get_playing(self):
+        return self.playing

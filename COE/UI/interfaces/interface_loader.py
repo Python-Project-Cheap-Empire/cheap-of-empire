@@ -77,3 +77,6 @@ class Loader:
 
             self.manager.process_events(event)
         return self
+
+    def get_playing(self):
+        return False

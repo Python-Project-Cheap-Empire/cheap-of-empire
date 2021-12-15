@@ -8,33 +8,33 @@ from COE.camera.camera import Camera
 from COE.UI.interfaces.interface_in_game import GameMenu
 from COE.UI.interfaces.interface_play_menu import MenuPlay
 
+from COE.logic.Game import Game
+from map.cell import Cell
+
 import os
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 class GameRender:
-    def __init__(self, display_):
+    def __init__(self, display_, game):
         self.display_ = display_
         self.clock = pygame.time.Clock()
-        self.loop = True
-        self.screen_size = pygame.display.get_surface().get_size()
-        self.width = self.screen_size[0]
-        self.height = self.screen_size[1]
-        self.camera = Camera([self.width, self.height])
-        self.map = Map()
+        self.game = game
         self.pause = False
+        self.screen_size = pygame.display.get_surface().get_size()
         self.manager = pygame_gui.UIManager(self.screen_size)
         self.menu = GameMenu(self.display_, self.manager)
-        self.entities = []
+        self.width = self.screen_size[0]
+        self.height = self.screen_size[1]
+        cell = Cell(None, None)
+        self.scaled_cell = cell.get_scaled_blocks()
+        self.playing = True
 
     def run(self):
-        self.playing = True
-        while self.playing:
-            self.clock.tick(60)
-            self.events()
-            self.update()
-            self.draw()
+        self.events()
+        self.update()
+        self.draw()
 
     def events(self):
         self.playing = self.menu.event(self.pause)
@@ -42,17 +42,14 @@ class GameRender:
 
     def update(self):
         if not self.pause:
-            self.camera.update()
-            for e in self.entities:
-                e.update()
-            # self.hud.update()
-            self.map.update(self.camera)
+            self.game.camera.update()
+            self.game.map_game.update(self.game.camera)
         time_delta = self.clock.tick(60) / 1000.0
         self.manager.update(time_delta)
 
     def draw(self):
         self.display_.fill((0, 0, 0))
-        self.map.draw_map(self.display_, self.camera)
+        self.game.map_game.draw_map(self.display_, self.game.camera, self.scaled_cell)
         self.draw_text(
             f"fps={round(self.clock.get_fps())}",
             25,

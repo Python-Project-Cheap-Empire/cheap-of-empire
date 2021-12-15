@@ -12,7 +12,7 @@ class ArcheryRange(MilitaryBuilding, TechnologyBuilding):
         TechnologyBuilding.__init__(self, required=set([""]))
         # if self.required.intersection({"Barrack"}) == "Barrack":
         #     print("Archery Range created")
-        Entity.__init__(self, "ArcheryRange", 350, (0, 0), 1, 1, 6, "none")
+        Entity.__init__(self, "ArcheryRange", 350, (0, 0), 1, 1, 6)
 
     # def upgrade_technology(self, tech_name):
     #     archery_range_tech[tech_name] = True

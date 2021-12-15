@@ -78,3 +78,6 @@ class MainMenu:
         if not self.loop:
             return None
         return self
+
+    def get_playing(self):
+        return False

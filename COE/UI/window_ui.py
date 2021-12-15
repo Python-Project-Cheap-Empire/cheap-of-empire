@@ -14,6 +14,7 @@ class Window:
         self.clock = pygame.time.Clock()
         self.loop = True
         self.menu = MainMenu(self.display)
+        self.playing = False
         self.width, self.height = (
             Window.width,
             Window.height,
@@ -30,7 +31,9 @@ class Window:
         self.menu = self.menu.event()
         if self.menu is None:
             self.loop = False
+        else:
+            self.playing = self.menu.get_playing()
         pygame.display.update()
 
     def get_loop(self):
-        return self.loop
+        return [self.loop, self.playing]
