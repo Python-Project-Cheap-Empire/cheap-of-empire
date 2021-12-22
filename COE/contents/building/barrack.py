@@ -1,6 +1,7 @@
 from COE.contents.entity import Entity
 from .military_building import MilitaryBuilding
 from .technology_building import TechnologyBuilding
+from .town_center import TownCenter
 
 
 class Barrack(MilitaryBuilding, TechnologyBuilding):
@@ -12,17 +13,20 @@ class Barrack(MilitaryBuilding, TechnologyBuilding):
             height=1,
             width=1,
             line_of_sight=6,
-            required={},
+            required_building={TownCenter.__class__.__name__},
+            required_age=1,
+            required_researches={},
+            researches={},
         )
 
     def upgrade_technology(self):
         return "Upgrading..."
 
     def train_clubman(self):
-        self.pending_units += ["ClubMan"]
+        self.pending_units.append("ClubMan")
 
     def train_axeman(self):
-        self.pending_units += ["AxeMan"]
+        self.pending_units.append("AxeMan")
 
     def train_slinger(self):
-        self.pending_units += ["Slinger"]
+        self.pending_units.append("Slinger")

@@ -1,5 +1,6 @@
 from COE.contents.entity import Entity
 from .building import Building
+from .granary import Granary
 
 
 class WatchTower(Building):
@@ -14,17 +15,14 @@ class WatchTower(Building):
             height=1,
             width=1,
             line_of_sight=6,
+            required_building={Granary.__class__.__name__},
+            required_age=2,
+            required_researches={},  # Watch tower
+            researches={},
         )
 
     def attack(
         self,
-        e: Entity(
-            name="Enemy",  # noqa
-            hp=0,
-            positions=(0, 0),
-            height=1,
-            width=1,
-            line_of_sight=1,
-        ),
+        target: Entity,
     ) -> str:
         return "Attacking..."

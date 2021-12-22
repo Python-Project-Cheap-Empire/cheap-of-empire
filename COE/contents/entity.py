@@ -9,7 +9,7 @@ from pygame.sprite import Sprite
 """
 
 
-class Entity(Sprite):
+class Entity:
     def __init__(
         self,
         name: str,
@@ -28,8 +28,7 @@ class Entity(Sprite):
         self.width = width
         self.line_of_sight = line_of_sight
         self.img_path = os.path.join(Path(__file__).parent.parent, "assets/default.png")
-        self.image = pygame.image.load(self.img_path)
-        self.rect = self.image.get_rect()
+        self.image = self.img_path
 
     def __getstate__(self):
         # Copy the object's state from self.__dict__ which contains
@@ -37,13 +36,8 @@ class Entity(Sprite):
         # method to avoid modifying the original state.
         state = self.__dict__.copy()
         # Remove the unpicklable entries.
-        del state["image"]
-        del state["rect"]
         return state
 
     def __setstate__(self, state):
         # Restore instance attributes.
         self.__dict__.update(state)
-
-        self.image = pygame.image.load(self.img_path)
-        self.rect = self.image.get_rect()

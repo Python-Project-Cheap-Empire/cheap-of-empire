@@ -1,9 +1,10 @@
 from COE.contents.entity import Entity
 from .storage_building import StorageBuilding
 from .technology_building import TechnologyBuilding
+from .granary import Granary
 
 
-class Market(StorageBuilding, TechnologyBuilding):
+class Market(TechnologyBuilding):
     """
     Static Variable for enable_tribute
     Once market has been built, its tribute feature will last forever
@@ -18,9 +19,10 @@ class Market(StorageBuilding, TechnologyBuilding):
             width=1,
             height=1,
             line_of_sight=6,
-            resources=None,
-            max_held=0,
-            required={"Stable", "Granary"},
+            required_building={Granary.__class__.__name__},
+            required_age=1,
+            required_researches={},
+            researches={},
         )
 
     def enable_tribute(self):

@@ -1,8 +1,5 @@
-from COE.contents.entity import Entity
 from .building import Building
-
-
-# Required Granary to build
+from .granary import Granary
 
 
 class SmallWall(Building):
@@ -14,4 +11,8 @@ class SmallWall(Building):
             width=1,
             height=1,
             line_of_sight=1,
+            required_building={Granary.__class__.__name__},
+            required_age=2,
+            required_researches={},  # Need research small wall
+            researches={},
         )
