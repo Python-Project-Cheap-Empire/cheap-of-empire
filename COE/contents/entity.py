@@ -14,6 +14,7 @@ class Entity:
         width: int,
         line_of_sight: int,
         img,
+        **kwargs
     ):  # pragma: no cover
 
         self.name = name

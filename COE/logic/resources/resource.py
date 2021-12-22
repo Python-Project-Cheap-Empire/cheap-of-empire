@@ -13,20 +13,12 @@ class Resource:
         self.type = r_type
         self.amount = amount
 
-    @property
-    def type(self):
-        return self.type
-
-    @property
-    def value(self):
-        return self.value
-
     def increase_amount(self, amount):
-        if self.value > 9999:
+        if self.amount > 9999:
             raise MaximumResourceException
-        self.value += amount
+        self.amount += amount
 
     def decrease_amount(self, amount):
-        if self.value - amount < 0:
+        if self.amount - amount < 0:
             raise NotEnoughResourceException
-        self.value -= amount
+        self.amount -= amount
