@@ -1,6 +1,6 @@
-# from COE.contents.entity import Entity
 from .storage_building import StorageBuilding
 from .technology_building import TechnologyBuilding
+from .town_center import TownCenter
 
 
 class StoragePit(StorageBuilding, TechnologyBuilding):
@@ -15,7 +15,10 @@ class StoragePit(StorageBuilding, TechnologyBuilding):
             line_of_sight=4,
             resources=None,
             max_held=9999,
-            required={},
+            required_building={TownCenter.__class__.__name__},
+            required_age=1,
+            required_researches={},
+            researches={},  # Tool working, leather armor (ca, in, ar)
         )
 
     def upgrade_technology(self):

@@ -1,7 +1,7 @@
 from COE.contents.entity import Entity
 from .storage_building import StorageBuilding
 from .technology_building import TechnologyBuilding
-
+from .town_center import TownCenter
 
 """
     Tool Age:
@@ -24,7 +24,10 @@ class Granary(StorageBuilding, TechnologyBuilding):
             line_of_sight=6,
             resources=0,
             max_held=9999,
-            required={},
+            required_building={TownCenter.__class__.__name__},
+            required_age=1,
+            required_researches={},
+            researches={},
         )
 
     def upgrade_technology(self):

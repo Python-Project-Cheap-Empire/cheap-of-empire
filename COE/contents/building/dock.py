@@ -1,6 +1,7 @@
 from COE.contents.entity import Entity
 from .military_building import MilitaryBuilding
 from .technology_building import TechnologyBuilding
+from .town_center import TownCenter
 
 
 class Dock(MilitaryBuilding, TechnologyBuilding):
@@ -13,20 +14,23 @@ class Dock(MilitaryBuilding, TechnologyBuilding):
             width=1,
             line_of_sight=6,
             pending_units=[],
-            required=set([""]),
+            required_building={TownCenter.__class__.__name__},
+            required_age=1,
+            required_researches={},
+            researches={},
         )
 
     def upgrade_technology(self):
         return "Upgrading..."
 
     def train_fishing_boat(self):
-        self.pending_units += ["FishingBoat"]
+        self.pending_units.append("FishingBoat")
 
     def train_trade_boat(self):
-        self.pending_units += ["TradeBoat"]
+        self.pending_units.append("TradeBoat")
 
     def train_light_transport(self):
-        self.pending_units += ["LightTransport"]
+        self.pending_units.append("LightTransport")
 
     def train_scout_ship(self):
-        self.pending_units += ["ScoutShip"]
+        self.pending_units.append("ScoutShip")

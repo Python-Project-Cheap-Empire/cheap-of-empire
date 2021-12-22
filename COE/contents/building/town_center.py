@@ -15,6 +15,10 @@ class TownCenter(StorageBuilding, MilitaryBuilding):
             line_of_sight=7,
             resources=None,
             max_held=9999,
+            required_building={},
+            required_age=1,
+            required_researches={},
+            researches={},
         )
 
     def train_villager(self):

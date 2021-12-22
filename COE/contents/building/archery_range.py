@@ -1,9 +1,7 @@
 from COE.contents.entity import Entity
 from .military_building import MilitaryBuilding
 from .technology_building import TechnologyBuilding
-
-# Require Barrack to be built
-required_barrack = False
+from .barrack import Barrack
 
 
 class ArcheryRange(MilitaryBuilding, TechnologyBuilding):
@@ -17,7 +15,10 @@ class ArcheryRange(MilitaryBuilding, TechnologyBuilding):
             line_of_sight=6,
             unit_type="archer",
             pending_units=[],
-            required=set(["Barrack"]),
+            required_building={Barrack.__class__.__name__},
+            required_age=2,
+            required_researches={},
+            researches={},
         )
 
     # def upgrade_technology(self, tech_name):

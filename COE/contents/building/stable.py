@@ -1,9 +1,8 @@
-from COE.contents.entity import Entity
 from .military_building import MilitaryBuilding
 from .technology_building import TechnologyBuilding
+from .barrack import Barrack
 
 
-# Require Barrack to be built
 class Stable(MilitaryBuilding, TechnologyBuilding):
     def __init__(self, position: tuple):
         super().__init__(
@@ -13,7 +12,10 @@ class Stable(MilitaryBuilding, TechnologyBuilding):
             height=1,
             width=1,
             line_of_sight=4,
-            required=set([""]),
+            required_building={Barrack.__class__.__name__},
+            required_age=2,
+            required_researches={},
+            researches={},
         )
 
     def upgrade_technology(self):
