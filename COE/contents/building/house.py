@@ -12,7 +12,7 @@ class House(Building):
             width=1,
             line_of_sight=4,
             required_building={TownCenter.__class__.__name__},
-            required_age=2,
+            required_age=1,
             required_researches={},
         )
 
