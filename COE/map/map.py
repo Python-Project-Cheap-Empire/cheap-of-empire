@@ -72,6 +72,17 @@ class Map:
         ) / 2
         return x, y
 
+    def transform_for_unit(self, unit_type=None):
+        trans_list = []
+        for cell_list in self.cells:
+            trans_list.append([])
+            for cell in cell_list:
+                if cell.cell_type.name == "WATER":
+                    trans_list[-1].append(0)
+                elif cell.cell_type.name == "GRASS":
+                    trans_list[-1].append(1)
+        return trans_list
+
     def draw_map(self, window, camera, scaled_blocks):  # pragma: no cover
         """Draw a map on the screen using the cells"""
         window.display.fill((0, 0, 0))
