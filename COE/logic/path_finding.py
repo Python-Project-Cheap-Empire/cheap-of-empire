@@ -1,8 +1,6 @@
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-from COE.map.map import Map
-
 """
 flow:
  find_path
@@ -24,22 +22,24 @@ class AStar:
             path --- from start to end
             number of times --- the algorithm needed to be called until a way was found
         """
+        self.start = A
+        self.end = B
         self.map = map_
         self.matrix = self.map.transform_for_unit()
+
+    def set_grid(self):
         self.grid = Grid(matrix=self.matrix)
-        self.start = self.grid.node(A[0], A[1])
-        self.end = self.grid.node(B[0], B[1])
+        self.start_ = self.grid.node(self.start[0],self.start[1])
+        self.end_ = self.grid.node(self.end[0],self.end[1])
+
+    def set_matrix(self, pos, value):
+        self.matrix[pos[0]][pos[1]] = value
 
     def find_move(self):
+        self.set_grid()
         finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-        path, runs = finder.find_path(self.start, self.end, self.grid)
+        path, runs = finder.find_path(self.start_, self.end_, self.grid)
         # print('operation:', runs, 'path length:', len(path))
         # print(self.grid.grid_str(path=path, start=self.start, end=self.end))
         self.pathfinding = path
         self.runs = runs
-
-
-# map_ = Map()
-# my_map = AStar(map_, (0, 0), (2, 2))
-# my_map.matrix[1][1] = 0
-# print(my_map.matrix)
