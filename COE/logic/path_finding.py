@@ -1,6 +1,7 @@
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
+
 """
 flow:
  find_path
@@ -29,8 +30,8 @@ class AStar:
 
     def set_grid(self):
         self.grid = Grid(matrix=self.matrix)
-        self.start_ = self.grid.node(self.start[0],self.start[1])
-        self.end_ = self.grid.node(self.end[0],self.end[1])
+        self.start_ = self.grid.node(self.start[0], self.start[1])
+        self.end_ = self.grid.node(self.end[0], self.end[1])
 
     def set_matrix(self, pos, value):
         self.matrix[pos[0]][pos[1]] = value
