@@ -4,3 +4,7 @@ class NotEnoughResourceException(Exception):
 
 class MaximumResourceException(Exception):
     pass
+
+
+class MethodNotPermittedException(Exception):
+    pass
