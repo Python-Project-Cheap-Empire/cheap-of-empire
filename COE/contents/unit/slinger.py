@@ -22,4 +22,5 @@ class Slinger(Unit):
             melee_armor=0,
             pierce_armor=2,
             player=player,
+            unit_type="Infantry",
         )

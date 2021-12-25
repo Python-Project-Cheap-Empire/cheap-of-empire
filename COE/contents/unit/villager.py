@@ -22,6 +22,7 @@ class Villager(Unit):
             melee_armor=0,
             pierce_armor=0,
             player=player,
+            unit_type="Civilian",
         )
         self.held_ressource = None
 

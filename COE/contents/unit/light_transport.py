@@ -22,5 +22,6 @@ class LightTransport(Unit):
             melee_armor=0,
             pierce_armor=0,
             player=player,
+            unit_type="CivilianVessel",
         )
         self.garrison = 5

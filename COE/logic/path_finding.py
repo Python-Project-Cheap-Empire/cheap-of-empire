@@ -14,7 +14,7 @@ flow:
 
 
 class AStar:
-    def __init__(self, map_, A, B):
+    def __init__(self, map_, A, B, unit_type):
         # generate_map
         """
         Create a new instance of our finder, we allow diagonal movement
@@ -23,17 +23,18 @@ class AStar:
             path --- from start to end
             number of times --- the algorithm needed to be called until a way was found
         """
+        self.unit_type = unit_type
         self.start = A
         self.end = B
         self.map = map_
-        self.matrix = self.map.transform_for_unit()
+        self.matrix = self.map.transform_for_unit(self.unit_type)
 
     def set_grid(self):
         self.grid = Grid(matrix=self.matrix)
         self.start_ = self.grid.node(self.start[0], self.start[1])
         self.end_ = self.grid.node(self.end[0], self.end[1])
 
-    def set_matrix(self, pos, value):
+    def set_matrix(self, pos, value):  # for testing only
         self.matrix[pos[0]][pos[1]] = value
 
     def find_move(self):

@@ -8,6 +8,8 @@ from COE.map.enum.map_sizes import MapSizes
 from COE.map.enum.map_types import MapTypes
 from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.map.enum.cell_types import CellTypes
+from COE.contents.unit.enum.unit_types import ground_units
+from COE.contents.unit.enum.unit_types import navy_units
 
 
 class Map:
@@ -78,9 +80,15 @@ class Map:
             trans_list.append([])
             for cell in cell_list:
                 if cell.cell_type.name == "WATER":
-                    trans_list[-1].append(0)
+                    if unit_type in ground_units:
+                        trans_list[-1].append(0)
+                    else:
+                        trans_list[-1].append(1)
                 elif cell.cell_type.name == "GRASS":
-                    trans_list[-1].append(1)
+                    if unit_type in navy_units:
+                        trans_list[-1].append(0)
+                    else:
+                        trans_list[-1].append(1)
         return trans_list
 
     def draw_map(self, window, camera, scaled_blocks):  # pragma: no cover

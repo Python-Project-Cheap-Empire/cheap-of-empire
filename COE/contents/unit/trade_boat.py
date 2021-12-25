@@ -22,4 +22,5 @@ class TradeBoat(Unit):
             melee_armor=0,
             pierce_armor=0,
             player=player,
+            unit_type="TradeVessel",
         )
