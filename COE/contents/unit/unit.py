@@ -1,5 +1,6 @@
 from COE.contents.entity import Entity
 from COE.logic.Player import Player
+from COE.contents.unit.enum.unit_types import UnitTypes
 
 
 class Unit(Entity):

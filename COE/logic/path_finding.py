@@ -12,6 +12,14 @@ flow:
         process_node  # calculate new cost for neighboring node
 """
 
+# (x,y) in x-axis and y-axis to coordinate for matrix
+
+
+def reverse_coordinate(list_of_tuple):
+    if list_of_tuple != []:
+        del list_of_tuple[0]
+    return [tup[::-1] for tup in list_of_tuple]
+
 
 class AStar:
     def __init__(self, map_, A, B, unit_type):
@@ -31,8 +39,8 @@ class AStar:
 
     def set_grid(self):
         self.grid = Grid(matrix=self.matrix)
-        self.start_ = self.grid.node(self.start[0], self.start[1])
-        self.end_ = self.grid.node(self.end[0], self.end[1])
+        self.start_ = self.grid.node(self.start[1], self.start[0])
+        self.end_ = self.grid.node(self.end[1], self.end[0])
 
     def set_matrix(self, pos, value):  # for testing only
         self.matrix[pos[0]][pos[1]] = value
@@ -41,7 +49,6 @@ class AStar:
         self.set_grid()
         finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
         path, runs = finder.find_path(self.start_, self.end_, self.grid)
-        # print('operation:', runs, 'path length:', len(path))
-        # print(self.grid.grid_str(path=path, start=self.start, end=self.end))
-        self.pathfinding = path
+
+        self.pathfinding = reverse_coordinate(path)
         self.runs = runs
