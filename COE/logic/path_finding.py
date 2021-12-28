@@ -1,6 +1,8 @@
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
+from COE.contents.unit.enum.unit_types import UnitTypes
+from COE.map.map import Map
 
 """
 flow:
@@ -21,34 +23,49 @@ def reverse_coordinate(list_of_tuple):
     return [tup[::-1] for tup in list_of_tuple]
 
 
-class AStar:
-    def __init__(self, map_, A, B, unit_type):
-        # generate_map
-        """
-        Create a new instance of our finder, we allow diagonal movement
+def find_move(current_map, A, B, unit_type):
+    trans_map = current_map.transform_for_unit(unit_type)
 
-        find_path return 2 things:
-            path --- from start to end
-            number of times --- the algorithm needed to be called until a way was found
-        """
-        self.unit_type = unit_type
-        self.start = A
-        self.end = B
-        self.map = map_
-        self.matrix = self.map.transform_for_unit(self.unit_type)
+    grid = Grid(matrix=trans_map)
 
-    def set_grid(self):
-        self.grid = Grid(matrix=self.matrix)
-        self.start_ = self.grid.node(self.start[1], self.start[0])
-        self.end_ = self.grid.node(self.end[1], self.end[0])
+    start = grid.node(A[1], A[0])
+    end = grid.node(B[1], B[0])
 
-    def set_matrix(self, pos, value):  # for testing only
-        self.matrix[pos[0]][pos[1]] = value
+    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+    path, runs = finder.find_path(start, end, grid)
 
-    def find_move(self):
-        self.set_grid()
-        finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-        path, runs = finder.find_path(self.start_, self.end_, self.grid)
+    return reverse_coordinate(path)
 
-        self.pathfinding = reverse_coordinate(path)
-        self.runs = runs
+
+# class AStar:
+#     def __init__(self, map_, A, B, unit_type):
+#         # generate_map
+#         """
+#         Create a new instance of our finder, we allow diagonal movement
+
+#         find_path return 2 things:
+#         path --- from start to end
+#         number of times --- the algorithm needed to be called until a way was found
+#         """
+#         self.unit_type = unit_type
+#         self.start = A
+#         self.end = B
+#         self.map = map_
+#         self.matrix = self.map.transform_for_unit(self.unit_type)
+
+#     def set_grid(self):
+#         self.grid = Grid(matrix=self.matrix)
+#         self.start_ = self.grid.node(self.start[1], self.start[0])
+#         self.end_ = self.grid.node(self.end[1], self.end[0])
+
+#     def set_matrix(self, pos, value):  # for testing only
+#         self.matrix[pos[0]][pos[1]] = value
+
+#     def find_move(self):
+#         self.set_grid()
+#
+#         finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+#         path, runs = finder.find_path(self.start_, self.end_, self.grid)
+
+#         self.pathfinding = reverse_coordinate(path)
+#         self.runs = runs

@@ -73,20 +73,24 @@ class Map:
         ) / 2
         return x, y
 
-    def transform_for_unit(self, unit_type=None):
+    def change_cell(self, A, B, cell_type):
+        self.cells[A][B] = Cell(cell_type, [])
+
+    def transform_for_unit(self, unit_type):
         trans_list = []
         for cell_list in self.cells:
             trans_list.append([])
             for cell in cell_list:
-                if cell.cell_type.name == CellTypes.WATER:
+                if cell.cell_type.name == CellTypes.WATER.name:
                     if unit_type == UnitTypes.NAVY:
                         trans_list[-1].append(1)
                     else:
                         trans_list[-1].append(0)
-                elif unit_type == UnitTypes.NAVY:
-                    trans_list[-1].append(0)
-                else:
-                    trans_list[-1].append(1)
+                elif cell.cell_type.name == CellTypes.GRASS.name:
+                    if unit_type == UnitTypes.GROUND:
+                        trans_list[-1].append(1)
+                    else:
+                        trans_list[-1].append(0)
         return trans_list
 
     def draw_map(self, window, camera, scaled_blocks):  # pragma: no cover

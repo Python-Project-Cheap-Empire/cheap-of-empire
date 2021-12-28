@@ -1,45 +1,58 @@
-from COE.logic.path_finding import AStar
+from COE.logic.path_finding import find_move
 from COE.map.map import Map
 from COE.map.enum.map_sizes import MapSizes
 from COE.map.enum.map_types import MapTypes
 from COE.map.enum.resources_rarity import ResourcesRarity
+from COE.map.enum.cell_types import CellTypes
 from COE.contents.unit.enum.unit_types import UnitTypes
 
 
 def test_path_finding():
 
-    map_ = Map(MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH)
-    # map_ = Map()
-    my_map = AStar(map_, (0, 0), (2, 2), unit_type=UnitTypes.GROUND)
-    my_map.find_move()
-    assert my_map.pathfinding == [(1, 1), (2, 2)]
+    map_1 = Map(MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH)
 
-    map_2 = Map(MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH)
-    my_map = AStar(map_2, (0, 0), (2, 4), unit_type=UnitTypes.NAVY)
-    my_map.set_matrix((0, 0), 1)
-    my_map.set_matrix((0, 1), 1)
-    my_map.set_matrix((0, 2), 1)
-    my_map.set_matrix((1, 0), 1)
-    my_map.set_matrix((1, 2), 1)
-    my_map.set_matrix((1, 3), 1)
-    my_map.set_matrix((2, 2), 1)
-    my_map.set_matrix((2, 4), 1)
-    my_map.find_move()
-    assert my_map.pathfinding == [(0, 1), (0, 2), (1, 3), (2, 4)]
+    # for testing only
+    map_1.change_cell(0, 3, CellTypes.WATER)
+    map_1.change_cell(1, 1, CellTypes.WATER)
+    map_1.change_cell(1, 2, CellTypes.WATER)
+    map_1.change_cell(1, 3, CellTypes.WATER)
+    map_1.change_cell(2, 1, CellTypes.WATER)
+    map_1.change_cell(2, 2, CellTypes.WATER)
+    map_1.change_cell(2, 3, CellTypes.WATER)
+    map_1.change_cell(3, 1, CellTypes.WATER)
+    map_1.change_cell(3, 2, CellTypes.WATER)
+    map_1.change_cell(3, 3, CellTypes.WATER)
 
-    map_3 = Map(MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH)
-    my_map = AStar(map_3, (0, 0), (2, 0), unit_type=UnitTypes.GROUND)
-    my_map.set_matrix((1, 0), 0)
-    my_map.set_matrix((1, 1), 0)
-    my_map.set_matrix((1, 2), 0)
-    my_map.find_move()
-    assert my_map.pathfinding == [(0, 1), (0, 2), (1, 3), (2, 2), (2, 1), (2, 0)]
-
-    map_4 = Map(MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH)
-    my_map = AStar(map_4, (0, 0), (0, 2), unit_type=UnitTypes.GROUND)
-    my_map.set_matrix((0, 1), 0)
-    my_map.set_matrix((1, 0), 0)
-    my_map.set_matrix((1, 1), 0)
-    my_map.set_matrix((1, 2), 0)
-    my_map.find_move()
-    assert my_map.pathfinding == []
+    assert find_move(map_1, (0, 0), (2, 2), UnitTypes.GROUND) == []
+    assert find_move(map_1, (0, 0), (4, 2), UnitTypes.GROUND) == [
+        (1, 0),
+        (2, 0),
+        (3, 0),
+        (4, 1),
+        (4, 2),
+    ]
+    assert find_move(map_1, (0, 0), (0, 4), UnitTypes.GROUND) == [
+        (1, 0),
+        (2, 0),
+        (3, 0),
+        (4, 1),
+        (4, 2),
+        (4, 3),
+        (3, 4),
+        (2, 4),
+        (1, 4),
+        (0, 4),
+    ]
+    assert find_move(map_1, (0, 4), (0, 2), UnitTypes.GROUND) == [
+        (1, 4),
+        (2, 4),
+        (3, 4),
+        (4, 3),
+        (4, 2),
+        (4, 1),
+        (3, 0),
+        (2, 0),
+        (1, 0),
+        (0, 1),
+        (0, 2),
+    ]
