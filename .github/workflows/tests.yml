@@ -34,3 +34,4 @@ jobs:
       run: tox
       env:
         PLATFORM: ${{ matrix.platform }}
+        SETUPTOOLS_USE_DISTUTIL: "stdlib"
