@@ -81,17 +81,12 @@ def test_berry():
 
 
 def test_deer():
-    bambi = Deer(
-        name="Bambi",
-        hp=50,
-        positions=(10, 15),
-        height=1,
-        width=1,
-        line_of_sight=0,
-        img=None,
-    )
+    bambi = Deer((12, 78))
 
-    with pytest.raises(MethodNotPermittedException):
-        bambi.increase_amount(5)
+    assert bambi.state is None
+    bambi.death()
+    assert type(bambi.state) is CuttableAnimal
 
-    assert bambi.amount == 55
+    assert bambi.state.amount == 55
+    bambi.decrease_amount(10)
+    assert bambi.state.amount == 45
