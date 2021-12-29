@@ -23,15 +23,18 @@ def test_path_finding():
     map_1.change_cell(3, 2, CellTypes.WATER)
     map_1.change_cell(3, 3, CellTypes.WATER)
 
-    assert find_move(map_1, (0, 0), (2, 2), UnitTypes.GROUND) == []
-    assert find_move(map_1, (0, 0), (4, 2), UnitTypes.GROUND) == [
+    trans_map_for_ground_unit = map_1.transform_for_unit(UnitTypes.GROUND)
+    trans_map_for_navy_unit = map_1.transform_for_unit(UnitTypes.NAVY)
+
+    assert find_move(trans_map_for_ground_unit, (0, 0), (2, 2), UnitTypes.GROUND) == []
+    assert find_move(trans_map_for_ground_unit, (0, 0), (4, 2), UnitTypes.GROUND) == [
         (1, 0),
         (2, 0),
         (3, 0),
         (4, 1),
         (4, 2),
     ]
-    assert find_move(map_1, (0, 0), (0, 4), UnitTypes.GROUND) == [
+    assert find_move(trans_map_for_ground_unit, (0, 0), (0, 4), UnitTypes.GROUND) == [
         (1, 0),
         (2, 0),
         (3, 0),
@@ -43,7 +46,7 @@ def test_path_finding():
         (1, 4),
         (0, 4),
     ]
-    assert find_move(map_1, (0, 4), (0, 2), UnitTypes.GROUND) == [
+    assert find_move(trans_map_for_ground_unit, (0, 4), (0, 2), UnitTypes.GROUND) == [
         (1, 4),
         (2, 4),
         (3, 4),
@@ -55,4 +58,8 @@ def test_path_finding():
         (1, 0),
         (0, 1),
         (0, 2),
+    ]
+    assert find_move(trans_map_for_navy_unit, (1, 1), (3, 3), UnitTypes.NAVY) == [
+        (2, 2),
+        (3, 3),
     ]

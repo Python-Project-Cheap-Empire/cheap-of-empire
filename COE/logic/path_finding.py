@@ -21,10 +21,10 @@ def reverse_coordinate(list_of_tuple):
     return [tup[::-1] for tup in list_of_tuple]
 
 
-def find_move(current_map, A, B, unit_type):
-    trans_map = current_map.transform_for_unit(unit_type)
-
-    grid = Grid(matrix=trans_map)
+# def find_move(current_map, A, B, unit_type):
+# trans_map = current_map.transform_for_unit(unit_type)
+def find_move(transformed_map, A, B, unit_type):
+    grid = Grid(matrix=transformed_map)
 
     start = grid.node(A[1], A[0])
     end = grid.node(B[1], B[0])
