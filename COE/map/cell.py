@@ -2,6 +2,7 @@ from COE.contents.entity import Entity
 from COE.map.enum.cell_types import CellTypes
 from typing import List
 import pygame
+import os
 
 
 class Cell:
@@ -14,13 +15,29 @@ class Cell:
         return 64, 32
 
     @staticmethod
+    def get_assets_img():  # pragma: no cover
+        return {
+            CellTypes.GRASS.name: pygame.image.load(
+                os.path.abspath(
+                    os.path.join(os.path.dirname(__file__), "..", "assets", "grass.png")
+                )
+            ),
+            CellTypes.WATER.name: pygame.image.load(
+                os.path.abspath(
+                    os.path.join(os.path.dirname(__file__), "..", "assets", "water.jpg")
+                )
+            ),
+        }
+
+    @staticmethod
     def get_scaled_grass(
         width_pixel_size=None, height_pixel_size=None
     ):  # pragma: no cover
         if width_pixel_size is None or height_pixel_size is None:
             width_pixel_size, height_pixel_size = Cell.get_pixel_cells_size()
         return pygame.transform.scale(
-            CellTypes.GRASS.value, (width_pixel_size, height_pixel_size)
+            Cell.get_assets_img().get(CellTypes.GRASS.name),
+            (width_pixel_size, height_pixel_size),
         )
 
     @staticmethod
@@ -30,7 +47,8 @@ class Cell:
         if width_pixel_size is None or height_pixel_size is None:
             width_pixel_size, height_pixel_size = Cell.get_pixel_cells_size()
         return pygame.transform.scale(
-            CellTypes.WATER.value, (width_pixel_size, height_pixel_size)
+            Cell.get_assets_img().get(CellTypes.WATER.name),
+            (width_pixel_size, height_pixel_size),
         )
 
     @staticmethod

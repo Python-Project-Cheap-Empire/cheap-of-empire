@@ -8,6 +8,7 @@ from COE.map.enum.map_sizes import MapSizes
 from COE.map.enum.map_types import MapTypes
 from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.map.enum.cell_types import CellTypes
+from COE.contents.unit.enum.unit_types import UnitTypes
 
 
 class Map:
@@ -72,16 +73,33 @@ class Map:
         ) / 2
         return x, y
 
-    def draw_map(self, window, camera):  # pragma: no cover
+    def change_cell(self, A, B, cell_type):
+        self.cells[A][B] = Cell(cell_type, [])
+
+    def transform_for_unit(self, unit_type):
+        trans_list = []
+        for cell_list in self.cells:
+            trans_list.append([])
+            for cell in cell_list:
+                if cell.cell_type.name == CellTypes.WATER.name:
+                    if unit_type == UnitTypes.NAVY:
+                        trans_list[-1].append(1)
+                    else:
+                        trans_list[-1].append(0)
+                elif cell.cell_type.name == CellTypes.GRASS.name:
+                    if unit_type == UnitTypes.GROUND:
+                        trans_list[-1].append(1)
+                    else:
+                        trans_list[-1].append(0)
+        return trans_list
+
+    def draw_map(self, window, camera, scaled_blocks):  # pragma: no cover
         """Draw a map on the screen using the cells"""
         window.display.fill((0, 0, 0))
-        blocks_dict = Cell.get_scaled_blocks()
-        x_camera_offset = camera.x_offset
-        y_camera_offset = camera.y_offset
         for x, row in enumerate(self.cells):
             for y, column in enumerate(row):
-                _x, _y = Map.map_to_screen((x, y), x_camera_offset, y_camera_offset)
-                window.display.blit(blocks_dict[column.cell_type.name], (_x, _y))
+                _x, _y = Map.map_to_screen((x, y), camera.x_offset, camera.y_offset)
+                window.display.blit(scaled_blocks[column.cell_type.name], (_x, _y))
 
     @staticmethod
     def generate_map(

@@ -1,5 +1,6 @@
 from COE.contents.unit.unit import Unit
 from COE.logic.Player import Player
+from COE.contents.unit.enum.unit_types import UnitTypes
 
 
 class Scout(Unit):
@@ -22,4 +23,5 @@ class Scout(Unit):
             melee_armor=0,
             pierce_armor=0,
             player=player,
+            unit_type=UnitTypes.GROUND,
         )
