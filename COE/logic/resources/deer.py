@@ -1,6 +1,6 @@
 from COE.contents.unit.unit import Unit
 from .cuttable_animal import CuttableAnimal
-from .resource_exceptions import MethodNotPermittedException
+from COE.contents.unit.enum.unit_types import UnitTypes
 
 
 class Deer(Unit):
@@ -18,8 +18,8 @@ class Deer(Unit):
             rate_of_fire=0,
             melee_armor=2,
             pierce_armor=0,
-            img=None,
             player=None,
+            unit_type=UnitTypes.GROUND,
         )
         self.state = None  # State change when animal is dead
 
