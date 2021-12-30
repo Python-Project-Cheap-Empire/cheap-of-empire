@@ -18,7 +18,6 @@ class Deer(Unit):
             rate_of_fire=0,
             melee_armor=2,
             pierce_armor=0,
-            img=None,
             player=None,
         )
         self.state = None  # State change when animal is dead
