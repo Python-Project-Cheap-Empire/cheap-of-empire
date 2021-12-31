@@ -26,5 +26,3 @@ class Entity:
         self.height = height
         self.width = width
         self.line_of_sight = line_of_sight
-        self.img_path = os.path.join(Path(__file__).parent.parent, "assets/default.png")
-        self.image = self.img_path
