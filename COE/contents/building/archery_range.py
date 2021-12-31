@@ -1,26 +1,28 @@
 from COE.contents.entity import Entity
 from .military_building import MilitaryBuilding
 from .technology_building import TechnologyBuilding
-
-# Require Barrack to be built
-required_barrack = False
+from .barrack import Barrack
 
 
 class ArcheryRange(MilitaryBuilding, TechnologyBuilding):
-    def __init__(self):
-        MilitaryBuilding.__init__(self, "", pending_units=[])
-        TechnologyBuilding.__init__(self, required=set([""]))
-        # if self.required.intersection({"Barrack"}) == "Barrack":
-        #     print("Archery Range created")
-        Entity.__init__(self, "ArcheryRange", 350, (0, 0), 1, 1, 6)
+    def __init__(self, position: tuple):
+        super().__init__(
+            name="Archery Range",
+            hp=350,
+            positions=position,
+            height=1,
+            width=1,
+            line_of_sight=6,
+            unit_type="archer",
+            pending_units=[],
+            required_building={Barrack.__class__.__name__},
+            required_age=2,
+            required_researches={},
+            researches={},
+        )
 
     # def upgrade_technology(self, tech_name):
     #     archery_range_tech[tech_name] = True
 
     def train_bowman(self):
         self.pending_units.append("BowMan")
-
-
-# p = ArcheryRange()
-# p.train_bowman()
-# print(p.pending_units)

@@ -3,7 +3,8 @@ name: tests
 on:
   push:
   pull_request:
-
+env:
+  SETUPTOOLS_USE_DISTUTIL: "stdlib"
 jobs:
   build:
     runs-on: ${{ matrix.platform }}
@@ -33,3 +34,4 @@ jobs:
       run: tox
       env:
         PLATFORM: ${{ matrix.platform }}
+        SETUPTOOLS_USE_DISTUTIL: "stdlib"

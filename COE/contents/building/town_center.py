@@ -4,12 +4,22 @@ from .military_building import MilitaryBuilding
 
 
 class TownCenter(StorageBuilding, MilitaryBuilding):
-    def __init__(self, is_drop_point: bool, max_population: int):
-        StorageBuilding.__init__(self, 200, 200)
-        MilitaryBuilding.__init__(self, "", [])
-        Entity.__init__(self, "TownCenter", 2400, (0, 0), 1, 1, 6)
+    def __init__(self, position: tuple, is_drop_point: bool):
         self.is_drop_point = is_drop_point
-        self.max_population = max_population
+        super().__init__(
+            name="TownCenter",
+            hp=600,
+            positions=position,
+            height=3,
+            width=3,
+            line_of_sight=7,
+            resources=None,
+            max_held=9999,
+            required_building={},
+            required_age=1,
+            required_researches={},
+            researches={},
+        )
 
     def train_villager(self):
         self.pending_units.append("Villager")

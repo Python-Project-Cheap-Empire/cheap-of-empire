@@ -1,5 +1,6 @@
 from COE.contents.entity import Entity
 from COE.logic.Player import Player
+from COE.contents.unit.enum.unit_types import UnitTypes
 
 
 class Unit(Entity):
@@ -18,6 +19,7 @@ class Unit(Entity):
         melee_armor: int,
         pierce_armor: int,
         player: Player,
+        unit_type: str,
     ):  # pragma: no cover
         super().__init__(name, hp, positions, height, width, line_of_sight)
         self.attack_damage = attack_damage
@@ -27,6 +29,7 @@ class Unit(Entity):
         self.melee_armor = melee_armor
         self.pierce_armor = pierce_armor
         self.player = player
+        self.unit_type = unit_type
 
     # def set_attack(self, damage): self.attack_damage = damage
 

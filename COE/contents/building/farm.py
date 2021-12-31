@@ -1,16 +1,23 @@
 from COE.contents.entity import Entity
 from .storage_building import StorageBuilding
-from .technology_building import TechnologyBuilding
-
-required_market = False
+from .market import Market
 
 
-class Farm(StorageBuilding, TechnologyBuilding):
-    def __init__(self, ressource):
-        StorageBuilding.__init__(self, ressource, max_held=250)
-        TechnologyBuilding.__init__(self, required={"Market"})
-        Entity.__init__(self, "Farm", 480, (0, 0), 0, 0, 1)
-        self.ressource = ressource
+class Farm(StorageBuilding):
+    def __init__(self, resource, position: tuple):
+        super().__init__(
+            name="Farm",
+            hp=480,
+            positions=position,
+            height=1,
+            width=1,
+            line_of_sight=1,
+            resources=resource,
+            max_held=250,
+            required_building={Market.__class__.__name__},
+            required_age=2,
+            required_researches={},
+        )
 
     def re_seeding_farm(self):
         return "ReSeeding Farm"
