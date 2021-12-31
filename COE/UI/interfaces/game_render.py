@@ -27,8 +27,7 @@ class GameRender:
         self.menu = GameMenu(self.display_, self.manager)
         self.width = self.screen_size[0]
         self.height = self.screen_size[1]
-        cell = Cell(None, None)
-        self.scaled_cell = cell.get_scaled_blocks()
+        self.scaled_cell = Cell.get_scaled_blocks()
         self.playing = True
 
     def run(self):
@@ -49,13 +48,30 @@ class GameRender:
 
     def draw(self):
         self.display_.fill((0, 0, 0))
-        self.game.map_game.draw_map(self.display_, self.game.camera, self.scaled_cell)
+        self.game.map_game.draw_map(self.display_, self.game.camera)
+        self.game.map_game.draw_entities(
+            self.display_, self.game.camera, self.scaled_cell
+        )
         self.draw_text(
             f"fps={round(self.clock.get_fps())}",
             25,
             (255, 0, 0),
             (self.width - 100, 10),
         )
+        x, y = Map.screen_to_map(
+            pygame.mouse.get_pos(), self.game.camera.x_offset, self.game.camera.y_offset
+        )
+        x, y = int(x), int(y)
+        pos = f"{x}, {y}"
+        mpos = pygame.mouse.get_pos()
+        self.draw_text(
+            pos,
+            25,
+            (255, 0, 0),
+            (mpos[0] + 20, mpos[1]),
+        )
+
+        # self.display_.blit(pos, (mpos[0]+20, mpos[1]))
         self.menu.display(self.pause)
         self.manager.draw_ui(self.display_)
         pygame.display.update()

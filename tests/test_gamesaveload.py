@@ -7,6 +7,7 @@ from COE.map.map import Map
 from COE.logic.Player import Player
 from COE.contents.unit.villager import Villager
 from COE.contents.building.storage_building import StorageBuilding
+from COE.camera import Camera
 
 
 def test_singleton():
@@ -41,7 +42,7 @@ def test_save_and_load():
     player.units.append(villager)
     map_game = Map()
 
-    game_save = Game([player], map_game, 1.0, 1.0)
+    game_save = Game([player], map_game, 1.0, 1.0, Camera(None))
 
     try:
         sl1.save_game(game_save, save_name)

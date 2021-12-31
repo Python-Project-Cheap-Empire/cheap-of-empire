@@ -15,6 +15,7 @@ from logic.Player import Player
 from map.map import Map
 from camera.camera import Camera
 
+
 def main():
     window = Window()
     running = True
@@ -48,6 +49,7 @@ def main():
                 ),
             ]
             gen_map = Map()
+            gen_map.blit_world()
             game = Game(
                 players=players,
                 map_game=gen_map,
@@ -61,6 +63,7 @@ def main():
                 game_render.run()
             window.playing = False
             window.menu = MenuPlay(window.display)
+
 
 if __name__ == "__main__":
     main()
