@@ -1,14 +1,25 @@
-# from COE.contents.entity import Entity
 from .storage_building import StorageBuilding
 from .technology_building import TechnologyBuilding
+from .town_center import TownCenter
 
 
 class StoragePit(StorageBuilding, TechnologyBuilding):
-    def __init__(self, is_drop_point: bool = True):
-        StorageBuilding.__init__(self, 0, 0)
-        TechnologyBuilding.__init__(self)
-
+    def __init__(self, position: tuple, is_drop_point: bool = True):
         self.is_drop_point = is_drop_point
+        super().__init__(
+            name="Storage Pit",
+            hp=350,
+            positions=position,
+            height=3,
+            width=3,
+            line_of_sight=4,
+            resources=None,
+            max_held=9999,
+            required_building={TownCenter.__class__.__name__},
+            required_age=1,
+            required_researches={},
+            researches={},  # Tool working, leather armor (ca, in, ar)
+        )
 
     def upgrade_technology(self):
         return "Upgrading..."

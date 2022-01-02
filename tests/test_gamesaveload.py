@@ -6,7 +6,7 @@ from COE.logic.Game import Game
 from COE.map.map import Map
 from COE.logic.Player import Player
 from COE.contents.unit.villager import Villager
-from COE.contents.building.storage_building import StorageBuilding
+from COE.contents.building.town_center import TownCenter
 
 
 def test_singleton():
@@ -36,7 +36,7 @@ def test_save_and_load():
 
     player = Player("Toto", [], [], None, None)
     villager = Villager((0, 0), player)
-    storage = StorageBuilding(500, 50)
+    storage = TownCenter((54, 78), True)
     player.buildings.append(storage)
     player.units.append(villager)
     map_game = Map()
