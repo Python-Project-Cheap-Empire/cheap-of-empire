@@ -5,6 +5,7 @@ description = "An RTS game, AoE like, developed in Python"
 authors = ["Leonard Deletre <contact@leonarddeletre.com>", "Octave Gassot Laffont <octave.gassot_laffont@insa-cvl.fr>"]
 packages = [
     { include = "COE/AI" },
+    { include = "COE/camera" },
     { include = "COE/contents" },
     { include = "COE/logic" },
     { include = "COE/UI" },

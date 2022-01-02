@@ -3,7 +3,7 @@ class Game:
     A class to represent a unique game
     """
 
-    def __init__(self, players: list, map_game, timer, speed):
+    def __init__(self, players: list, map_game, timer, speed, camera):
         """
         Constructs all the necessary attributes for the Game object.
 
@@ -16,6 +16,7 @@ class Game:
         self.map_game = map_game
         self.timer = timer
         self.speed = speed
+        self.camera = camera
 
     def set_speed(self, new_speed):
         assert (

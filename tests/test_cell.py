@@ -11,4 +11,4 @@ def test_init():
 
 
 def test_get_pixel_cells_size():
-    assert Cell.get_pixel_cells_size() == (64, 32)
+    assert Cell.get_pixel_cells_size() == (80, 40)
