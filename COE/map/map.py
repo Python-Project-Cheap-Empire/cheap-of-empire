@@ -8,6 +8,7 @@ from COE.map.enum.map_sizes import MapSizes
 from COE.map.enum.map_types import MapTypes
 from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.map.enum.cell_types import CellTypes
+import pygame
 from COE.contents.unit.enum.unit_types import UnitTypes
 
 
@@ -21,12 +22,14 @@ class Map:
                 self.cells = Map.generate_map(
                     self.size, self.type, self.resources_rarity
                 )
+                self.grass_tiles = None
         except Exception as e:
             print(f"Exception handled : {e}")
             self.size = MapSizes.TINY
             self.type = MapTypes.CONTINENTAL
             self.resources_rarity = ResourcesRarity.HIGH
-            self.cells = Map.generate_map()
+            self.cells = Map.generate_map(self.size, self.type, self.resources_rarity)
+            self.grass_tiles = None
             print("Map was generated using default value : ")
             print("Tiny size, continental and high resources rarity")
 
@@ -93,13 +96,48 @@ class Map:
                         trans_list[-1].append(0)
         return trans_list
 
-    def draw_map(self, window, camera, scaled_blocks):  # pragma: no cover
+    def draw_map(self, window, camera):  # pragma: no cover
         """Draw a map on the screen using the cells"""
-        window.display.fill((0, 0, 0))
+        window.blit(
+            self.grass_tiles,
+            (
+                camera.x_offset - self.grass_tiles.get_width() / 2 + 0,
+                camera.y_offset - 1,
+            ),
+        )
+
+    def draw_entities(self, window, camera, scaled_blocks):
+        width_cells_size, height_cells_size = Cell.get_pixel_cells_size()
+        x_limit = window.get_width() + width_cells_size
+        y_limit = window.get_height() + height_cells_size
         for x, row in enumerate(self.cells):
             for y, column in enumerate(row):
-                _x, _y = Map.map_to_screen((x, y), camera.x_offset, camera.y_offset)
-                window.display.blit(scaled_blocks[column.cell_type.name], (_x, _y))
+                _x, _y = Map.map_to_screen(
+                    (x, y), camera.x_offset + 0, camera.y_offset - 1
+                )
+                if (
+                    _x <= x_limit
+                    and _x >= -width_cells_size
+                    and _y >= -height_cells_size
+                    and _y <= y_limit
+                ):
+                    window.blit(scaled_blocks["TREE"], (_x, _y))
+
+    def blit_world(self):
+        scaled_blocks = Cell.get_scaled_blocks()
+        width_map_pixel_size = self.size.value * Cell.get_pixel_cells_size()[0]
+        height_map_pixel_size = self.size.value * Cell.get_pixel_cells_size()[1]
+        blit_world = pygame.Surface(
+            (width_map_pixel_size, height_map_pixel_size)
+        ).convert_alpha()
+        for x, row in enumerate(self.cells):
+            for y, column in enumerate(row):
+                _x, _y = Map.map_to_screen((x, y), width_map_pixel_size / 2, 0)
+                blit_world.blit(scaled_blocks[column.cell_type.name], (_x, _y))
+        self.grass_tiles = blit_world
+
+    def update(self, camera):
+        pass
 
     @staticmethod
     def generate_map(
