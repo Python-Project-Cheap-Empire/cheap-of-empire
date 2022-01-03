@@ -25,7 +25,11 @@ class Deer(Unit):
 
     def death(self):
         if not self.state:
-            self.state = CuttableAnimal(amount=55)
+            self.state = CuttableAnimal(
+                amount=55,
+                name="Dead deer",
+                position=self.positions,
+            )
 
     def decrease_amount(self, amount):
         assert self.state is not None

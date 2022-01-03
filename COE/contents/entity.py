@@ -18,7 +18,7 @@ class Entity:
         height: int,
         width: int,
         line_of_sight: int,
-        **kwargs
+        **kwargs,
     ):  # pragma: no cover
         self.name = name
         self.hp = hp
