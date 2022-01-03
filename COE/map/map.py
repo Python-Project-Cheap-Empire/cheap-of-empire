@@ -33,6 +33,21 @@ class Map:
             print("Map was generated using default value : ")
             print("Tiny size, continental and high resources rarity")
 
+    def __getstate__(self):
+        # Copy the object's state from self.__dict__ which contains
+        # all our instance attributes. Always use the dict.copy()
+        # method to avoid modifying the original state.
+        state = self.__dict__.copy()
+        # Remove the unpicklable entries.
+        del state["grass_tiles"]
+        return state
+
+    def __setstate__(self, state):
+        # Restore instance attributes.
+        self.__dict__.update(state)
+        self.grass_tiles = None
+        # self.blit_world()
+
     @staticmethod
     def map_to_screen(
         map_coordinates, x_camera_offset, y_camera_offset
@@ -121,7 +136,8 @@ class Map:
                     and _y >= -height_cells_size
                     and _y <= y_limit
                 ):
-                    window.blit(scaled_blocks["TREE"], (_x, _y))
+                    pass
+                    # window.blit(scaled_blocks["TREE"], (_x, _y))
 
     def blit_world(self):
         scaled_blocks = Cell.get_scaled_blocks()
