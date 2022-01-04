@@ -23,7 +23,7 @@ class GameMenu:
         self.ESM = (self.screen_size[0] / 2 - 300, self.screen_size[0] / 2 - 500)
         self.buttons = [
             pygame_gui.elements.UIButton(
-                relative_rect=pygame.Rect((0, 0), (100, 50)),
+                relative_rect=pygame.Rect((0, 20), (100, 50)),
                 text="Menu",
                 manager=self.manager,
             ),

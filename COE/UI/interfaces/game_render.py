@@ -7,6 +7,8 @@ from COE.map.map import Map
 from COE.camera.camera import Camera
 from COE.UI.interfaces.interface_in_game import GameMenu
 from COE.UI.interfaces.interface_play_menu import MenuPlay
+from COE.UI.item import Item
+from COE.UI.time_counting import time_counting
 
 from COE.logic.Game import Game
 from map.cell import Cell
@@ -29,6 +31,8 @@ class GameRender:
         self.height = self.screen_size[1]
         self.scaled_cell = Cell.get_scaled_blocks()
         self.playing = True
+        self.item = Item(self.width, self.height)
+        self.timeur = time_counting(self.display)
 
     def run(self):
         self.events()
@@ -43,6 +47,7 @@ class GameRender:
         if not self.pause:
             self.game.camera.update()
             self.game.map_game.update(self.game.camera)
+            self.item.update()
         time_delta = self.clock.tick(60) / 1000.0
         self.manager.update(time_delta)
 
@@ -58,6 +63,8 @@ class GameRender:
             (255, 0, 0),
             (self.width - 100, 10),
         )
+        self.item.draw_item(self.display_)
+        self.timeur.draw_time(self.display_)
         x, y = Map.screen_to_map(
             pygame.mouse.get_pos(), self.game.camera.x_offset, self.game.camera.y_offset
         )
