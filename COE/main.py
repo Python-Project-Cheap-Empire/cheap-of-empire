@@ -5,15 +5,15 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(script_dir))
 
 from UI.window_ui import Window
-from logic import Game
-from UI.interfaces.game_render import GameRender
+from COE.logic.Game import Game
+from COE.logic.game_logic import GameLogic
 from UI.interfaces.interface_play_menu import MenuPlay
-
 
 # pour generer une map
 from logic.Player import Player
 from map.map import Map
 from camera.camera import Camera
+from COE.contents.static.static import Static
 
 
 def main():
@@ -27,6 +27,7 @@ def main():
             players = [
                 Player(
                     username="personnage",
+                    is_human=True,
                     units=[],
                     buildings=[],
                     age=None,
@@ -38,6 +39,7 @@ def main():
                 ),
                 Player(
                     username="AI",
+                    is_human=False,
                     units=[],
                     buildings=[],
                     age=None,
@@ -48,19 +50,20 @@ def main():
                     food_amount=300,
                 ),
             ]
+            static = Static()
             gen_map = Map()
             gen_map.blit_world()
             game = Game(
                 players=players,
-                map_game=gen_map,
+                map=gen_map,
                 timer=None,
                 speed=1,
                 camera=Camera(window),
             )
-            game_render = GameRender(window.display, game)
+            game_logic = GameLogic(window.display, game, static)
             playing = True
-            while game_render.playing:
-                game_render.run()
+            while game_logic.playing:
+                game_logic.run()
             window.playing = False
             window.menu = MenuPlay(window.display)
 

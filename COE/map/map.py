@@ -10,6 +10,9 @@ from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.map.enum.cell_types import CellTypes
 import pygame
 from COE.contents.unit.enum.unit_types import UnitTypes
+from COE.contents.resources.tree import Tree
+from COE.contents.unit.villager import Villager
+from pygame.locals import *
 
 
 class Map:
@@ -35,56 +38,73 @@ class Map:
 
     @staticmethod
     def map_to_screen(
-        map_coordinates, x_camera_offset, y_camera_offset
+        map_coordinates,
+        x_camera_offset,
+        y_camera_offset,
+        half_width_cells_size,
+        half_height_cells_size,
     ):  # pragma: no cover
-        width_pixel_size, height_pixel_size = Cell.get_pixel_cells_size()
-        half_width_pixel_size, half_height_pixel_size = (
-            width_pixel_size / 2,
-            height_pixel_size / 2,
-        )
         x = (
-            (map_coordinates[0] - map_coordinates[1]) * half_width_pixel_size
+            (map_coordinates[0] - map_coordinates[1]) * half_width_cells_size
             + x_camera_offset
-            - half_width_pixel_size
+            - half_width_cells_size
         )
         y = (
             map_coordinates[0] + map_coordinates[1]
-        ) * half_height_pixel_size + y_camera_offset
+        ) * half_height_cells_size + y_camera_offset
         return x, y
 
     @staticmethod
     def screen_to_map(
-        screen_pixels, x_camera_offset, y_camera_offset
+        screen_pixels,
+        x_camera_offset,
+        y_camera_offset,
+        half_width_cells_size,
+        half_height_cells_size,
     ):  # pragma: no cover
-        width_pixel_size, height_pixel_size = Cell.get_pixel_cells_size()
-        half_width_pixel_size, half_height_pixel_size = (
-            width_pixel_size / 2,
-            height_pixel_size / 2,
-        )
         screen_x, screen_y = screen_pixels[0], screen_pixels[1]
         x_without_offset, y_without_offset = (
             screen_x - x_camera_offset,
             screen_y - y_camera_offset,
         )
         x = (
-            x_without_offset / half_width_pixel_size
-            + y_without_offset / half_height_pixel_size
+            x_without_offset / half_width_cells_size
+            + y_without_offset / half_height_cells_size
         ) / 2
         y = (
-            y_without_offset / half_height_pixel_size
-            - x_without_offset / half_width_pixel_size
+            y_without_offset / half_height_cells_size
+            - x_without_offset / half_width_cells_size
         ) / 2
         return x, y
 
     def change_cell(self, A, B, cell_type):
         self.cells[A][B] = Cell(cell_type, [])
 
+    def draw_rect_around(
+        self, window, x, y, camera, half_width_cells_size, half_height_cells_size
+    ):
+        _x, _y = self.map_to_screen(
+            (x, y),
+            camera.x_offset,
+            camera.y_offset,
+            half_width_cells_size,
+            half_height_cells_size,
+        )
+        pygame.draw.polygon(
+            window,
+            (255, 255, 255),
+            [(_x + 40, _y), (_x + 80, _y + 20), (_x + 40, _y + 40), (_x, _y + 20)],
+            1,
+        )
+
     def transform_for_unit(self, unit_type):
         trans_list = []
         for cell_list in self.cells:
             trans_list.append([])
             for cell in cell_list:
-                if cell.cell_type.name == CellTypes.WATER.name:
+                if cell.entity:
+                    trans_list[-1].append(0)
+                elif cell.cell_type.name == CellTypes.WATER.name:
                     if unit_type == UnitTypes.NAVY:
                         trans_list[-1].append(1)
                     else:
@@ -102,37 +122,63 @@ class Map:
             self.grass_tiles,
             (
                 camera.x_offset - self.grass_tiles.get_width() / 2 + 0,
-                camera.y_offset - 1,
+                camera.y_offset,
             ),
         )
 
-    def draw_entities(self, window, camera, scaled_blocks):
-        width_cells_size, height_cells_size = Cell.get_pixel_cells_size()
-        x_limit = window.get_width() + width_cells_size
-        y_limit = window.get_height() + height_cells_size
+    def draw_entities(
+        self,
+        window,
+        camera,
+        entities_images,
+        entities_pos_dict,
+        width_cells_size,
+        height_cells_size,
+        half_width_cells_size,
+        half_height_cells_size,
+        x_limit,
+        y_limit,
+    ):  # pragma: no cover
         for x, row in enumerate(self.cells):
             for y, column in enumerate(row):
-                _x, _y = Map.map_to_screen(
-                    (x, y), camera.x_offset + 0, camera.y_offset - 1
-                )
-                if (
-                    _x <= x_limit
-                    and _x >= -width_cells_size
-                    and _y >= -height_cells_size
-                    and _y <= y_limit
-                ):
-                    window.blit(scaled_blocks["TREE"], (_x, _y))
+                if column.entity:
+                    entity_x, entity_y = entities_pos_dict[column.entity.name.lower()]
+                    _x, _y = Map.map_to_screen(
+                        (x, y),
+                        camera.x_offset + entity_x,
+                        camera.y_offset + entity_y,
+                        half_width_cells_size,
+                        half_height_cells_size,
+                    )
+                    if (
+                        _x <= x_limit
+                        and _x >= -width_cells_size
+                        and _y >= -height_cells_size
+                        and _y <= y_limit
+                    ):
+                        window.blit(
+                            entities_images[column.entity.name.lower()], (_x, _y)
+                        )
 
-    def blit_world(self):
+    def blit_world(self):  # pragma: no cover
         scaled_blocks = Cell.get_scaled_blocks()
-        width_map_pixel_size = self.size.value * Cell.get_pixel_cells_size()[0]
-        height_map_pixel_size = self.size.value * Cell.get_pixel_cells_size()[1]
+        width_cells_size, height_cells_size = Cell.get_pixel_cells_size()
+        half_width_cells_size = width_cells_size / 2
+        half_height_cells_size = height_cells_size / 2
+        width_map_pixel_size = self.size.value * width_cells_size
+        height_map_pixel_size = self.size.value * height_cells_size
         blit_world = pygame.Surface(
             (width_map_pixel_size, height_map_pixel_size)
         ).convert_alpha()
         for x, row in enumerate(self.cells):
             for y, column in enumerate(row):
-                _x, _y = Map.map_to_screen((x, y), width_map_pixel_size / 2, 0)
+                _x, _y = Map.map_to_screen(
+                    (x, y),
+                    width_map_pixel_size / 2,
+                    0,
+                    half_width_cells_size,
+                    half_height_cells_size,
+                )
                 blit_world.blit(scaled_blocks[column.cell_type.name], (_x, _y))
         self.grass_tiles = blit_world
 
@@ -145,10 +191,17 @@ class Map:
         map_type: MapTypes = MapTypes.CONTINENTAL,
         resources_rarity: ResourcesRarity = ResourcesRarity.HIGH,
     ):  # pragma: no cover
-        return [
-            [Cell(CellTypes.GRASS, []) for i in range(map_size.value)]
+        res = [
+            [Cell(CellTypes.GRASS, None) for i in range(map_size.value)]
             for j in range(map_size.value)
         ]
+        # res[0][0].entity = Villager((0, 0), Player("", [], [], 0, 0, 0))
+        # res[2][4].entity = Tree((2, 4))
+        # for j in range(0, map_size.value, 2):
+        #     for i in range(0, map_size.value, 2):
+        #         res[i][j].entity = Tree((i, j))
+
+        return res
 
     @staticmethod
     def is_type_known(map_type: MapTypes):
