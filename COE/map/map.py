@@ -1,3 +1,5 @@
+from COE.contents.unit.unit import Unit
+from COE.logic.Player import Player
 from COE.map.cell import Cell
 from COE.map.exceptions.zero_map_size_exception import ZeroMapSizeException
 from COE.map.exceptions.not_standardized_metric_exception import (
@@ -22,20 +24,20 @@ class Map:
                 self.size = Map.get_size(args)
                 self.type = Map.get_type(args)
                 self.resources_rarity = Map.get_resources_rarity(args)
-                self.cells = Map.generate_map(
-                    self.size, self.type, self.resources_rarity
-                )
+                self.cells = None
+                self.dict_binary_cells = None
                 self.grass_tiles = None
         except Exception as e:
             print(f"Exception handled : {e}")
             self.size = MapSizes.TINY
             self.type = MapTypes.CONTINENTAL
             self.resources_rarity = ResourcesRarity.HIGH
-            self.cells = Map.generate_map(self.size, self.type, self.resources_rarity)
+            self.cells = None
+            self.dict_binary_cells = None
             self.grass_tiles = None
             print("Map was generated using default value : ")
-            print("Tiny size, continental and high resources rarity")
-
+            print(f"{self.size.name} size, {self.type.name} and {self.resources_rarity.name} resources rarity")
+ 
     @staticmethod
     def map_to_screen(
         map_coordinates,
@@ -90,12 +92,29 @@ class Map:
             half_width_cells_size,
             half_height_cells_size,
         )
+        width_cells_size = 2 * half_width_cells_size
+        height_cells_size = 2 * half_height_cells_size
         pygame.draw.polygon(
             window,
             (255, 255, 255),
-            [(_x + 40, _y), (_x + 80, _y + 20), (_x + 40, _y + 40), (_x, _y + 20)],
+            [(_x + half_width_cells_size, _y), 
+            (_x + width_cells_size, _y + half_height_cells_size), 
+            (_x + half_width_cells_size, _y + height_cells_size), 
+            (_x, _y + half_height_cells_size)],
             1,
         )
+
+    def populate_cell(self, x, y, unit : Unit):
+        # print("in_populate_cell")
+        self.cells[x][y].entity = unit
+        self.dict_binary_cells.get(unit.unit_type)[x][y] = 0
+
+    def empty_cell(self, x, y):
+        # print("in empty_cell")
+        # if self.cells[x][y].entity:
+        # print("in empty_cell 2")
+        self.dict_binary_cells.get(self.cells[x][y].entity.unit_type)[x][y] = 1
+        self.cells[x][y].entity = None
 
     def transform_for_unit(self, unit_type):
         trans_list = []
@@ -187,6 +206,7 @@ class Map:
 
     @staticmethod
     def generate_map(
+        players : list[Player],
         map_size: MapSizes = MapSizes.TINY,
         map_type: MapTypes = MapTypes.CONTINENTAL,
         resources_rarity: ResourcesRarity = ResourcesRarity.HIGH,
@@ -195,11 +215,24 @@ class Map:
             [Cell(CellTypes.GRASS, None) for i in range(map_size.value)]
             for j in range(map_size.value)
         ]
+
         # res[0][0].entity = Villager((0, 0), Player("", [], [], 0, 0, 0))
         # res[2][4].entity = Tree((2, 4))
-        # for j in range(0, map_size.value, 2):
-        #     for i in range(0, map_size.value, 2):
-        #         res[i][j].entity = Tree((i, j))
+        for j in range(0, map_size.value, 2):
+            for i in range(0, map_size.value, 2):
+                res[i][j].entity = Tree((i, j))
+
+        if players:
+            for i in range(3):
+                v0 = Villager((2 + i, 2 + i), players[0])
+                players[0].units.append(v0)
+                res[2 + i][2 + i].entity = v0
+                if len(players) > 1:
+                    v1 = Villager((10 + i, 10 + i), players[1])
+                    players[1].units.append(v1)
+                    res[10 + i][10 + i].entity = v1
+
+
 
         return res
 

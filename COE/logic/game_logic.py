@@ -155,9 +155,7 @@ class GameLogic:  # pragma: no cover
                 ):
                     if isinstance(self.currently_selected, Unit):
                         self.currently_selected.current_path = find_move(
-                            self.game.map.transform_for_unit(
-                                self.currently_selected.unit_type
-                            ),
+                            self.game.map.dict_binary_cells.get(self.currently_selected.unit_type),
                             self.currently_selected.positions,
                             (x, y),
                         )
