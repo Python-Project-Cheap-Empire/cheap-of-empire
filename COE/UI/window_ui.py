@@ -1,4 +1,5 @@
 import pygame
+from pygame.constants import DOUBLEBUF
 from pygame.locals import FULLSCREEN
 from COE.UI.interfaces.main_menu import MainMenu
 
@@ -9,7 +10,7 @@ class Window:
     def __init__(self, width=0, height=0):
         pygame.init()  # pygame init
         self.display = pygame.display.set_mode(
-            (width, height), FULLSCREEN
+            (width, height), FULLSCREEN | DOUBLEBUF, 16
         )  # window init
         self.clock = pygame.time.Clock()
         self.loop = True

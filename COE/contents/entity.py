@@ -1,8 +1,5 @@
 # coding: utf-8
-import os.path
-from pathlib import Path
-import pygame.surface
-from pygame.sprite import Sprite
+
 
 """
     Contains the Class Entity, from which all content class inherit.
