@@ -102,9 +102,9 @@ class Map:
         for cell_list in self.cells:
             trans_list.append([])
             for cell in cell_list:
-                # if cell.entity:
-                #     trans_list[-1].append(0)
-                if cell.cell_type.name == CellTypes.WATER.name:
+                if cell.entity:
+                    trans_list[-1].append(0)
+                elif cell.cell_type.name == CellTypes.WATER.name:
                     if unit_type == UnitTypes.NAVY:
                         trans_list[-1].append(1)
                     else:
@@ -197,9 +197,9 @@ class Map:
         ]
         # res[0][0].entity = Villager((0, 0), Player("", [], [], 0, 0, 0))
         # res[2][4].entity = Tree((2, 4))
-        for j in range(0, map_size.value, 2):
-            for i in range(0, map_size.value, 2):
-                res[i][j].entity = Tree((i, j))
+        # for j in range(0, map_size.value, 2):
+        #     for i in range(0, map_size.value, 2):
+        #         res[i][j].entity = Tree((i, j))
 
         return res
 

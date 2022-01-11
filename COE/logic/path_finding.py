@@ -23,7 +23,6 @@ def reverse_coordinate(list_of_tuple):
 
 def find_move(transformed_map, A, B):
     grid = Grid(matrix=transformed_map)
-
     start = grid.node(A[1], A[0])
     end = grid.node(B[1], B[0])
 
