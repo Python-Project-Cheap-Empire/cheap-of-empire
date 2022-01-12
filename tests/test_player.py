@@ -1,8 +1,8 @@
-from COE.logic import Player
+from COE.logic.Player import Player
 
 
 def test_init():
-    player = Player("Toto", [], [], None, None)
+    player = Player("Toto", True, [], [], None, None)
 
     assert player.gold == 500
     assert player.username == "Toto"

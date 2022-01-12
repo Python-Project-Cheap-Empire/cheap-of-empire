@@ -1,4 +1,4 @@
-from COE.logic.resources import *
+from COE.contents.resources import *
 import pytest
 
 
