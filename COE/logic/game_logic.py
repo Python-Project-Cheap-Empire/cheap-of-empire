@@ -154,6 +154,7 @@ class GameLogic:  # pragma: no cover
                     and y < self.game.map.size.value
                 ):
                     if isinstance(self.currently_selected, Unit):
+                        print("5")
                         self.currently_selected.current_path = find_move(
                             self.game.map.dict_binary_cells.get(self.currently_selected.unit_type),
                             self.currently_selected.positions,

@@ -42,18 +42,23 @@ class Game:
                 ]
                 # If the next cell where the unit is supposed to go to has already an entity
                 if next_cell_in_path.entity:
+                    print("1")
                     if len(unit.current_path) == 1:
+                        print("2")
                         unit.current_path = None
                     else :
+                        print("3")
                         unit.current_path = find_move(
                                 self.map.dict_binary_cells.get(unit.unit_type),
                                 unit.positions,
                                 unit.current_path[-1],
                             )
-                self.map.empty_cell(unit.positions[0], unit.positions[1])
-                self.map.populate_cell(unit.current_path[0][0], unit.current_path[0][1], unit)
-                unit.positions = unit.current_path[0][0], unit.current_path[0][1]
-                unit.current_path.pop(0)
+                else:
+                    print("4")
+                    self.map.empty_cell(unit.positions[0], unit.positions[1])
+                    self.map.populate_cell(unit.current_path[0][0], unit.current_path[0][1], unit)
+                    unit.positions = unit.current_path[0][0], unit.current_path[0][1]
+                    unit.current_path.pop(0)
 
 
         for unit in self.players[1].units:
@@ -68,7 +73,8 @@ class Game:
                             unit.positions,
                             unit.current_path[-1],
                         )
-                self.map.empty_cell(unit.positions[0], unit.positions[1])
-                self.map.populate_cell(unit.current_path[0][0], unit.current_path[0][1], unit)
-                unit.positions = unit.current_path[0][0], unit.current_path[0][1]
-                unit.current_path.pop(0)
+                else:
+                    self.map.empty_cell(unit.positions[0], unit.positions[1])
+                    self.map.populate_cell(unit.current_path[0][0], unit.current_path[0][1], unit)
+                    unit.positions = unit.current_path[0][0], unit.current_path[0][1]
+                    unit.current_path.pop(0)

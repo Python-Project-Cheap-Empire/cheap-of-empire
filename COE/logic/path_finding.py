@@ -22,13 +22,100 @@ def reverse_coordinate(list_of_tuple):
 
 def find_move(transformed_map, A, B):
     grid = Grid(matrix=transformed_map)
-    start = grid.node(A[1], A[0])
-    end = grid.node(B[1], B[0])
-
+    start = grid.node(A[0], A[1])
+    end = grid.node(B[0], B[1])
+    distance = max(abs(A[1] - B[1]), abs(A[0] - B[0]))
     finder = AStarFinder()
     path, runs = finder.find_path(start, end, grid)
+    if path :
+        print("7")
+        print(path[1::])
+        return path[1::]
+    p = 1
+    grid.cleanup()
+    while distance > 1:
+        print("9")
+        # if A[0] == B[0] and A[1] == B[1] : # VERT
+        #     pass
+        if A[0] == B[0] and A[1] < B[1] :# BORDEAUX
+            print("10")
+            # Above aimed cell
+            d = grid.node(B[0], end.y-p)
+            print(d.weight)
+            if d.weight == 1 :
+                print("11")
+                path, _ = finder.find_path(start, d, grid)
+                if path :
+                    print("12")
+                    return path[1::]
+                grid.cleanup()
+            # First row except above aimed cell
+            for j in range(1, p):
+                d = grid.node(B[0]-j, end.y-p)
+                if d.weight == 1 :
+                    path, _ = finder.find_path(start, d, grid)
+                    if path :
+                        return path[1::]
+                    grid.cleanup()
+                d = grid.node(B[0]+j, end.y-p)
+                if d.weight == 1 :
+                    path, _ = finder.find_path(start, d, grid)
+                    if path :
+                        return path[1::]
+                    grid.cleanup()
+            # Middle rows
+            for l in range(1, (1 + (p-1)*2)+1):
+                if d.weight == 1 :
+                    d = grid.node(B[0]-p, end.y+p-l)
+                    path, _ = finder.find_path(start, d, grid)
+                    if path :
+                        return path[1::]
+                    grid.cleanup()
+                d = grid.node(B[0]+p, end.y+p-l)
+                if d.weight == 1 :
+                    path, _ = finder.find_path(start, d, grid)
+                    if path :
+                        return path[1::]
+                    grid.cleanup()
+            # Last row
+            for i in range(1, p):
+                d = grid.node(B[0]-i, end.y+p)
+                if d.weight == 1 :
+                    path, _ = finder.find_path(start, d, grid)
+                    if path :
+                        return path[1::]
+                    grid.cleanup()
+                d = grid.node(B[0]+i, end.y+p)
+                if d.weight == 1 :
+                    path, _ = finder.find_path(start, d, grid)
+                    if path :
+                        return path[1::]
+                    grid.cleanup()
+            
 
-    return reverse_coordinate(path)
+        # if A[0] == B[0] and A[1] > B[1] :# JAUNE VOMIT
+        #     end = grid.node(end.x+1, B[1])
+        #     path, _ = finder.find_path(start, end, grid)
+        #     distance -= 1
+        # if A[0] < B[0] and A[1] < B[1] :# ROUGE
+        #     end = grid.node(B[0], end.y-1)
+        #     path, _ = finder.find_path(start, end, grid)
+        #     distance -= 1
+        # if A[0] < B[0] and A[1] > B[1] :# ROSE
+        #     pass
+        # if A[0] < B[0] and A[1] == B[1] :# VIOLET
+        #     pass
+        # if A[0] > B[0] and A[1] > B[1] :# BLEU
+        #     pass
+        # if A[0] > B[0] and A[1] < B[1] :# GRIS
+        #     pass
+        # if A[0] > B[0] and A[1] == B[1] :# VERT PALE
+        #     pass
+
+        distance -= 1
+        p += 1
+    print("8")
+    return path
 
 
 # class AStar:
