@@ -2,6 +2,7 @@ from COE.contents.unit.unit import Unit
 import pygame
 from pygame.locals import *
 import pygame_gui
+from COE.map.exceptions.invalid_ressource_exception import InvalidRessourceException
 from COE.map.map import Map
 from COE.UI.interfaces.interface_in_game import GameMenu
 from COE.UI.interfaces.interface_play_menu import MenuPlay
@@ -12,7 +13,7 @@ from COE.logic.Game import Game
 from map.cell import Cell
 from COE.logic.path_finding import find_move
 from COE.contents.static.static import Static
-
+from COE.UI.interfaces.interface_in_game import ressource
 import os
 import json
 
@@ -107,6 +108,7 @@ class GameLogic:  # pragma: no cover
             (255, 0, 0),
             (mpos[0] + 20, mpos[1]),
         )
+        self.draw_ressources()
         self.menu.display(self.pause)
         self.manager.draw_ui(self.display_)
         pygame.display.update()
@@ -115,6 +117,32 @@ class GameLogic:  # pragma: no cover
         myfont = pygame.font.SysFont("Comic Sans MS", size)
         textsurface = myfont.render(format, False, color)
         self.display_.blit(textsurface, positions)
+
+    def draw_ressources(self):
+        self.draw_text(
+            str(self.game.players[0]._wood),
+            15,
+            (255, 255, 255),
+            (self.width * 0.05 - 25, 0),
+        )
+        self.draw_text(
+            str(self.game.players[0]._food),
+            15,
+            (255, 255, 255),
+            (self.width * 0.05 + 120, 0),
+        )
+        self.draw_text(
+            str(self.game.players[0]._gold),
+            15,
+            (255, 255, 255),
+            (self.width * 0.05 + 270, 0),
+        )
+        self.draw_text(
+            str(self.game.players[0]._stone),
+            15,
+            (255, 255, 255),
+            (self.width * 0.05 + 420, 0),
+        )
 
     def display(self):
         self.run()
@@ -161,3 +189,16 @@ class GameLogic:  # pragma: no cover
                             self.currently_selected.positions,
                             (x, y),
                         )
+        # Handle ressource cheat code
+        if "RESSOURCE" in os.environ:
+            if os.environ["RESSOURCE"] == "GOLD":
+                self.game.players[0]._gold += 10000
+            if os.environ["RESSOURCE"] == "STONE":
+                self.game.players[0]._stone += 10000
+            if os.environ["RESSOURCE"] == "WOOD":
+                self.game.players[0]._wood += 10000
+            if os.environ["RESSOURCE"] == "FOOD":
+                self.game.players[0]._food += 10000
+            os.environ["RESSOURCE"] = ""
+        else:
+            raise InvalidRessourceException

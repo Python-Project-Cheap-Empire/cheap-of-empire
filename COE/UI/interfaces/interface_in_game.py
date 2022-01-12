@@ -5,10 +5,12 @@ from COE.UI.interfaces.interface_menu_options import MenuOptions
 from COE.UI.interfaces.interface_play_menu import MenuPlay
 from COE.map.map import Map
 from COE.camera.camera import Camera
-
+from COE.UI.cheat_code import CheatCode
 import os
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
+
+ressource = ""
 
 
 class GameMenu:
@@ -44,6 +46,7 @@ class GameMenu:
                 visible=0,
             ),
         ]
+        self.cheat_code = CheatCode(self.display_, self.width, self.height)
         self.pause = False
         self.clock = pygame.time.Clock()
 
@@ -56,6 +59,7 @@ class GameMenu:
                 self.display_, (99, 104, 107), (self.ESM[0], self.ESM[1], 600, 500)
             )
             self.display_.blit(s, (0, 0))
+            self.cheat_code.draw()
 
     def event(self, pause):
         for event in pygame.event.get():
@@ -73,6 +77,7 @@ class GameMenu:
                 if event.key == pygame.K_ESCAPE:
                     self.pause = True
                     self.visibility_pause_bp()
+            self.cheat_code.process_event(event)
             self.manager.process_events(event)
         return True
 

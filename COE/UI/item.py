@@ -66,10 +66,10 @@ class Item:
         for cell in self.cells:
             screen.blit(cell["icon"], cell["rect"].topleft)
 
-        pos1 = self.width * 0.05
-        for resource in ["Wood:", "Meat:", "Gold:", "Stone:"]:
-            text(screen, resource, 25, (255, 255, 255), (pos1, 0))
-            pos1 += 100
+        pos1 = self.width * 0.05 - 80
+        for resource in ["Wood:", "Food:", "Gold:", "Stone:"]:
+            text(screen, resource, 25, (255, 255, 255), (pos1, 2))
+            pos1 += 150
 
         pos2 = self.width * 0.5
         text(screen, "Stone Age", 25, (255, 255, 255), (pos2, 0))
