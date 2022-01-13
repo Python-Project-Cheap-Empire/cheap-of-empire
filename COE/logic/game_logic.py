@@ -13,7 +13,6 @@ from COE.logic.Game import Game
 from map.cell import Cell
 from COE.logic.path_finding import find_move
 from COE.contents.static.static import Static
-from COE.UI.interfaces.interface_in_game import ressource
 import os
 import json
 
@@ -99,6 +98,7 @@ class GameLogic:  # pragma: no cover
             self.static.half_width_cells_size,
             self.static.half_height_cells_size,
         )
+
         x, y = int(x), int(y)
         pos = f"{x}, {y}"
         mpos = pygame.mouse.get_pos()
@@ -123,25 +123,25 @@ class GameLogic:  # pragma: no cover
             str(self.game.players[0]._wood),
             15,
             (255, 255, 255),
-            (self.width * 0.05 - 25, 0),
+            (35, 0),
         )
         self.draw_text(
             str(self.game.players[0]._food),
             15,
             (255, 255, 255),
-            (self.width * 0.05 + 120, 0),
+            (185, 0),
         )
         self.draw_text(
             str(self.game.players[0]._gold),
             15,
             (255, 255, 255),
-            (self.width * 0.05 + 270, 0),
+            (335, 0),
         )
         self.draw_text(
             str(self.game.players[0]._stone),
             15,
             (255, 255, 255),
-            (self.width * 0.05 + 420, 0),
+            (485, 0),
         )
 
     def display(self):

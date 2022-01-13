@@ -44,7 +44,7 @@ class CheatCode:
                         self.ressource = "STONE"
                     if self.text == "WOODSTOCK":
                         self.ressource = "WOOD"
-                    # assign to the evironment's value
+                    # assign to the environment's value
                     if self.ressource != "":
                         os.environ["RESSOURCE"] = self.ressource
                         self.ressource = ""
