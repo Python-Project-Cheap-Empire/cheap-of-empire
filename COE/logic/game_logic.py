@@ -45,10 +45,10 @@ class GameLogic:  # pragma: no cover
         self.draw()
 
     def events(self):
+        self.event()
         self.playing = self.menu.event(self.pause)
         self.pause = self.menu.pause
-        self.event()
-
+            
     def update(self):
         if not self.pause:
             self.game.update()
@@ -120,43 +120,52 @@ class GameLogic:  # pragma: no cover
         self.run()
 
     def event(self):
-        if pygame.mouse.get_pressed()[0]:
-            x, y = self.game.map.screen_to_map(
-                pygame.mouse.get_pos(),
-                self.game.camera.x_offset,
-                self.game.camera.y_offset,
-                self.static.half_width_cells_size,
-                self.static.half_height_cells_size,
-            )
-            x, y = int(x), int(y)
-            if self.game.map.cells[x][y].entity:
-                self.currently_selected = self.game.map.cells[x][y].entity
-            else:
-                self.currently_selected = None
+        # print("1123")
+        for event in pygame.event.get():
+            # print("11")
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    print("left clicked")
+                    # if pygame.mouse.get_pressed()[0]:
+                    x, y = self.game.map.screen_to_map(
+                        pygame.mouse.get_pos(),
+                        self.game.camera.x_offset,
+                        self.game.camera.y_offset,
+                        self.static.half_width_cells_size,
+                        self.static.half_height_cells_size,
+                    )
+                    x, y = int(x), int(y)
+                    if self.game.map.cells[x][y].entity:
+                        self.currently_selected = self.game.map.cells[x][y].entity
+                    else:
+                        self.currently_selected = None
 
-        elif pygame.mouse.get_pressed()[2]:
-            if (
-                self.currently_selected
-                and self.currently_selected in self.game.players[0].units
-            ):
-                x, y = self.game.map.screen_to_map(
-                    pygame.mouse.get_pos(),
-                    self.game.camera.x_offset,
-                    self.game.camera.y_offset,
-                    self.static.half_width_cells_size,
-                    self.static.half_height_cells_size,
-                )
-                x, y = int(x), int(y)
-                if (
-                    x >= 0
-                    and x < self.game.map.size.value
-                    and y >= 0
-                    and y < self.game.map.size.value
-                ):
-                    if isinstance(self.currently_selected, Unit):
-                        print("5")
-                        self.currently_selected.current_path = find_move(
-                            self.game.map.dict_binary_cells.get(self.currently_selected.unit_type),
-                            self.currently_selected.positions,
-                            (x, y),
+                elif event.button == 3:
+                    print("right clicked")
+                    if (
+                        self.currently_selected
+                        and self.currently_selected in self.game.players[0].units
+                    ):
+                        x, y = self.game.map.screen_to_map(
+                            pygame.mouse.get_pos(),
+                            self.game.camera.x_offset,
+                            self.game.camera.y_offset,
+                            self.static.half_width_cells_size,
+                            self.static.half_height_cells_size,
                         )
+                        x, y = int(x), int(y)
+                        if (
+                            x >= 0
+                            and x < self.game.map.size.value
+                            and y >= 0
+                            and y < self.game.map.size.value
+                        ):
+                            if isinstance(self.currently_selected, Unit):
+                                print("5")
+                                print(self.game.map.cells[x][y].entity)
+                                print(f"w :{self.game.map.dict_binary_cells.get(self.currently_selected.unit_type)[x][y]}")
+                                self.currently_selected.current_path = find_move(
+                                    self.game.map.dict_binary_cells.get(self.currently_selected.unit_type),
+                                    self.currently_selected.positions,
+                                    (x, y),
+                                )

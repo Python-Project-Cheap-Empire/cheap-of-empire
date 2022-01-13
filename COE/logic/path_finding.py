@@ -14,10 +14,10 @@ flow:
 # (x,y) in x-axis and y-axis to coordinate for matrix
 
 
-def reverse_coordinate(list_of_tuple):
-    if list_of_tuple != []:
-        del list_of_tuple[0]
-    return [tup[::-1] for tup in list_of_tuple]
+# def reverse_coordinate(list_of_tuple):
+#     # if list_of_tuple != []:
+#     #     del list_of_tuple[0]
+#     return [tup[::-1] for tup in list_of_tuple]
 
 
 def find_move(transformed_map, A, B):
@@ -26,13 +26,17 @@ def find_move(transformed_map, A, B):
     end = grid.node(B[0], B[1])
     distance = max(abs(A[1] - B[1]), abs(A[0] - B[0]))
     finder = AStarFinder()
-    path, runs = finder.find_path(start, end, grid)
-    if path :
-        print("7")
-        print(path[1::])
-        return path[1::]
+    print(end.weight)
+    if end.weight == 1:
+        print("12")
+        path, runs = finder.find_path(start, end, grid)
+        grid.cleanup()
+        if path :
+            print("7")
+            print(path)
+            return path[1::]
     p = 1
-    grid.cleanup()
+    
     while distance > 1:
         print("9")
         # if A[0] == B[0] and A[1] == B[1] : # VERT
@@ -47,6 +51,7 @@ def find_move(transformed_map, A, B):
                 path, _ = finder.find_path(start, d, grid)
                 if path :
                     print("12")
+                    print(path)
                     return path[1::]
                 grid.cleanup()
             # First row except above aimed cell
@@ -115,7 +120,7 @@ def find_move(transformed_map, A, B):
         distance -= 1
         p += 1
     print("8")
-    return path
+    return []
 
 
 # class AStar:

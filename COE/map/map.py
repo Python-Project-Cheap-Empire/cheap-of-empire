@@ -107,13 +107,13 @@ class Map:
     def populate_cell(self, x, y, unit : Unit):
         # print("in_populate_cell")
         self.cells[x][y].entity = unit
-        self.dict_binary_cells.get(unit.unit_type)[x][y] = 0
+        self.dict_binary_cells.get(unit.unit_type)[y][x] = 0
 
     def empty_cell(self, x, y):
         # print("in empty_cell")
         # if self.cells[x][y].entity:
         # print("in empty_cell 2")
-        self.dict_binary_cells.get(self.cells[x][y].entity.unit_type)[x][y] = 1
+        self.dict_binary_cells.get(self.cells[x][y].entity.unit_type)[y][x] = 1
         self.cells[x][y].entity = None
 
     def transform_for_unit(self, unit_type):
