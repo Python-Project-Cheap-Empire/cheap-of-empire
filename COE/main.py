@@ -1,6 +1,9 @@
 import os
 import sys
 from COE.contents.unit.enum.unit_types import UnitTypes
+from COE.map.enum.map_sizes import MapSizes
+from COE.map.enum.map_types import MapTypes
+from COE.map.enum.resources_rarity import ResourcesRarity
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(script_dir))
@@ -52,10 +55,9 @@ def main():
                 ),
             ]
             static = Static()
-            gen_map = Map()
-            gen_map.cells = Map.generate_map(players, gen_map.size, gen_map.type, gen_map.resources_rarity)
-            gen_map.dict_binary_cells = {UnitTypes.GROUND:Map.transform_for_unit(gen_map, UnitTypes.GROUND), 
-            UnitTypes.NAVY:Map.transform_for_unit(gen_map, UnitTypes.NAVY)}
+            gen_map = Map(
+                players, MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH
+            )
             gen_map.blit_world()
             game = Game(
                 players=players,

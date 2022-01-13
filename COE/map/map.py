@@ -1,3 +1,4 @@
+from COE.contents.entity import Entity
 from COE.contents.unit.unit import Unit
 from COE.logic.Player import Player
 from COE.map.cell import Cell
@@ -18,26 +19,45 @@ from pygame.locals import *
 
 
 class Map:
-    def __init__(self, *args):
+    def __init__(self, players, *args):
         try:
             if Map.are_args_fine(args):
                 self.size = Map.get_size(args)
                 self.type = Map.get_type(args)
                 self.resources_rarity = Map.get_resources_rarity(args)
-                self.cells = None
-                self.dict_binary_cells = None
+                self.players = players
+                self.cells = self.generate_map(
+                    players, self.size, self.type, self.resources_rarity
+                )
+                self.dict_binary_cells = {
+                    UnitTypes.GROUND: self.transform_for_unit(UnitTypes.GROUND),
+                    UnitTypes.NAVY: self.transform_for_unit(UnitTypes.NAVY),
+                }
                 self.grass_tiles = None
         except Exception as e:
             print(f"Exception handled : {e}")
             self.size = MapSizes.TINY
             self.type = MapTypes.CONTINENTAL
             self.resources_rarity = ResourcesRarity.HIGH
-            self.cells = None
-            self.dict_binary_cells = None
+            self.players = [
+                Player("Player 1", True, [], [], None, None),
+                Player("Player 2", False, [], [], None, None),
+            ]
+            self.cells = self.generate_map(
+                self.players, self.size, self.type, self.resources_rarity
+            )
+            self.dict_binary_cells = {
+                UnitTypes.GROUND: self.transform_for_unit(UnitTypes.GROUND),
+                UnitTypes.NAVY: self.transform_for_unit(UnitTypes.NAVY),
+            }
             self.grass_tiles = None
-            print("Map was generated using default value : ")
-            print(f"{self.size.name} size, {self.type.name} and {self.resources_rarity.name} resources rarity")
- 
+            print(
+                f"""Map was generated using default value : 
+                {self.size.name} size, 
+                {self.type.name},
+                {self.resources_rarity.name} resources rarity"""
+            )
+
     @staticmethod
     def map_to_screen(
         map_coordinates,
@@ -79,9 +99,6 @@ class Map:
         ) / 2
         return x, y
 
-    def change_cell(self, A, B, cell_type):
-        self.cells[A][B] = Cell(cell_type, [])
-
     def draw_rect_around(
         self, window, x, y, camera, half_width_cells_size, half_height_cells_size
     ):
@@ -97,42 +114,73 @@ class Map:
         pygame.draw.polygon(
             window,
             (255, 255, 255),
-            [(_x + half_width_cells_size, _y), 
-            (_x + width_cells_size, _y + half_height_cells_size), 
-            (_x + half_width_cells_size, _y + height_cells_size), 
-            (_x, _y + half_height_cells_size)],
+            [
+                (_x + half_width_cells_size, _y),
+                (_x + width_cells_size, _y + half_height_cells_size),
+                (_x + half_width_cells_size, _y + height_cells_size),
+                (_x, _y + half_height_cells_size),
+            ],
             1,
         )
 
-    def populate_cell(self, x, y, unit : Unit):
-        # print("in_populate_cell")
-        self.cells[x][y].entity = unit
-        self.dict_binary_cells.get(unit.unit_type)[y][x] = 0
+    def update_cell(self, x, y):
+        cell_type = self.cells[x][y].cell_type
+        if cell_type == CellTypes.GRASS:
+            if self.cells[x][y].entity:
+                self.dict_binary_cells.get(UnitTypes.GROUND)[y][x] = 0
+            else:
+                self.dict_binary_cells.get(UnitTypes.GROUND)[y][x] = 1
+            self.dict_binary_cells.get(UnitTypes.NAVY)[y][x] = 0
+
+        elif cell_type == CellTypes.WATER:
+            if self.cells[x][y].entity:
+                self.dict_binary_cells.get(UnitTypes.NAVY)[y][x] = 0
+            else:
+                self.dict_binary_cells.get(UnitTypes.NAVY)[y][x] = 1
+            self.dict_binary_cells.get(UnitTypes.GROUND)[y][x] = 0
+
+    def change_cell(self, x, y, cell_type):
+        self.cells[x][y] = Cell(cell_type, None)
+        self.update_cell(x, y)
+
+    def populate_cell(self, x, y, entity: Entity):
+        if entity:
+            self.cells[x][y].entity = entity
+            for k in self.dict_binary_cells:
+                self.dict_binary_cells.get(k)[y][x] = 0
 
     def empty_cell(self, x, y):
-        # print("in empty_cell")
-        # if self.cells[x][y].entity:
-        # print("in empty_cell 2")
-        self.dict_binary_cells.get(self.cells[x][y].entity.unit_type)[y][x] = 1
-        self.cells[x][y].entity = None
+        entity_on_cell = self.cells[x][y].entity
+        cell_type = self.cells[x][y].cell_type
+        if isinstance(entity_on_cell, Unit):
+            self.dict_binary_cells.get(entity_on_cell.unit_type)[y][x] = 1
+            self.cells[x][y].entity = None
+        elif isinstance(entity_on_cell, Entity):
+            if cell_type == CellTypes.GRASS:
+                self.dict_binary_cells.get(UnitTypes.GROUND)[y][x] = 1
+                self.cells[x][y].entity = None
+            elif cell_type == CellTypes.WATER:
+                self.dict_binary_cells.get(UnitTypes.WATER)[y][x] = 1
+                self.cells[x][y].entity = None
 
     def transform_for_unit(self, unit_type):
-        trans_list = []
-        for cell_list in self.cells:
-            trans_list.append([])
-            for cell in cell_list:
-                if cell.entity:
-                    trans_list[-1].append(0)
-                elif cell.cell_type.name == CellTypes.WATER.name:
+        trans_list = [
+            [0 for _ in range(self.size.value)] for _ in range(self.size.value)
+        ]
+        for x in range(self.size.value):
+            for y in range(self.size.value):
+                if self.cells[x][y].entity:
+                    trans_list[y][x] = 0
+                elif self.cells[x][y].cell_type.name == CellTypes.WATER.name:
                     if unit_type == UnitTypes.NAVY:
-                        trans_list[-1].append(1)
+                        trans_list[y][x] = 1
                     else:
-                        trans_list[-1].append(0)
-                elif cell.cell_type.name == CellTypes.GRASS.name:
+                        trans_list[y][x] = 0
+                elif self.cells[x][y].cell_type.name == CellTypes.GRASS.name:
                     if unit_type == UnitTypes.GROUND:
-                        trans_list[-1].append(1)
+                        trans_list[y][x] = 1
                     else:
-                        trans_list[-1].append(0)
+                        trans_list[y][x] = 0
         return trans_list
 
     def draw_map(self, window, camera):  # pragma: no cover
@@ -206,7 +254,7 @@ class Map:
 
     @staticmethod
     def generate_map(
-        players : list[Player],
+        players: list,
         map_size: MapSizes = MapSizes.TINY,
         map_type: MapTypes = MapTypes.CONTINENTAL,
         resources_rarity: ResourcesRarity = ResourcesRarity.HIGH,
@@ -217,10 +265,10 @@ class Map:
         ]
 
         # res[0][0].entity = Villager((0, 0), Player("", [], [], 0, 0, 0))
-        # res[2][4].entity = Tree((2, 4))
-        for j in range(0, map_size.value, 2):
-            for i in range(0, map_size.value, 2):
-                res[i][j].entity = Tree((i, j))
+        # # res[2][4].entity = Tree((2, 4))
+        # for j in range(0, map_size.value, 2):
+        #     for i in range(0, map_size.value, 2):
+        #         res[i][j].entity = Tree((i, j))
 
         if players:
             for i in range(3):
@@ -228,11 +276,9 @@ class Map:
                 players[0].units.append(v0)
                 res[2 + i][2 + i].entity = v0
                 if len(players) > 1:
-                    v1 = Villager((10 + i, 10 + i), players[1])
+                    v1 = Villager((10 + i, 10 + i + 1), players[1])
                     players[1].units.append(v1)
-                    res[10 + i][10 + i].entity = v1
-
-
+                    res[10 + i][10 + i + 1].entity = v1
 
         return res
 
