@@ -1,7 +1,11 @@
+from COE.contents.entity import Entity
+from COE.contents.unit.unit import Unit
 from COE.contents.unit.villager import Villager
 from COE.logic.Player import Player
+from COE.logic.path_finding import find_move
 from COE.map.map import Map
 from COE.camera.camera import Camera
+import pygame
 
 
 class Game:
@@ -23,6 +27,7 @@ class Game:
         self.timer = timer
         self.speed = speed
         self.camera = camera
+        self.currently_selected: Entity = None
         self.set_initial_ressources()
 
     def set_speed(self, new_speed):
@@ -66,3 +71,46 @@ class Game:
                     next_cell_in_path.entity = unit
                     unit.positions = unit_current_path[0][0], unit_current_path[0][1]
                     unit_current_path.pop(0)
+
+    def event(self, static):
+        if pygame.mouse.get_pressed()[0]:
+            x, y = self.map.screen_to_map(
+                pygame.mouse.get_pos(),
+                self.camera.x_offset,
+                self.camera.y_offset,
+                static.half_width_cells_size,
+                static.half_height_cells_size,
+            )
+            x, y = int(x), int(y)
+            if self.map.cells[x][y].entity:
+                self.currently_selected = self.map.cells[x][y].entity
+            else:
+                self.currently_selected = None
+
+        elif pygame.mouse.get_pressed()[2]:
+            if (
+                self.currently_selected
+                and self.currently_selected in self.players[0].units
+            ):
+                x, y = self.map.screen_to_map(
+                    pygame.mouse.get_pos(),
+                    self.camera.x_offset,
+                    self.camera.y_offset,
+                    static.half_width_cells_size,
+                    static.half_height_cells_size,
+                )
+                x, y = int(x), int(y)
+                if (
+                    x >= 0
+                    and x < self.map.size.value
+                    and y >= 0
+                    and y < self.map.size.value
+                ):
+                    if isinstance(self.currently_selected, Unit):
+                        self.currently_selected.current_path = find_move(
+                            self.map.transform_for_unit(
+                                self.currently_selected.unit_type
+                            ),
+                            self.currently_selected.positions,
+                            (x, y),
+                        )

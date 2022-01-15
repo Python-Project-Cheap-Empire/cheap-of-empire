@@ -74,14 +74,14 @@ class Item:
                 pygame.image.load("COE/assets/resourceicons_18.png"), 32, 20
             ),
             self.scale_image(
-                pygame.image.load("COE/assets/resourceicons_15.png"), 32, 20
-            ),
-            self.scale_image(
                 pygame.image.load("COE/assets/resourceicons_06.png"), 32, 20
             ),
+            self.scale_image(
+                pygame.image.load("COE/assets/resourceicons_15.png"), 32, 20
+            ),
         )
-        screen.blit(food_icon, (0, 0))
-        screen.blit(wood_icon, (150, 0))
+        screen.blit(wood_icon, (0, 0))
+        screen.blit(food_icon, (150, 0))
         screen.blit(gold_icon, (300, 0))
         screen.blit(stone_icon, (450, 0))
 
