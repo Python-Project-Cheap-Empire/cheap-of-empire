@@ -19,44 +19,10 @@ from pygame.locals import *
 
 
 class Map:
-    def __init__(self, players, *args):
-        try:
-            if Map.are_args_fine(args):
-                self.size = Map.get_size(args)
-                self.type = Map.get_type(args)
-                self.resources_rarity = Map.get_resources_rarity(args)
-                self.players = players
-                self.cells = self.generate_map(
-                    players, self.size, self.type, self.resources_rarity
-                )
-                self.dict_binary_cells = {
-                    UnitTypes.GROUND: self.transform_for_unit(UnitTypes.GROUND),
-                    UnitTypes.NAVY: self.transform_for_unit(UnitTypes.NAVY),
-                }
-                self.grass_tiles = None
-        except Exception as e:
-            print(f"Exception handled : {e}")
-            self.size = MapSizes.TINY
-            self.type = MapTypes.CONTINENTAL
-            self.resources_rarity = ResourcesRarity.HIGH
-            self.players = [
-                Player("Player 1", True, [], [], None, None),
-                Player("Player 2", False, [], [], None, None),
-            ]
-            self.cells = self.generate_map(
-                self.players, self.size, self.type, self.resources_rarity
-            )
-            self.dict_binary_cells = {
-                UnitTypes.GROUND: self.transform_for_unit(UnitTypes.GROUND),
-                UnitTypes.NAVY: self.transform_for_unit(UnitTypes.NAVY),
-            }
-            self.grass_tiles = None
-            print(
-                f"""Map was generated using default value : 
-                {self.size.name} size, 
-                {self.type.name},
-                {self.resources_rarity.name} resources rarity"""
-            )
+
+    def __init__(self):
+        self.grass_tiles = None
+
 
     @staticmethod
     def map_to_screen(
@@ -335,3 +301,8 @@ class Map:
                 and Map.is_resources_rarity_known(resources_rarity)
             )
         return False
+
+
+class MapGenerator:
+    def __init__(self):
+        pass
