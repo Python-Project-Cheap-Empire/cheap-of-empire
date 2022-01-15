@@ -1,5 +1,4 @@
 from .food import Food
-from COE.contents.unit.unit import Unit
 
 
 class CuttableAnimal(Food):

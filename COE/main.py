@@ -19,10 +19,9 @@ from COE.contents.static.static import Static
 def main():
     window = Window()
     running = True
-    playing = False
     while running:
         window.show()
-        (running, playing) = window.get_loop()
+        running, _ = window.get_loop()
         if window.playing:
             players = [
                 Player(
@@ -61,7 +60,6 @@ def main():
                 camera=Camera(window),
             )
             game_logic = GameLogic(window.display, game, static)
-            playing = True
             while game_logic.playing:
                 game_logic.run()
             window.playing = False
