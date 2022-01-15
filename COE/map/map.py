@@ -16,25 +16,9 @@ from pygame.locals import *
 
 
 class Map:
-    def __init__(self, *args):
-        try:
-            if Map.are_args_fine(args):
-                self.size = Map.get_size(args)
-                self.type = Map.get_type(args)
-                self.resources_rarity = Map.get_resources_rarity(args)
-                self.cells = Map.generate_map(
-                    self.size, self.type, self.resources_rarity
-                )
-                self.grass_tiles = None
-        except Exception as e:
-            print(f"Exception handled : {e}")
-            self.size = MapSizes.TINY
-            self.type = MapTypes.CONTINENTAL
-            self.resources_rarity = ResourcesRarity.HIGH
-            self.cells = Map.generate_map(self.size, self.type, self.resources_rarity)
-            self.grass_tiles = None
-            print("Map was generated using default value : ")
-            print("Tiny size, continental and high resources rarity")
+    def __init__(self):
+        self.grass_tiles = None
+
 
     @staticmethod
     def map_to_screen(
@@ -253,3 +237,8 @@ class Map:
                 and Map.is_resources_rarity_known(resources_rarity)
             )
         return False
+
+
+class MapGenerator:
+    def __init__(self):
+        pass
