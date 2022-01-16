@@ -20,9 +20,12 @@ from pygame.locals import *
 
 class Map:
 
-    def __init__(self):
+    def __init__(self, cells, size, type_map, resources_rarity):
         self.grass_tiles = None
-
+        self.cells = cells
+        self.size = size
+        self.type = type_map
+        self.resources_rarity = resources_rarity
 
     @staticmethod
     def map_to_screen(
@@ -221,88 +224,3 @@ class Map:
     def update(self, camera):
         pass
 
-    @staticmethod
-    def generate_map(
-        players: list,
-        map_size: MapSizes = MapSizes.TINY,
-        map_type: MapTypes = MapTypes.CONTINENTAL,
-        resources_rarity: ResourcesRarity = ResourcesRarity.HIGH,
-    ):  # pragma: no cover
-        res = [
-            [Cell(CellTypes.GRASS, None) for i in range(map_size.value)]
-            for j in range(map_size.value)
-        ]
-
-        # res[0][0].entity = Villager((0, 0), Player("", [], [], 0, 0, 0))
-        # # res[2][4].entity = Tree((2, 4))
-        # for j in range(0, map_size.value, 2):
-        #     for i in range(0, map_size.value, 2):
-        #         res[i][j].entity = Tree((i, j))
-
-        if players:
-            for i in range(3):
-                v0 = Villager((2 + i, 2 + i), players[0])
-                players[0].units.append(v0)
-                res[2 + i][2 + i].entity = v0
-                if len(players) > 1:
-                    v1 = Villager((10 + i, 10 + i + 1), players[1])
-                    players[1].units.append(v1)
-                    res[10 + i][10 + i + 1].entity = v1
-
-        return res
-
-    @staticmethod
-    def is_type_known(map_type: MapTypes):
-        if map_type in [mt for mt in MapTypes]:
-            return True
-        raise NotStandardizedMetricException("the map type is unknown")
-
-    @staticmethod
-    def is_resources_rarity_known(resources_rarity: ResourcesRarity):
-        if resources_rarity in [rr for rr in ResourcesRarity]:
-            return True
-        raise NotStandardizedMetricException("the resources rarity is unknown")
-
-    @staticmethod
-    def is_map_size_known(map_size: MapSizes):
-        if map_size == 0:
-            raise ZeroMapSizeException("the map can't be of size 0")
-        if map_size in [size for size in MapSizes]:
-            return True
-        raise NotStandardizedMetricException("the map size is unknown")
-
-    @staticmethod
-    def are_args_enough(args):
-        if len(args) >= 3:
-            return True
-        raise MapArgumentsException("You need at least 3 arguments to create a map")
-
-    @staticmethod
-    def get_size(args):
-        return args[0]
-
-    @staticmethod
-    def get_type(args):
-        return args[1]
-
-    @staticmethod
-    def get_resources_rarity(args):
-        return args[2]
-
-    @staticmethod
-    def are_args_fine(args):
-        if Map.are_args_enough(args):
-            map_size = Map.get_size(args)
-            map_type = Map.get_type(args)
-            resources_rarity = Map.get_resources_rarity(args)
-            return (
-                Map.is_map_size_known(map_size)
-                and Map.is_type_known(map_type)
-                and Map.is_resources_rarity_known(resources_rarity)
-            )
-        return False
-
-
-class MapGenerator:
-    def __init__(self):
-        pass

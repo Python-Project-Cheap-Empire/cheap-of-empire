@@ -6,10 +6,15 @@ from COE.map.enum.map_types import MapTypes
 from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.map.enum.cell_types import CellTypes
 from COE.contents.unit.enum.unit_types import UnitTypes
+from COE.map.MapGenerator import MapGenerator
 
 
 def test_path_finding():
-    map_1 = Map([], MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH)
+
+
+    generator = MapGenerator()
+    map_1 = generator.generate()
+
     # for testing only
     map_1.change_cell(0, 3, CellTypes.WATER)
     map_1.change_cell(1, 1, CellTypes.WATER)

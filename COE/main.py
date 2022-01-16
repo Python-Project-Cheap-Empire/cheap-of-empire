@@ -12,6 +12,7 @@ from UI.window_ui import Window
 from COE.logic.Game import Game
 from COE.logic.game_logic import GameLogic
 from UI.interfaces.interface_play_menu import MenuPlay
+from map.MapGenerator import MapGenerator
 
 # pour generer une map
 from logic.Player import Player
@@ -54,9 +55,8 @@ def main():
                 ),
             ]
             static = Static()
-            gen_map = Map(
-                players, MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH
-            )
+            generator = MapGenerator()
+            gen_map = generator.generate()
             gen_map.blit_world()
             game = Game(
                 players=players,
