@@ -77,18 +77,22 @@ def test_path_finding():
     map_1.change_cell(3, 1, CellTypes.GRASS)
     map_1.change_cell(3, 2, CellTypes.GRASS)
     map_1.change_cell(3, 3, CellTypes.GRASS)
+    map_1.change_cell(4, 1, CellTypes.GRASS)
+    map_1.change_cell(4, 2, CellTypes.GRASS)
+    map_1.change_cell(4, 3, CellTypes.GRASS)
 
-    map_1.populate_cell(1, 1, Tree((1, 1)))
-    map_1.populate_cell(1, 2, Tree((1, 2)))
-    map_1.populate_cell(1, 3, Tree((1, 3)))
     map_1.populate_cell(2, 1, Tree((2, 1)))
     map_1.populate_cell(2, 2, Tree((2, 2)))
     map_1.populate_cell(2, 3, Tree((2, 3)))
     map_1.populate_cell(3, 1, Tree((3, 1)))
     map_1.populate_cell(3, 2, Tree((3, 2)))
     map_1.populate_cell(3, 3, Tree((3, 3)))
+    map_1.populate_cell(4, 1, Tree((4, 1)))
+    map_1.populate_cell(4, 2, Tree((4, 2)))
+    map_1.populate_cell(4, 3, Tree((4, 3)))
 
-    assert find_move(map_1.dict_binary_cells.get(UnitTypes.GROUND), (0, 0), (2, 2)) == [
+    assert find_move(map_1.dict_binary_cells.get(UnitTypes.GROUND), (0, 0), (3, 2)) == [
         (1, 0),
         (2, 0),
+        (3, 0),
     ]

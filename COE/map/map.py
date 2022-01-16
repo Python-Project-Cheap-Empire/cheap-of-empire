@@ -183,6 +183,9 @@ class Map:
                         trans_list[y][x] = 0
         return trans_list
 
+    def event(self, game_logic):
+        pass
+
     def draw_map(self, window, camera):  # pragma: no cover
         """Draw a map on the screen using the cells"""
         window.blit(

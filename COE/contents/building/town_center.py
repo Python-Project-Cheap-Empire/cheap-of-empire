@@ -1,4 +1,3 @@
-from COE.contents.entity import Entity
 from .storage_building import StorageBuilding
 from .military_building import MilitaryBuilding
 

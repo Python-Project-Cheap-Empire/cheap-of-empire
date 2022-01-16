@@ -1,4 +1,3 @@
-from typing import List
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 import operator
@@ -134,7 +133,7 @@ def find_move(transformed_map, A, B):
             return path[1::]
         grid.cleanup()
     p = 1
-    while distance > 0:
+    while distance > 1:
         if A[0] == B[0] and A[1] < B[1]:  # BORDEAUX
             path = search_available_path("N", p, grid, end, finder, start)
 
