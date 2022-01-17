@@ -36,14 +36,17 @@ def test_save_and_load():
     sl1 = GameSaveLoad()
     save_name = "pytest_save"
 
-    player = Player("Toto", True, [], [], None, None)
-    villager = Villager((0, 0), player)
+    players = [
+        Player("Toto", True, [], [], None, None),
+        Player("P2", False, [], [], None, None),
+    ]
+    villager = Villager((0, 0), players[0])
     storage = TownCenter((54, 78), True)
-    player.buildings.append(storage)
-    player.units.append(villager)
-    map = Map()
+    players[0].buildings.append(storage)
+    players[0].units.append(villager)
+    map = Map(players=players)
 
-    game_save = Game([player], map, 1.0, 1.0, Camera(None))
+    game_save = Game(players, map, 1.0, 1.0, Camera(None))
 
     try:
         sl1.save_game(game_save, save_name)

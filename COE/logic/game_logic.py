@@ -1,3 +1,5 @@
+from COE.contents.resources.tree import Tree
+from COE.contents.unit.unit import Unit
 from COE.UI.cheat_code import CheatCode
 import pygame
 from pygame.locals import *
@@ -11,7 +13,7 @@ from COE.logic.path_finding import find_move
 from COE.contents.static.static import Static
 
 
-class GameLogic:  # pragma: no cover
+class GameLogic:
     def __init__(self, display_, game: Game, static: Static):
         self.display_ = display_
         self.clock = pygame.time.Clock()
