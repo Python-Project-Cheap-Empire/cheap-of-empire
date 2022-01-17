@@ -66,10 +66,24 @@ class Item:
         for cell in self.cells:
             screen.blit(cell["icon"], cell["rect"].topleft)
 
-        pos1 = self.width * 0.05
-        for resource in ["Wood:", "Meat:", "Gold:", "Stone:"]:
-            text(screen, resource, 25, (255, 255, 255), (pos1, 0))
-            pos1 += 100
+        food_icon, wood_icon, gold_icon, stone_icon = (
+            self.scale_image(
+                pygame.image.load("COE/assets/resourceicons_03.png"), 32, 20
+            ),
+            self.scale_image(
+                pygame.image.load("COE/assets/resourceicons_18.png"), 32, 20
+            ),
+            self.scale_image(
+                pygame.image.load("COE/assets/resourceicons_06.png"), 32, 20
+            ),
+            self.scale_image(
+                pygame.image.load("COE/assets/resourceicons_15.png"), 32, 20
+            ),
+        )
+        screen.blit(wood_icon, (0, 0))
+        screen.blit(food_icon, (150, 0))
+        screen.blit(gold_icon, (300, 0))
+        screen.blit(stone_icon, (450, 0))
 
         pos2 = self.width * 0.5
         text(screen, "Stone Age", 25, (255, 255, 255), (pos2, 0))

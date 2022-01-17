@@ -57,14 +57,14 @@ def test_are_args_fine():
 
 
 def test_successful_init_test():
-    m = Map(MapSizes.MEDIUM, MapTypes.MEDITERRANEAN, ResourcesRarity.LOW)
+    m = Map([], MapSizes.MEDIUM, MapTypes.MEDITERRANEAN, ResourcesRarity.LOW)
     assert m.size == MapSizes.MEDIUM
     assert m.type == MapTypes.MEDITERRANEAN
     assert m.resources_rarity == ResourcesRarity.LOW
 
 
 def test_failed_init_test():
-    m = Map(1, 2, 3)
+    m = Map([], 1, 2, 3)
     assert m.size == MapSizes.TINY
     assert m.type == MapTypes.CONTINENTAL
     assert m.resources_rarity == ResourcesRarity.HIGH

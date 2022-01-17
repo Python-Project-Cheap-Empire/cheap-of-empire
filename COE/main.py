@@ -1,5 +1,9 @@
 import os
 import sys
+from COE.contents.unit.enum.unit_types import UnitTypes
+from COE.map.enum.map_sizes import MapSizes
+from COE.map.enum.map_types import MapTypes
+from COE.map.enum.resources_rarity import ResourcesRarity
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(script_dir))
@@ -19,10 +23,9 @@ from COE.contents.static.static import Static
 def main():
     window = Window()
     running = True
-    playing = False
     while running:
         window.show()
-        (running, playing) = window.get_loop()
+        running, _ = window.get_loop()
         if window.playing:
             players = [
                 Player(
@@ -51,7 +54,9 @@ def main():
                 ),
             ]
             static = Static()
-            gen_map = Map()
+            gen_map = Map(
+                players, MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH
+            )
             gen_map.blit_world()
             game = Game(
                 players=players,
@@ -61,7 +66,6 @@ def main():
                 camera=Camera(window),
             )
             game_logic = GameLogic(window.display, game, static)
-            playing = True
             while game_logic.playing:
                 game_logic.run()
             window.playing = False

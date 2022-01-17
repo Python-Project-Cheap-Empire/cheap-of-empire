@@ -14,7 +14,7 @@ class Resource:
         self.amount = amount
 
     def increase_amount(self, amount):
-        if self.amount > 9999:
+        if self.amount + amount > 9999:
             raise MaximumResourceException
         self.amount += amount
 
