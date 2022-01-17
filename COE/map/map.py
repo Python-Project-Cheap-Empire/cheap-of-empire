@@ -19,14 +19,17 @@ from pygame.locals import *
 
 
 class Map:
-
-    def __init__(self, cells, size, type_map, resources_rarity):
+    def __init__(self, cells, players, size, type_map, resources_rarity):
         self.grass_tiles = None
         self.cells = cells
         self.size = size
         self.type = type_map
         self.resources_rarity = resources_rarity
-
+        self.dict_binary_cells = {
+            UnitTypes.GROUND: self.transform_for_unit(UnitTypes.GROUND),
+            UnitTypes.NAVY: self.transform_for_unit(UnitTypes.NAVY),
+        }
+        self.players = players
 
     @staticmethod
     def map_to_screen(
@@ -224,5 +227,3 @@ class Map:
 
     def update(self, camera):
         pass
-
-

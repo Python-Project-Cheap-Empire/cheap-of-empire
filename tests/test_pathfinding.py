@@ -11,8 +11,7 @@ from COE.map.MapGenerator import MapGenerator
 
 def test_path_finding():
 
-
-    generator = MapGenerator()
+    generator = MapGenerator(players=None)
     map_1 = generator.generate()
 
     # for testing only

@@ -55,7 +55,7 @@ def main():
                 ),
             ]
             static = Static()
-            generator = MapGenerator()
+            generator = MapGenerator(players=players)
             gen_map = generator.generate()
             gen_map.blit_world()
             game = Game(

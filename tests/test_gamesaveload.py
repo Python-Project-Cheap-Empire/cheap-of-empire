@@ -35,7 +35,7 @@ def remove_file_for_test():
 
 def test_save_and_load():
     sl1 = GameSaveLoad()
-    map_gen = MapGenerator()
+    map_gen = MapGenerator(players=None)
     save_name = "pytest_save"
 
     players = [
@@ -47,7 +47,6 @@ def test_save_and_load():
     players[0].buildings.append(storage)
     players[0].units.append(villager)
     map = map_gen.generate()
-
 
     game_save = Game(players, map, 1.0, 1.0, Camera(None))
 

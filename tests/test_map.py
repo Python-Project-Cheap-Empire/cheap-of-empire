@@ -9,9 +9,8 @@ import pytest
 
 
 def test_map_generation_default():
-    generator = MapGenerator()
+    generator = MapGenerator(players=None)
     map_gen = generator.generate()
     assert map_gen.size == MapSizes.TINY
     assert map_gen.type == MapTypes.CONTINENTAL
     assert map_gen.resources_rarity == ResourcesRarity.HIGH
-
