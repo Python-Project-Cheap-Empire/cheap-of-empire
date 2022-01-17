@@ -27,6 +27,7 @@ class Map:
         self.type = type_map
         self.resources_rarity = resources_rarity
 
+
     @staticmethod
     def map_to_screen(
         map_coordinates,
@@ -223,4 +224,5 @@ class Map:
 
     def update(self, camera):
         pass
+
 

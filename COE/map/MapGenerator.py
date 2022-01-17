@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from perlin_noise import PerlinNoise
 import numpy as np
 
@@ -16,6 +17,16 @@ class MapGenerator:
         map_type=MapTypes.CONTINENTAL,
         resources_rarity=ResourcesRarity.HIGH,
     ):
+=======
+from .enum.map_sizes import MapSizes
+from .enum.map_types import MapTypes
+from .enum.resources_rarity import ResourcesRarity
+from cell import Cell
+from map import Map
+
+
+class MapGenerator:
+    def __init__(self, map_size=MapSizes.TINY, map_type=MapTypes.CONTINENTAL, resources_rarity=ResourcesRarity.HIGH):
         self.size = map_size
         self.type = map_type
         self.resources_rarity = resources_rarity
@@ -50,3 +61,4 @@ class MapGenerator:
                 map_noise[x][y] = self._biome(map_noise[x][y])
 
         return map_noise
+
