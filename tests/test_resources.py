@@ -98,7 +98,7 @@ def test_deer():
     assert bambi.height == 1
     assert bambi.line_of_sight == 0
     assert bambi.speed == 1.5
-
+    assert bambi.pierce_attack == 0
     assert bambi.state is None
     bambi.death()
     assert type(bambi.state) is CuttableAnimal
