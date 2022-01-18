@@ -62,7 +62,15 @@ class Game:
                     )
                     unit.positions = unit.current_path[0][0], unit.current_path[0][1]
                     unit.current_path.pop(0)
-
+            """
+            attack an enemy if is_attack and check_in_range
+            """
+            if unit.attacked_entity is None or unit.attacked_entity.die():
+                unit.attacked_entity = None
+                unit.is_attacking = False
+            elif unit.is_attacking and unit.check_in_range(unit.attacked_entity):
+                unit.attack()
+                print("mode attack is on")
         for unit in self.players[1].units:
             unit.current_path = unit.current_path
             if unit.current_path:
@@ -82,6 +90,9 @@ class Game:
                     )
                     unit.positions = unit.current_path[0][0], unit.current_path[0][1]
                     unit.current_path.pop(0)
+            if unit.die():
+                self.map.empty_cell(unit.positions[0], unit.positions[1])
+                self.players[1].units.remove(unit)
 
     def event(self, static, event):  # pragma: no cover
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -110,10 +121,39 @@ class Game:
                         and y >= 0
                         and y < self.map.size.value
                     ):
-                        self.currently_selected.current_path = find_move(
-                            self.map.dict_binary_cells.get(
-                                self.currently_selected.unit_type
-                            ),
-                            self.currently_selected.positions,
-                            (x, y),
-                        )
+                        if (
+                            self.map.cells[x][y].entity in self.players[1].units
+                            or self.map.cells[x][y].entity in self.players[1].buildings
+                        ):
+                            if self.currently_selected.check_in_range(
+                                self.map.cells[x][y].entity
+                            ):
+                                # self.currently_selected.attack(self.currently_selected.attacked_entity)
+                                self.currently_selected.attack()
+                                print(
+                                    "attack unit at pos{}".format(self.map.cells[x][y])
+                                )
+                            else:
+                                self.currently_selected.current_path = find_move(
+                                    self.map.dict_binary_cells.get(
+                                        self.currently_selected.unit_type
+                                    ),
+                                    self.currently_selected.positions,
+                                    (x, y),
+                                )
+                            self.currently_selected.attacked_entity = self.map.cells[x][
+                                y
+                            ].entity
+                            self.currently_selected.is_attacking = True
+                        else:
+                            self.currently_selected.current_path = find_move(
+                                self.map.dict_binary_cells.get(
+                                    self.currently_selected.unit_type
+                                ),
+                                self.currently_selected.positions,
+                                (x, y),
+                            )
+                            if self.currently_selected.is_attacking:
+                                self.currently_selected.is_attacking = False
+                                self.currently_selected.attacked_entity = None
+                                print("Turnoff attack")

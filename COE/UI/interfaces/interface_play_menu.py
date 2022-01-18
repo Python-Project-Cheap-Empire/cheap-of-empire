@@ -51,6 +51,8 @@ class MenuPlay:
 
         # recuperation des dossier de sauvegarde
         self.save_url = script_dir + "/../../../save/"
+        if not os.path.exists(self.save_url):
+            os.makedirs(self.save_url)
         self.saves = os.listdir(self.save_url)
         self.nb_saves = 0
         self.load_save_bp = []
