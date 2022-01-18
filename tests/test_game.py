@@ -1,5 +1,5 @@
-from COE.logic import Game
-from COE.camera import Camera
+from COE.logic.Game import Game
+from COE.camera.camera import Camera
 
 
 def test_setter():

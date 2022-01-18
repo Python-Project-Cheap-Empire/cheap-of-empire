@@ -36,13 +36,12 @@ def test_save_and_load():
     sl1 = GameSaveLoad()
     save_name = "pytest_save"
 
-    player = Player("Toto", [], [], None, None)
+    player = Player("Toto", True, [], [], None, None)
     villager = Villager((0, 0), player)
     storage = TownCenter((54, 78), True)
     player.buildings.append(storage)
     player.units.append(villager)
-    map_game = Map()
-
+    map = Map()
     game_save = Game([player], map_game, 1.0, 1.0, Camera(1, 1), "new")
 
     try:
@@ -57,8 +56,8 @@ def test_save_and_load():
     assert game_save.speed == game_load.speed
     assert game_save.players[0].username == game_load.players[0].username
 
-    save_cells = game_save.map_game.cells
-    load_cells = game_load.map_game.cells
+    save_cells = game_save.map.cells
+    load_cells = game_load.map.cells
     assert all(
         save_cells[i][j].cell_type == load_cells[i][j].cell_type
         for i in range(len(save_cells))

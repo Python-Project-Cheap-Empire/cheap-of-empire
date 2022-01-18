@@ -5,15 +5,15 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(script_dir))
 
 from UI.window_ui import Window
-from logic import Game
-from UI.interfaces.game_render import GameRender
+from COE.logic.Game import Game
+from COE.logic.game_logic import GameLogic
 from UI.interfaces.interface_play_menu import MenuPlay
-
 
 # pour generer une map
 from logic.Player import Player
 from map.map import Map
 from camera.camera import Camera
+from COE.contents.static.static import Static
 
 from logic.create_game import CreateGame
 

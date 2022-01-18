@@ -3,6 +3,7 @@ from COE.contents.entity import Entity
 from .resource_type import ResourceType
 
 
-class Food(Resource, Entity):
+class Gold(Resource, Entity):
     def __init__(self, **kwargs):
-        super().__init__(r_type=ResourceType.FOOD, **kwargs)
+        Resource.__init__(self, r_type=ResourceType.GOLD, **kwargs)
+        Entity.__init__(self, **kwargs)

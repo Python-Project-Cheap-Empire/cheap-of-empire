@@ -8,6 +8,7 @@ class Player:
     def __init__(
         self,
         username: str,
+        is_human: bool,
         units: list,
         buildings: list,
         age,
@@ -31,6 +32,7 @@ class Player:
         :param civilization: Civilization
         """
         self._username = username
+        self._is_human = is_human
         self._gold = gold_amount
         self._wood = wood_amount
         self._stone = stone_amount

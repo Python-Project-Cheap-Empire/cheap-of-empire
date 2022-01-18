@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class MapSizes(Enum):
+    VTINY = 60
     TINY = 120
     SMALL = 144
     MEDIUM = 168

@@ -44,6 +44,7 @@ class CreateGame:
                 wood_amount=500,
                 stone_amount=300,
                 food_amount=300,
+                is_human=True
             )
         ]
         for i in range(nb_player):
@@ -58,18 +59,19 @@ class CreateGame:
                     wood_amount=500,
                     stone_amount=300,
                     food_amount=300,
+                    is_human=False
                 )
             )
         gen_map = Map(size_map, type_map, ressources)
         gen_map.blit_world()
 
-        self.game = Game(
+        self.game = Game.Game(
             players=players,
             map_game=gen_map,
             timer=None,
             speed=1,
             camera=Camera(self.window.width, self.window.height),
-            name=name,
+            name=name
         )
 
     def game_with_save(self):
