@@ -70,7 +70,7 @@ class Game:
                 ]
                 if next_cell_in_path.entity:
                     unit.current_path = find_move(
-                        self.game.map.dict_binary_cells.get(unit.unit_type),
+                        self.map.dict_binary_cells.get(unit.unit_type),
                         unit.positions,
                         unit.current_path[-1],
                     )
@@ -82,8 +82,8 @@ class Game:
                     unit.positions = unit.current_path[0][0], unit.current_path[0][1]
                     unit.current_path.pop(0)
 
-    def event(self, static):  # pragma: no cover
-        if pygame.mouse.get_pressed()[0]:
+    def event(self, static, event):  # pragma: no cover
+        if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = self.map.screen_to_map(
                 pygame.mouse.get_pos(),
                 self.camera.x_offset,
@@ -92,31 +92,23 @@ class Game:
                 static.half_height_cells_size,
             )
             x, y = int(x), int(y)
-            if self.map.cells[x][y].entity:
-                self.currently_selected = self.map.cells[x][y].entity
-            else:
-                self.currently_selected = None
+            if event.button == 1:
+                if self.map.cells[x][y].entity:
+                    self.currently_selected = self.map.cells[x][y].entity
+                else:
+                    self.currently_selected = None
 
-        elif pygame.mouse.get_pressed()[2]:
-            if (
-                self.currently_selected
-                and self.currently_selected in self.players[0].units
-            ):
-                x, y = self.map.screen_to_map(
-                    pygame.mouse.get_pos(),
-                    self.camera.x_offset,
-                    self.camera.y_offset,
-                    static.half_width_cells_size,
-                    static.half_height_cells_size,
-                )
-                x, y = int(x), int(y)
+            elif event.button == 3:
                 if (
-                    x >= 0
-                    and x < self.map.size.value
-                    and y >= 0
-                    and y < self.map.size.value
+                    self.currently_selected
+                    and self.currently_selected in self.players[0].units
                 ):
-                    if isinstance(self.currently_selected, Unit):
+                    if (
+                        x >= 0
+                        and x < self.map.size.value
+                        and y >= 0
+                        and y < self.map.size.value
+                    ):
                         self.currently_selected.current_path = find_move(
                             self.map.dict_binary_cells.get(
                                 self.currently_selected.unit_type
@@ -124,11 +116,3 @@ class Game:
                             self.currently_selected.positions,
                             (x, y),
                         )
-
-                        # find_move(
-                        #     self.map.transform_for_unit(
-                        #         self.currently_selected.unit_type
-                        #     ),
-                        #     self.currently_selected.positions,
-                        #     (x, y),
-                        # )

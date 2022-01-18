@@ -109,24 +109,23 @@ class GameMenu:
         textsurface = myfont.render(format, False, color)
         self.display_.blit(textsurface, positions)
 
-    def event(self):
-        for event in pygame.event.get():
-            if event.type == pygame.USEREVENT:
-                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                    if self.pause and event.ui_element == self.buttons[1]:
-                        return False
-                    if self.pause and event.ui_element == self.buttons[2]:
-                        self.pause = False
-                        self.visibility_pause()
-                    if event.ui_element == self.buttons[0]:
-                        self.pause = not self.pause
-                        self.visibility_pause()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+    def event(self, event):
+        if event.type == pygame.USEREVENT:
+            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                if self.pause and event.ui_element == self.buttons[1]:
+                    return False
+                if self.pause and event.ui_element == self.buttons[2]:
+                    self.pause = False
+                    self.visibility_pause()
+                if event.ui_element == self.buttons[0]:
                     self.pause = not self.pause
                     self.visibility_pause()
-            self.cheat_code.event(event)
-            self.manager.process_events(event)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.pause = not self.pause
+                self.visibility_pause()
+        self.cheat_code.event(event)
+        self.manager.process_events(event)
         return True
 
     def visibility_pause(self):
