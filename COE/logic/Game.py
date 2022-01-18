@@ -13,20 +13,21 @@ class Game:
     A class to represent a unique game
     """
 
-    def __init__(self, players: list, map: Map, timer, speed, camera: Camera):
+    def __init__(self, players: list, map, speed, camera, name: str, timer):
         """
         Constructs all the necessary attributes for the Game object.
 
         :param players: list
         :param map_game: Map
-        :param timer: Time
         :param speed: float
+        :param name: str
         """
         self.players: list[Player] = players
         self.map = map
-        self.timer = timer
         self.speed = speed
         self.camera = camera
+        self.name = name
+        self.timer = timer
         self.currently_selected: Entity = None
 
     def set_speed(self, new_speed):

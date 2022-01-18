@@ -46,9 +46,9 @@ class MenuNewGame:
         for mapsize in MapSizes:
             self.enumeration_size.append(mapsize)
         for maptype in MapTypes:
-            self.enumeration_type.append(str(maptype))
+            self.enumeration_type.append(maptype)
         for ressource in ResourcesRarity:
-            self.enumeration_ressources.append(str(ressource))
+            self.enumeration_ressources.append(ressource)
         self.DropDownMenus = [
             pygame_gui.elements.UIDropDownMenu(
                 options_list=[str(x)[9:] for x in self.enumeration_size],
@@ -171,3 +171,30 @@ class MenuNewGame:
 
     def get_playing(self):
         return self.playing
+
+    def get_select_nb_players(self):
+        return int(self.DropDownMenus[3].selected_option)
+
+    def get_map_size_selected(self):
+        index = self.DropDownMenus[0].selected_option
+        for x in self.enumeration_size:
+            if str(x)[9:] == index:
+                return x
+
+    def get_map_type_selected(self):
+        index = self.DropDownMenus[1].selected_option
+        for x in self.enumeration_type:
+            if str(x)[9:] == index:
+                return x
+
+    def get_ressources_rarity_selected(self):
+        index = self.DropDownMenus[2].selected_option
+        for x in self.enumeration_ressources:
+            if str(x)[16:] == index:
+                return x
+
+    def get_map_name(self):
+        return self.text_input[0].get_text()
+
+    def get_type_create_map(self):
+        return 0
