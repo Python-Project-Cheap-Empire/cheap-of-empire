@@ -3,7 +3,7 @@ import glob
 from COE.map.cell import Cell
 
 
-class Static:
+class Static:  # pragma: no cover
     def __init__(self) -> None:
         self.entities_pos_dict = {"tree": (11, -55), "villager": (25, -50)}
         self.cells_size = Cell.get_pixel_cells_size()

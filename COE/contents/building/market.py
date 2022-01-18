@@ -1,5 +1,3 @@
-from COE.contents.entity import Entity
-from .storage_building import StorageBuilding
 from .technology_building import TechnologyBuilding
 from .granary import Granary
 

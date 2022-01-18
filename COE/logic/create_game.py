@@ -1,30 +1,31 @@
 from logic.Player import Player
 from map.map import Map
 from camera.camera import Camera
-from logic import Game
+from COE.logic.Game import Game
 
+from COE.contents.static.static import Static
 from UI.interfaces.interface_menu_newgame import MenuNewGame
 from logic.GameSaveLoad import GameSaveLoad
+from COE.map.enum.map_sizes import MapSizes
+from COE.map.enum.map_types import MapTypes
+from COE.map.enum.resources_rarity import ResourcesRarity
+from COE.logic.game_logic import GameLogic
+from COE.logic.time import Time_
 
 
-class CreateGame:
+class CreateGame:  # pragma: no cover
     def __init__(self, data=None, type_load=-1, window=None):
         self.saver = GameSaveLoad()
         self.type = type_load
         self.data = data
         self.game = None
         self.window = window
-        if data is None:
-            self.type = -1
 
     def gen_game(self):
-        if self.type == -1:
-            return False
         if self.type == 0:
-            self.game_with_newGame()
+            return self.game_with_newGame()
         if self.type == 1:
-            self.game_with_save()
-        return True
+            return self.game_with_save()
 
     def game_with_newGame(self):
         nb_player = self.data.get_select_nb_players()
@@ -44,7 +45,7 @@ class CreateGame:
                 wood_amount=500,
                 stone_amount=300,
                 food_amount=300,
-                is_human=True
+                is_human=True,
             )
         ]
         for i in range(nb_player):
@@ -59,28 +60,37 @@ class CreateGame:
                     wood_amount=500,
                     stone_amount=300,
                     food_amount=300,
-                    is_human=False
+                    is_human=False,
                 )
             )
-        gen_map = Map(size_map, type_map, ressources)
-        gen_map.blit_world()
 
-        self.game = Game.Game(
-            players=players,
-            map_game=gen_map,
-            timer=None,
-            speed=1,
-            camera=Camera(self.window.width, self.window.height),
-            name=name
+        static = Static()
+        gen_map = Map(
+            players, MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH
         )
+        gen_map.blit_world()
+        self.game = Game(
+            players=players,
+            map=gen_map,
+            speed=1,
+            camera=Camera(self.window.height, self.window.width),
+            name=name,
+            timer=Time_(),
+        )
+        game_logic = GameLogic(self.window.display, self.game, static)
+        return game_logic
 
     def game_with_save(self):
         name = self.data.get_name_game_select()
         self.game = self.saver.load_game(name)
-        self.game.map_game.blit_world()
+        self.game.map.blit_world()
+        static = Static()
+        game_logic = GameLogic(self.window.display, self.game, static)
+        return game_logic
 
     def get_game(self):
         return self.game
 
     def save_game(self):
+        self.game.map.grass_tiles = None
         self.saver.save_game(current_game=self.game, save_name=self.game.name)

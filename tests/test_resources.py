@@ -2,6 +2,21 @@ from COE.contents.resources import *
 import pytest
 
 
+def test_resource():
+    resource = Resource(ResourceType.FOOD, 10)
+    resource.amount == 10
+    resource.increase_amount(10)
+    resource.amount == 20
+    resource.decrease_amount(10)
+    resource.amount == 10
+
+    with pytest.raises(NotEnoughResourceException):
+        resource.decrease_amount(11)
+
+    with pytest.raises(MaximumResourceException):
+        resource.increase_amount(11000)
+
+
 def test_tree():
     acacia = Tree((10, 15))
 

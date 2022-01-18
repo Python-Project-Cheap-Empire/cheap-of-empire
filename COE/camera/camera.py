@@ -2,10 +2,11 @@ import pygame
 
 
 class Camera:  # pragma: no cover
-    def __init__(self, width, height):
+    def __init__(self, height, width):
         self.x_offset = 0
         self.y_offset = 0
         self.speed = 40
+        # if window is not None:
         self.width = width
         self.height = height
 

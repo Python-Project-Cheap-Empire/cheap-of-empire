@@ -1,4 +1,3 @@
-from COE.contents.entity import Entity
 from .storage_building import StorageBuilding
 from .market import Market
 

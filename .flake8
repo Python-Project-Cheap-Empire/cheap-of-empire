@@ -1,5 +1,5 @@
 [flake8]
 max-line-length = 88
-extend-ignore = E203,F403,F405,F841,E402,F401,F811
-max-complexity = 15
+extend-ignore = E203,F403,F405,F841,E402,F401,F811,W291
+max-complexity = 30
 filename = ./COE/*.py,./tests/*.py
