@@ -26,7 +26,7 @@ class GameLogic:
         self.scaled_cell = Cell.get_scaled_blocks()
         self.playing = True
         self.item = Item(self.width, self.height)
-        self.timer = time_counting()
+        self.timer = time_counting(self.game.timer)
         self.x_limit = self.display_.get_width() + self.static.width_cells_size
         self.y_limit = self.display_.get_height() + self.static.height_cells_size
         self.cheatcode = CheatCode(self.display_, self.game)

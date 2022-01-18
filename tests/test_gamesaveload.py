@@ -22,7 +22,7 @@ def test_get_path():
     sl1 = GameSaveLoad()
     root_dir = Path(__file__).parent.parent
 
-    assert sl1.path == os.path.join(root_dir, "save\\")
+    assert sl1.path == os.path.join(root_dir, "save/")
 
 
 def remove_file_for_test():
@@ -45,8 +45,7 @@ def test_save_and_load():
     players[0].buildings.append(storage)
     players[0].units.append(villager)
     map = Map(players=players)
-
-    game_save = Game(players, map, 1.0, 1.0, Camera(None))
+    game_save = Game(players, map, 1.0, Camera(0, 0), "new", None)
 
     try:
         sl1.save_game(game_save, save_name)
@@ -56,7 +55,6 @@ def test_save_and_load():
 
     game_load = sl1.load_game(save_name)
 
-    assert game_save.timer == game_load.timer
     assert game_save.speed == game_load.speed
     assert game_save.players[0].username == game_load.players[0].username
 
