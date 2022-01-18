@@ -38,8 +38,11 @@ class GameLogic:
         self.draw()
 
     def events(self):
-        self.playing = self.menu.event()
-        self.game.event(self.static)
+        for event in pygame.event.get():
+            self.playing = self.menu.event(event)
+            if not self.playing:
+                break
+            self.game.event(self.static, event)
 
     def update(self):
         if not self.menu.pause:
