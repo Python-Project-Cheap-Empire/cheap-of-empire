@@ -70,13 +70,8 @@ class Unit(Entity):
                 + (self.positions[1] - u.positions[1]) ** 2
             )
             # print(self.positions[0], self.positions[1], end=" ")
-            # print(distance)
+            print(distance)
             return distance <= self.range + math.sqrt(2)
-        else:
-            return False
 
     def die(self):
         return self.hp <= 0
-
-    def delete(self):
-        del self

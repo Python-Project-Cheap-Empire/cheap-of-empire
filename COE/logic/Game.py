@@ -90,8 +90,9 @@ class Game:
                     )
                     unit.positions = unit.current_path[0][0], unit.current_path[0][1]
                     unit.current_path.pop(0)
-            if unit is not None and unit.die():
+            if unit.die():
                 self.map.empty_cell(unit.positions[0], unit.positions[1])
+                self.players[1].units.remove(unit)
 
     def event(self, static, event):  # pragma: no cover
         if event.type == pygame.MOUSEBUTTONDOWN:
