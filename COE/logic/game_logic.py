@@ -69,11 +69,11 @@ class GameLogic:
             self.x_limit,
             self.y_limit,
         )
-        if self.game.currently_selected:
+        for selected_unit in self.game.currently_selected:
             self.game.map.draw_rect_around(
                 self.display_,
-                self.game.currently_selected.positions[0],
-                self.game.currently_selected.positions[1],
+                selected_unit.positions[0],
+                selected_unit.positions[1],
                 self.game.camera,
                 self.static.half_width_cells_size,
                 self.static.half_height_cells_size,
@@ -83,6 +83,7 @@ class GameLogic:
         self.menu.draw_ressources(self.game)
         self.menu.draw_fps(self.clock.get_fps())
         self.menu.draw_pos(self.game, self.static)
+        self.menu.draw_selection_rectangle(self.game.selection_rectangle)
         if self.menu.pause:
             self.menu.draw()
             self.cheatcode.draw()
