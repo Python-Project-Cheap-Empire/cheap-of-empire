@@ -61,6 +61,16 @@ class GameMenu:
             (mpos[0] + 20, mpos[1]),
         )
 
+    def draw_selection_rectangle(self, rectangle):
+        if rectangle:
+            rectangleCorners = [
+                rectangle.topleft,
+                rectangle.topright,
+                rectangle.bottomright,
+                rectangle.bottomleft,
+            ]
+            pygame.draw.lines(self.display_, (255, 255, 255), True, rectangleCorners, 1)
+
     def draw_fps(self, fps):
         self.draw_text(
             f"fps={round(fps)}",
