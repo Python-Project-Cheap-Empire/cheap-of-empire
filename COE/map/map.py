@@ -163,6 +163,19 @@ class Map:
                 self.dict_binary_cells.get(UnitTypes.WATER)[y][x] = 1
                 self.cells[x][y].entity = None
 
+    def place_building(self, x, y, player, building, entity: Entity):
+        if (
+            not self.cells[x][y].entity
+            and not self.cells[x + 1][y].entity
+            and not self.cells[x][y + 1]
+            and not self.cells[x + 1][y + 1]
+        ):
+            if (
+                player._wood >= building.wood_required
+                and player._stone >= building.stone_required
+            ):
+                self.populate_cell(x, y, entity)
+
     def transform_for_unit(self, unit_type):
         trans_list = [
             [0 for _ in range(self.size.value)] for _ in range(self.size.value)

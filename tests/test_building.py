@@ -27,6 +27,8 @@ def test_archery_range():
     assert a.pending_units == ["BowMan", "BowMan"]
     # assert a.required == {"Long Bow"}
     assert a.required_building == {Barrack.__class__.__name__}
+    assert a.wood_required == 150
+    assert a.time_construction == 40
 
 
 def test_barrack():
@@ -37,6 +39,8 @@ def test_barrack():
     assert b.pending_units == ["AxeMan", "ClubMan", "Slinger"]
     assert b.upgrade_technology() == "Upgrading..."
     assert b.required_building == {TownCenter.__class__.__name__}
+    assert b.wood_required == 130
+    assert b.time_construction == 40
 
 
 def test_dock():
@@ -53,6 +57,8 @@ def test_dock():
     ]
     assert d.upgrade_technology() == "Upgrading..."
     assert d.required_building == {TownCenter.__class__.__name__}
+    assert d.wood_required == 100
+    assert d.time_construction == 40
 
 
 def test_farm():
@@ -61,6 +67,8 @@ def test_farm():
     assert f.re_seeding_farm() == "ReSeeding Farm"
     assert f.max_held == 250
     assert f.required_building == {Market.__class__.__name__}
+    assert f.wood_required == 75
+    assert f.time_construction == 24
 
 
 def test_granary():
@@ -68,6 +76,8 @@ def test_granary():
     assert g.upgrade_technology() == "Upgrading..."
     assert g.line_of_sight == 6
     assert g.required_age == 1
+    assert g.wood_required == 120
+    assert g.time_construction == 30
 
 
 def test_market():
@@ -78,6 +88,8 @@ def test_market():
     assert m.required_age == 1
     assert m.required_researches == {}
     assert m.required_building == {Granary.__class__.__name__}
+    assert m.wood_required == 150
+    assert m.time_construction == 40
 
 
 def test_stable():
@@ -86,12 +98,16 @@ def test_stable():
     s.train_scout()
     assert s.pending_units == ["Scout", "Scout"]
     assert s.upgrade_technology() == "Upgrading..."
+    assert s.wood_required == 150
+    assert s.time_construction == 40
 
 
 def test_storage_pit():
     sp = StoragePit((0, 0))
     assert sp.upgrade_technology() == "Upgrading..."
     assert sp.is_drop_point
+    assert sp.wood_required == 120
+    assert sp.time_construction == 30
 
 
 def test_town_center():
@@ -101,6 +117,8 @@ def test_town_center():
     tc.train_villager()
     assert tc.pending_units == ["Villager", "Villager"]
     assert tc.required_building == {}
+    assert tc.wood_required == 200
+    assert tc.time_construction == 60
 
 
 def test_house():
@@ -109,6 +127,8 @@ def test_house():
     assert h.decrease_max_population() == "Max pop -5"
     assert h.required_age == 1
     assert h.required_researches == {}
+    assert h.wood_required == 30
+    assert h.time_construction == 15
 
 
 def test_watch_tower():
@@ -117,9 +137,14 @@ def test_watch_tower():
     assert t.damage == 3
     assert t.required_age == 2
     assert t.required_building == {Granary.__class__.__name__}
+    assert t.stone_required == 150
+    assert t.wood_required == 0
+    assert t.time_construction == 30
 
 
 def test_small_wall():
     sw = SmallWall((0, 0))
     assert sw.name == "Small Wall"
     assert sw.hp == 100
+    assert sw.wood_required == 20
+    assert sw.time_construction == 10

@@ -18,6 +18,8 @@ class TownCenter(StorageBuilding, MilitaryBuilding):
             required_age=1,
             required_researches={},
             researches={},
+            wood_required=200,
+            time_construction=60,
         )
 
     def train_villager(self):

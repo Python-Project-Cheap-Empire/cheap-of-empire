@@ -16,6 +16,8 @@ class Farm(StorageBuilding):
             required_building={Market.__class__.__name__},
             required_age=2,
             required_researches={},
+            wood_required=75,
+            time_construction=24,
         )
 
     def re_seeding_farm(self):
