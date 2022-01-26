@@ -17,7 +17,8 @@ class Farm(StorageBuilding):
             required_age=2,
             required_researches={},
             wood_required=75,
-            time_construction=24,
+            stone_required=0,
+            construction_time=24,
         )
 
     def re_seeding_farm(self):

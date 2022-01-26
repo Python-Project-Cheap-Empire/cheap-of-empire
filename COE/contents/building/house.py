@@ -16,7 +16,7 @@ class House(Building):
             required_researches={},
             wood_required=30,
             stone_required=0,
-            time_construction=15,
+            construction_time=15,
         )
 
     def increase_max_population(self, amount=5) -> str:

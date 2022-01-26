@@ -17,7 +17,8 @@ class Barrack(MilitaryBuilding, TechnologyBuilding):
             required_researches={},
             researches={},
             wood_required=130,
-            time_construction=40,
+            stone_required=0,
+            construction_time=40,
         )
 
     def upgrade_technology(self):

@@ -21,7 +21,7 @@ class WatchTower(Building):
             researches={},
             stone_required=150,
             wood_required=0,
-            time_construction=30,
+            construction_time=30,
         )
 
     def attack(

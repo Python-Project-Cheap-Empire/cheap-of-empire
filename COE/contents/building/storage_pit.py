@@ -20,7 +20,8 @@ class StoragePit(StorageBuilding, TechnologyBuilding):
             required_researches={},
             researches={},  # Tool working, leather armor (ca, in, ar)
             wood_required=120,
-            time_construction=30,
+            stone_required=0,
+            construction_time=30,
         )
 
     def upgrade_technology(self):
