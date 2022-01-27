@@ -4,6 +4,7 @@ from COE.logic.Player import Player
 from COE.contents.building.building import Building
 from COE.logic.path_finding import find_move
 import math
+import pygame
 
 
 class Unit(Entity):
@@ -29,7 +30,7 @@ class Unit(Entity):
         self.attack_damage = attack_damage
         self.range = range_
         self.speed = speed
-        self.rate_of_fire = rate_of_fire
+        self.rate_of_fire = rate_of_fire * 100
         self.melee_armor = melee_armor
         self.pierce_armor = pierce_armor
         self.player = player
@@ -39,29 +40,42 @@ class Unit(Entity):
         self.current_path: list = []
         self.pierce_attack = pierce_attack
 
-    def attack(self):
+        self.last_update = pygame.time.get_ticks()
+
+    """
+    after rate_of_fire (s)
+    unit will attack
+    """
+
+    def update_attack(self):  # pragma: no cover
+        now = pygame.time.get_ticks()
         if self.is_attacking:
-            if isinstance(self.attacked_entity, Unit):
-                damage = max(
-                    1,
-                    (
-                        max(0, self.attack_damage - self.attacked_entity.melee_armor)
-                        + max(0, self.pierce_attack - self.attacked_entity.pierce_armor)
-                    ),
-                )
-                if self.attacked_entity.hp > 0 and not self.die():
-                    self.attacked_entity.hp -= damage
-                    print("u.health {}".format(self.attacked_entity.hp))
-            elif isinstance(self.attacked_entity, Building) and not self.die():
-                damage = max(
-                    1 / 10,
-                    (
-                        max(0, self.attack_damage - self.attacked_entity.melee_armor)
-                        + max(0, self.pierce_attack - self.attacked_entity.pierce_armor)
-                    ),
-                )
-                if self.attacked_entity.hp > 0 and not self.die():
-                    self.attacked_entity.hp -= damage
+            if now - self.last_update >= self.rate_of_fire:
+                self.last_update = now
+                self.attack()
+
+    def attack(self):
+        if isinstance(self.attacked_entity, Unit):
+            damage = max(
+                1,
+                (
+                    max(0, self.attack_damage - self.attacked_entity.melee_armor)
+                    + max(0, self.pierce_attack - self.attacked_entity.pierce_armor)
+                ),
+            )
+            if self.attacked_entity.hp > 0 and not self.die():
+                self.attacked_entity.hp -= damage
+                print("u.health {}".format(self.attacked_entity.hp))
+        elif isinstance(self.attacked_entity, Building) and not self.die():
+            damage = max(
+                1 / 10,
+                (
+                    max(0, self.attack_damage - self.attacked_entity.melee_armor)
+                    + max(0, self.pierce_attack - self.attacked_entity.pierce_armor)
+                ),
+            )
+            if self.attacked_entity.hp > 0 and not self.die():
+                self.attacked_entity.hp -= damage
 
     def check_in_range(self, u):
         if u is not None:

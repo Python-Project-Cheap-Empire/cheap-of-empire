@@ -73,7 +73,8 @@ class Game:
                 unit.attacked_entity = None
                 unit.is_attacking = False
             elif unit.is_attacking and unit.check_in_range(unit.attacked_entity):
-                unit.attack()
+                # unit.attack()
+                unit.update_attack()
                 print("mode attack is on")
         for unit in self.players[1].units:
             unit.current_path = unit.current_path
@@ -144,7 +145,7 @@ class Game:
                                     self.map.cells[x][y].entity
                                 ):
                                     # selected_unit.attack(selected_unit.attacked_entity)
-                                    selected_unit.attack()
+                                    selected_unit.update_attack()
                                     print(
                                         "attack unit at pos{}".format(
                                             self.map.cells[x][y]

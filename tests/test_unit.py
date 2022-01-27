@@ -26,3 +26,4 @@ def test_unit():
     assert p2.units[0].hp == 46
     p2.units[0].hp = 0
     assert p2.units[0].die()
+    assert not p1.units[0].die()
