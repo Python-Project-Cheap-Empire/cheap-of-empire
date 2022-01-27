@@ -69,12 +69,12 @@ class Game:
             """
             attack an enemy if is_attack and check_in_range
             """
-            if unit.attacked_entity is None or unit.attacked_entity.die():
+            if unit.attacked_entity is None or unit.attacked_entity.hp <= 0:
                 unit.attacked_entity = None
                 unit.is_attacking = False
             elif unit.is_attacking and unit.check_in_range(unit.attacked_entity):
-                unit.attack()
-                print("mode attack is on")
+                unit.update_attack()
+                # print("mode attack is on")
         for unit in self.players[1].units:
             unit.current_path = unit.current_path
             if unit.current_path:
@@ -94,7 +94,7 @@ class Game:
                     )
                     unit.positions = unit.current_path[0][0], unit.current_path[0][1]
                     unit.current_path.pop(0)
-            if unit.die():
+            if unit.hp <= 0:
                 self.map.empty_cell(unit.positions[0], unit.positions[1])
                 self.players[1].units.remove(unit)
 
@@ -144,12 +144,12 @@ class Game:
                                     self.map.cells[x][y].entity
                                 ):
                                     # selected_unit.attack(selected_unit.attacked_entity)
-                                    selected_unit.attack()
-                                    print(
-                                        "attack unit at pos{}".format(
-                                            self.map.cells[x][y]
-                                        )
-                                    )
+                                    selected_unit.update_attack()
+                                    # print(
+                                    #     "attack unit at pos{}".format(
+                                    #         self.map.cells[x][y]
+                                    #     )
+                                    # )
                                 else:
                                     selected_unit.current_path = find_move(
                                         self.map.dict_binary_cells.get(
@@ -173,7 +173,7 @@ class Game:
                                 if selected_unit.is_attacking:
                                     selected_unit.is_attacking = False
                                     selected_unit.attacked_entity = None
-                                    print("Turnoff attack")
+                                    # print("Turnoff attack")
 
         elif event.type == pygame.MOUSEMOTION and self.mouse_down:
             x, y = pygame.mouse.get_pos()
@@ -199,7 +199,6 @@ class Game:
                 for x in range(int(self.x), int(self.x_ + 1)):
                     for y in range(int(self.y), int(self.y_ + 1)):
                         if x < self.map.size.value and y < self.map.size.value:
-                            print(f"mouse x, y : {x}, {y}")
                             s = self.map.cells[x][y].entity
                             if s:
                                 self.currently_selected.append(s)
