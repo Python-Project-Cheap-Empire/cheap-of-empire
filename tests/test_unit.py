@@ -25,5 +25,5 @@ def test_unit():
     p1.units[0].attack()
     assert p2.units[0].hp == 46
     p2.units[0].hp = 0
-    assert p2.units[0].die()
-    assert not p1.units[0].die()
+    assert p2.units[0].hp <= 0
+    assert not p1.units[0].hp <= 0
