@@ -3,6 +3,7 @@ from map.map import Map
 from camera.camera import Camera
 from COE.logic.Game import Game
 
+from COE.map.MapGenerator import MapGenerator
 from COE.contents.static.static import Static
 from UI.interfaces.interface_menu_newgame import MenuNewGame
 from logic.GameSaveLoad import GameSaveLoad
@@ -65,9 +66,10 @@ class CreateGame:  # pragma: no cover
             )
 
         static = Static()
-        gen_map = Map(
+        generator = MapGenerator(
             players, MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH
         )
+        gen_map = generator.generate()
         gen_map.blit_world()
         self.game = Game(
             players=players,
