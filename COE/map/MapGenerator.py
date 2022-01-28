@@ -90,10 +90,11 @@ class MapGenerator:
 
     def place_resources(self, cells):
         resource_list = [GoldOre, StoneOre, Berry]
-        placement = random.random()
+
         for x in range(self.size.value):
             for y in range(self.size.value):
-                if placement > 0.5 and not self.is_near_spawn((x, y)):
+                placement = random.random()
+                if placement < 0.1 and not self.is_near_spawn((x, y)):
                     if (
                         cells[x][y].cell_type == CellTypes.GRASS
                         and not cells[x][y].entity
