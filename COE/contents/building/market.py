@@ -21,6 +21,9 @@ class Market(TechnologyBuilding):
             required_age=1,
             required_researches={},
             researches={},
+            wood_required=150,
+            stone_required=0,
+            construction_time=40,
         )
 
     def enable_tribute(self):

@@ -1,16 +1,13 @@
 import os
 import sys
-from COE.contents.unit.enum.unit_types import UnitTypes
-from COE.map.enum.map_sizes import MapSizes
-from COE.map.enum.map_types import MapTypes
-from COE.map.enum.resources_rarity import ResourcesRarity
+
+# from COE.contents.unit.enum.unit_types import UnitTypes
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(script_dir))
 
 from UI.window_ui import Window
 from COE.logic.Game import Game
-from COE.logic.game_logic import GameLogic
 from UI.interfaces.interface_play_menu import MenuPlay
 from map.MapGenerator import MapGenerator
 
@@ -18,7 +15,8 @@ from map.MapGenerator import MapGenerator
 from logic.Player import Player
 from map.map import Map
 from camera.camera import Camera
-from COE.contents.static.static import Static
+
+from logic.create_game import CreateGame
 
 
 def main():
@@ -66,9 +64,11 @@ def main():
                 camera=Camera(window),
             )
             game_logic = GameLogic(window.display, game, static)
+
             while game_logic.playing:
                 game_logic.run()
             window.playing = False
+            gen_game.save_game()
             window.menu = MenuPlay(window.display)
 
 

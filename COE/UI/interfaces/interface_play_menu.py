@@ -9,6 +9,8 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 
 class MenuPlay:
     def __init__(self, display__):
+        self.playing = False
+        self.selected_save = ""
         self.display_ = display__
         self.screen_size = pygame.display.get_surface().get_size()
         self.width = self.screen_size[0]
@@ -48,7 +50,9 @@ class MenuPlay:
         self.clock = pygame.time.Clock()
 
         # recuperation des dossier de sauvegarde
-        self.save_url = script_dir + "/../../saves/"
+        self.save_url = script_dir + "/../../../save/"
+        if not os.path.exists(self.save_url):
+            os.makedirs(self.save_url)
         self.saves = os.listdir(self.save_url)
         self.nb_saves = 0
         self.load_save_bp = []
@@ -148,8 +152,19 @@ class MenuPlay:
 
                         return MenuMulti(self.display_)
 
+                    for bp in self.load_save_bp:
+                        if event.ui_element == bp:
+                            self.selected_save = bp.text
+                            self.playing = True
+
             self.manager.process_events(event)
         return self
 
     def get_playing(self):
-        return False
+        return self.playing
+
+    def get_type_create_map(self):
+        return 1
+
+    def get_name_game_select(self):
+        return self.selected_save

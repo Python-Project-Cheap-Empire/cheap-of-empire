@@ -21,13 +21,13 @@ class CheatCode:
             self.game.players[0]._food += 10000
             self.game.players[0]._gold += 10000
             self.game.players[0]._stone += 10000
-        if action == "COINAGE":
+        elif action == "COINAGE":
             self.game.players[0]._gold += 1000
-        if action == "PEPPERONI PIZZA":
+        elif action == "PEPPERONI PIZZA":
             self.game.players[0]._food += 1000
-        if action == "QUARRY":
+        elif action == "QUARRY":
             self.game.players[0]._stone += 1000
-        if action == "WOODSTOCK":
+        elif action == "WOODSTOCK":
             self.game.players[0]._wood += 1000
 
     def event(self, event):

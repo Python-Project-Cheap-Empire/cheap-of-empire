@@ -16,6 +16,9 @@ class Stable(MilitaryBuilding, TechnologyBuilding):
             required_age=2,
             required_researches={},
             researches={},
+            wood_required=150,
+            stone_required=0,
+            construction_time=40,
         )
 
     def upgrade_technology(self):

@@ -14,7 +14,7 @@ class GameSaveLoad:
         Initialize a instance of GameSaveLoad if not created.
         Else return the instance.
         """
-        cls._sl_path = os.path.join(Path(__file__).parent.parent.parent, "save\\")
+        cls._sl_path = os.path.join(Path(__file__).parent.parent.parent, "save/")
         if not hasattr(cls, "instance"):
             cls.instance = super(GameSaveLoad, cls).__new__(cls)
         return cls.instance
@@ -29,7 +29,7 @@ class GameSaveLoad:
         if not os.path.exists(self.path):
             os.mkdir(self.path)
 
-        with open(os.path.join(self.path, save_name), "xb") as file:
+        with open(os.path.join(self.path, save_name), "wb") as file:
             pickle.dump(current_game, file)
 
     def load_game(self, save_name: str) -> Game:

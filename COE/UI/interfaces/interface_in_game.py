@@ -1,3 +1,4 @@
+import time
 import pygame
 from pygame.locals import QUIT
 import pygame_gui
@@ -5,7 +6,7 @@ from COE.map.map import Map
 
 
 class GameMenu:
-    def __init__(self, display_, manager, cheat_code):
+    def __init__(self, display_, manager, cheat_code, timer):
         self.display_ = display_
         self.menu_passed = False
         self.screen_size = pygame.display.get_surface().get_size()
@@ -14,6 +15,7 @@ class GameMenu:
         self.manager = manager
         self.manager_menu = pygame_gui.UIManager(self.screen_size)
         self.ESM = (self.screen_size[0] / 2 - 300, self.screen_size[0] / 2 - 500)
+        self.timer = timer
         self.buttons = [
             pygame_gui.elements.UIButton(
                 relative_rect=pygame.Rect((0, 20), (100, 50)),
@@ -61,6 +63,16 @@ class GameMenu:
             (mpos[0] + 20, mpos[1]),
         )
 
+    def draw_selection_rectangle(self, rectangle):
+        if rectangle:
+            rectangleCorners = [
+                rectangle.topleft,
+                rectangle.topright,
+                rectangle.bottomright,
+                rectangle.bottomleft,
+            ]
+            pygame.draw.lines(self.display_, (255, 255, 255), True, rectangleCorners, 1)
+
     def draw_fps(self, fps):
         self.draw_text(
             f"fps={round(fps)}",
@@ -68,6 +80,9 @@ class GameMenu:
             (255, 0, 0),
             (self.width - 100, 100),
         )
+
+    def draw_shortcuts(self, speed):
+        self.draw_text(f"F4 | speed: {speed}", 30, (0, 255, 0), (self.width - 300, 0))
 
     def draw(self):
         s = pygame.Surface((self.width, self.height))
@@ -109,24 +124,26 @@ class GameMenu:
         textsurface = myfont.render(format, False, color)
         self.display_.blit(textsurface, positions)
 
-    def event(self):
-        for event in pygame.event.get():
-            if event.type == pygame.USEREVENT:
-                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                    if self.pause and event.ui_element == self.buttons[1]:
-                        return False
-                    if self.pause and event.ui_element == self.buttons[2]:
-                        self.pause = False
-                        self.visibility_pause()
-                    if event.ui_element == self.buttons[0]:
-                        self.pause = not self.pause
-                        self.visibility_pause()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+    def event(self, event):
+        if event.type == pygame.USEREVENT:
+            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                if self.pause and event.ui_element == self.buttons[1]:
+                    return False
+                if self.pause and event.ui_element == self.buttons[2]:
+                    self.timer.prev_time = time.time()
+                    self.pause = False
+                    self.visibility_pause()
+                if event.ui_element == self.buttons[0]:
+                    self.timer.prev_time = time.time()
                     self.pause = not self.pause
                     self.visibility_pause()
-            self.cheat_code.event(event)
-            self.manager.process_events(event)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.timer.prev_time = time.time()
+                self.pause = not self.pause
+                self.visibility_pause()
+        self.cheat_code.event(event)
+        self.manager.process_events(event)
         return True
 
     def visibility_pause(self):

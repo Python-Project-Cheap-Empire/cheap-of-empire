@@ -17,6 +17,9 @@ class Dock(MilitaryBuilding, TechnologyBuilding):
             required_age=1,
             required_researches={},
             researches={},
+            wood_required=100,
+            stone_required=0,
+            construction_time=40,
         )
 
     def upgrade_technology(self):

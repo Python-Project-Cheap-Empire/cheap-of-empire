@@ -139,38 +139,25 @@ def find_move(transformed_map, A, B):
 
         elif A[0] == B[0] and A[1] > B[1]:  # JAUNE VOMIT
             path = search_available_path("S", p, grid, end, finder, start)
-            # if path:
-            # return path
 
         elif A[0] < B[0] and A[1] == B[1]:  # VIOLET
             path = search_available_path("W", p, grid, end, finder, start)
-            # if path:
-            # return path
 
         elif A[0] > B[0] and A[1] == B[1]:  # VERT PALE
             path = search_available_path("E", p, grid, end, finder, start)
-            # if path:
-            # return path
 
         elif A[0] < B[0] and A[1] < B[1]:  # ROUGE
             path = search_available_path("NW", p, grid, end, finder, start)
-            # if path:
-            # return path
 
         elif A[0] < B[0] and A[1] > B[1]:  # ROSE
             path = search_available_path("SW", p, grid, end, finder, start)
-            # if path:
-            # return path
 
         elif A[0] > B[0] and A[1] > B[1]:  # BLEU
             path = search_available_path("SE", p, grid, end, finder, start)
-            # if path:
-            # return path
 
         elif A[0] > B[0] and A[1] < B[1]:  # GRIS
             path = search_available_path("NE", p, grid, end, finder, start)
-            # if path:
-            # return path
+
         if path:
             return path
         distance -= 1

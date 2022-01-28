@@ -15,4 +15,7 @@ class SmallWall(Building):
             required_age=2,
             required_researches={},  # Need research small wall
             researches={},
+            wood_required=20,
+            stone_required=0,
+            construction_time=10,
         )

@@ -14,6 +14,9 @@ class House(Building):
             required_building={TownCenter.__class__.__name__},
             required_age=1,
             required_researches={},
+            wood_required=30,
+            stone_required=0,
+            construction_time=15,
         )
 
     def increase_max_population(self, amount=5) -> str:
