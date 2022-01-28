@@ -7,6 +7,7 @@ from COE.logic.path_finding import find_move
 from COE.map.map import Map
 from COE.camera.camera import Camera
 import pygame
+import time
 
 
 class Game:
@@ -33,6 +34,7 @@ class Game:
         self.timer = timer
         self.currently_selected: List[Entity] = []
         self.x_, self.y_, self.x, self.y = -1, -1, -1, -1
+        self.prev_time = time.time()
 
     def set_speed(self, new_speed):
         assert (
@@ -60,12 +62,18 @@ class Game:
                         unit.current_path[-1],
                     )
                 else:
-                    self.map.empty_cell(unit.positions[0], unit.positions[1])
-                    self.map.populate_cell(
-                        unit.current_path[0][0], unit.current_path[0][1], unit
-                    )
-                    unit.positions = unit.current_path[0][0], unit.current_path[0][1]
-                    unit.current_path.pop(0)
+                    now = time.time()
+                    if (now - self.prev_time) * 60 * self.speed * unit.speed > 20:
+                        self.map.empty_cell(unit.positions[0], unit.positions[1])
+                        self.map.populate_cell(
+                            unit.current_path[0][0], unit.current_path[0][1], unit
+                        )
+                        unit.positions = (
+                            unit.current_path[0][0],
+                            unit.current_path[0][1],
+                        )
+                        unit.current_path.pop(0)
+                        self.prev_time = now
             """
             attack an enemy if is_attack and check_in_range
             """
@@ -73,7 +81,7 @@ class Game:
                 unit.attacked_entity = None
                 unit.is_attacking = False
             elif unit.is_attacking and unit.check_in_range(unit.attacked_entity):
-                unit.update_attack()
+                unit.update_attack(self.speed)
                 # print("mode attack is on")
         for unit in self.players[1].units:
             unit.current_path = unit.current_path
@@ -144,7 +152,7 @@ class Game:
                                     self.map.cells[x][y].entity
                                 ):
                                     # selected_unit.attack(selected_unit.attacked_entity)
-                                    selected_unit.update_attack()
+                                    selected_unit.update_attack(self.speed)
                                     # print(
                                     #     "attack unit at pos{}".format(
                                     #         self.map.cells[x][y]
@@ -204,3 +212,6 @@ class Game:
                                 self.currently_selected.append(s)
             self.mouse_down = False
             self.selection_rectangle = None
+
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_F4:
+            self.speed = (self.speed + 2) % 12

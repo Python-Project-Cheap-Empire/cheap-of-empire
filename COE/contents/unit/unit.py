@@ -1,9 +1,9 @@
+import time
 from COE.contents.entity import Entity
 from COE.contents.unit.enum.unit_types import UnitTypes
 from COE.logic.Player import Player
 from COE.contents.building.building import Building
 import math
-import pygame
 
 
 class Unit(Entity):
@@ -29,7 +29,7 @@ class Unit(Entity):
         self.attack_damage = attack_damage
         self.range = range_
         self.speed = speed
-        self.rate_of_fire = rate_of_fire * 100
+        self.rate_of_fire = rate_of_fire
         self.melee_armor = melee_armor
         self.pierce_armor = pierce_armor
         self.player = player
@@ -38,17 +38,17 @@ class Unit(Entity):
         self.attacked_entity = None
         self.current_path: list = []
         self.pierce_attack = pierce_attack
-        self.last_update = pygame.time.get_ticks()
+        self.last_update = time.time()
 
     """
     after rate_of_fire (s)
     unit will attack
     """
 
-    def update_attack(self):  # pragma: no cover
+    def update_attack(self, game_speed):  # pragma: no cover
         if self.is_attacking:
-            now = pygame.time.get_ticks()
-            if now - self.last_update >= self.rate_of_fire:
+            now = time.time()
+            if (now - self.last_update) * 60 * game_speed * self.rate_of_fire >= 20:
                 self.last_update = now
                 self.attack()
 

@@ -30,7 +30,7 @@ class GameLogic:
         self.x_limit = self.display_.get_width() + self.static.width_cells_size
         self.y_limit = self.display_.get_height() + self.static.height_cells_size
         self.cheatcode = CheatCode(self.display_, self.game)
-        self.menu = GameMenu(self.display_, self.manager, self.cheatcode)
+        self.menu = GameMenu(self.display_, self.manager, self.cheatcode, self.timer)
 
     def run(self):
         self.events()
@@ -45,14 +45,14 @@ class GameLogic:
             self.game.event(self.static, event)
 
     def update(self):
+        dt = self.clock.tick(60) / 1000.0
         if not self.menu.pause:
             self.game.update()
             self.game.camera.update()
             # self.game.map.update(self.game.camera)
             self.item.update()
-            self.timer.update()
-        time_delta = self.clock.tick(60) / 1000.0
-        self.manager.update(time_delta)
+            self.timer.update(self.game.speed)
+        self.manager.update(dt)
 
     def draw(self):
         self.display_.fill((0, 0, 0))
@@ -84,6 +84,7 @@ class GameLogic:
         self.menu.draw_fps(self.clock.get_fps())
         self.menu.draw_pos(self.game, self.static)
         self.menu.draw_selection_rectangle(self.game.selection_rectangle)
+        self.menu.draw_shortcuts(self.game.speed)
         if self.menu.pause:
             self.menu.draw()
             self.cheatcode.draw()
