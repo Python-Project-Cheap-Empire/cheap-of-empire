@@ -12,7 +12,7 @@ from COE.map.MapGenerator import MapGenerator
 def test_path_finding():
 
     generator = MapGenerator(players=None)
-    map_1 = generator.generate()
+    map_1 = generator.generate(empty=True)
 
     # for testing only
     map_1.change_cell(0, 3, CellTypes.WATER)

@@ -33,11 +33,14 @@ class MapGenerator:
 
         random.seed(self.seed)
 
-    def generate(self):
-        cells = self.place_biomes()
-        cells = self.place_water(cells)
-        cells = self.place_forest(cells, 0.3)
-        cells = self.place_resources(cells)
+    def generate(self, empty=False):
+        if empty:
+            cells = self.place_biomes()
+        else:
+            cells = self.place_biomes()
+            cells = self.place_water(cells)
+            cells = self.place_forest(cells, 0.3)
+            cells = self.place_resources(cells)
         return Map(cells, self.players, self.size, self.type, self.resources_rarity)
 
     def _biome(self, value):
@@ -76,7 +79,7 @@ class MapGenerator:
         for x in range(self.size.value):
             for y in range(self.size.value):
                 rand = random.random()
-                if rand < 0.05 and not self.is_near_spawn((x, y)):
+                if rand < 0.01 and not self.is_near_spawn((x, y)):
                     if (
                         cells[x][y].cell_type == CellTypes.GRASS
                         and not cells[x][y].entity
