@@ -9,17 +9,17 @@ from .map import Map
 from .enum.map_sizes import MapSizes
 from .enum.map_types import MapTypes
 from .enum.resources_rarity import ResourcesRarity
-from COE.contents.resources.tree import Tree
+from COE.contents.resources import *
 
 
 class MapGenerator:
     def __init__(
-            self,
-            players,
-            map_size=MapSizes.TINY,
-            map_type=MapTypes.CONTINENTAL,
-            resources_rarity=ResourcesRarity.HIGH,
-            seed=None
+        self,
+        players,
+        map_size=MapSizes.TINY,
+        map_type=MapTypes.CONTINENTAL,
+        resources_rarity=ResourcesRarity.HIGH,
+        seed=None,
     ):
         self.size = map_size
         self.type = map_type
@@ -29,10 +29,15 @@ class MapGenerator:
             self.seed = random.randint(0, 1000)
         else:
             self.seed = seed
+        self.spawn_point = (10, 10)
+
+        random.seed(self.seed)
 
     def generate(self):
         cells = self.place_biomes()
-        cells = self.place_trees(cells, 0.3)
+        cells = self.place_water(cells)
+        cells = self.place_forest(cells, 0.3)
+        cells = self.place_resources(cells)
         return Map(cells, self.players, self.size, self.type, self.resources_rarity)
 
     def _biome(self, value):
@@ -45,18 +50,61 @@ class MapGenerator:
                 cells[x][y] = self._biome(cells[x][y])
         return cells
 
-    def place_trees(self, cells, threshold):
-        map_tree = self._perlin_noise(octaves=6, seed=878)
+    def place_water(self, cells):
+        center = int(self.size.value / 2)
+
+        # First we do a square
+        quarter = int(self.size.value / 4)
+        for x in range(quarter):
+            for y in range(quarter):
+                cells[center + x][center + y] = Cell(CellTypes.WATER, None)
+
+        return cells
+
+    def place_forest(self, cells, threshold):
+        map_tree = self._perlin_noise(octaves=6, seed=self.seed)
+
+        # place forest
+        for x in range(self.size.value):
+            for y in range(self.size.value):
+                if (
+                    cells[x][y].cell_type == CellTypes.GRASS
+                    and map_tree[x][y] < threshold
+                ):
+                    cells[x][y].entity = Tree((x, y))
 
         for x in range(self.size.value):
             for y in range(self.size.value):
-                if cells[x][y].cell_type == CellTypes.GRASS and map_tree[x][y] < threshold:
-                    cells[x][y].entity = Tree((x, y))
+                rand = random.random()
+                if rand < 0.05 and not self.is_near_spawn((x, y)):
+                    if (
+                        cells[x][y].cell_type == CellTypes.GRASS
+                        and not cells[x][y].entity
+                    ):
+                        cells[x][y].entity = Tree((x, y))
 
         return cells
 
     def place_resources(self, cells):
-        pass
+        resource_list = [GoldOre, StoneOre, Berry]
+        placement = random.random()
+        for x in range(self.size.value):
+            for y in range(self.size.value):
+                if placement > 0.5 and not self.is_near_spawn((x, y)):
+                    if (
+                        cells[x][y].cell_type == CellTypes.GRASS
+                        and not cells[x][y].entity
+                    ):
+                        rand_r = random.randint(0, 2)
+                        cells[x][y].entity = resource_list[rand_r](position=(x, y))
+        return cells
+
+    def is_near_spawn(self, coordinate: tuple, proximity=5):
+        x, y = coordinate
+        return (
+            self.spawn_point[0] - proximity <= x <= self.spawn_point[0] + proximity
+            and self.spawn_point[1] - proximity <= y <= self.spawn_point[1] + proximity
+        )
 
     def _perlin_noise(self, octaves=5, seed=None):
         if seed is None:
