@@ -1,70 +1,16 @@
 from COE.map.map import Map
 from COE.map.enum.map_types import MapTypes
 from COE.map.enum.resources_rarity import ResourcesRarity
-from COE.map.exceptions.not_standardized_metric_exception import (
-    NotStandardizedMetricException,
-)
 from COE.map.enum.map_sizes import MapSizes
 from COE.map.exceptions.map_arguments_exception import MapArgumentsException
 from COE.map.exceptions.zero_map_size_exception import ZeroMapSizeException
+from COE.map.MapGenerator import MapGenerator
 import pytest
 
 
-def test_is_type_known():
-    assert Map.is_type_known(MapTypes.CONTINENTAL)
-    with pytest.raises(NotStandardizedMetricException):
-        Map.is_type_known(1)
-
-
-def test_is_resources_rarity_known():
-    assert Map.is_resources_rarity_known(ResourcesRarity.HIGH)
-    with pytest.raises(NotStandardizedMetricException):
-        Map.is_resources_rarity_known(1)
-
-
-def test_is_map_size_known():
-    assert Map.is_map_size_known(MapSizes.TINY)
-    with pytest.raises(ZeroMapSizeException):
-        Map.is_map_size_known(0)
-    with pytest.raises(NotStandardizedMetricException):
-        Map.is_map_size_known(1)
-
-
-def test_are_args_enough():
-    assert Map.are_args_enough([1, 2, 3])
-    with pytest.raises(MapArgumentsException):
-        Map.are_args_enough([2])
-
-
-def test_get_size():
-    assert Map.get_size([1, 2, 3]) == 1
-
-
-def test_get_type():
-    assert Map.get_type([1, 2, 3]) == 2
-
-
-def test_get_resources_rarity():
-    assert Map.get_resources_rarity([1, 2, 3]) == 3
-
-
-def test_are_args_fine():
-    assert Map.are_args_fine(
-        [MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH]
-    )
-    with pytest.raises(NotStandardizedMetricException):
-        assert Map.are_args_fine([1, 2, 3])
-
-
-def test_successful_init_test():
-    m = Map([], MapSizes.MEDIUM, MapTypes.MEDITERRANEAN, ResourcesRarity.LOW)
-    assert m.size == MapSizes.MEDIUM
-    assert m.type == MapTypes.MEDITERRANEAN
-    assert m.resources_rarity == ResourcesRarity.LOW
-
-
-def test_failed_init_test():
-    m = Map([], 1, 2, 3)
-    assert m.size == MapSizes.TINY
-    assert m.type == MapTypes.CONTINENTAL
-    assert m.resources_rarity == ResourcesRarity.HIGH
+def test_map_generation_default():
+    generator = MapGenerator(players=None)
+    map_gen = generator.generate()
+    assert map_gen.size == MapSizes.TINY
+    assert map_gen.type == MapTypes.CONTINENTAL
+    assert map_gen.resources_rarity == ResourcesRarity.HIGH

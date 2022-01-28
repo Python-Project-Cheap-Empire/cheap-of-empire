@@ -44,6 +44,8 @@ pygame = "^2.0.2"
 pygame-gui = "^0.5.7"
 tox = "^3.24.4"
 pathfinding = "^1.0.1"
+numpy = "^1.22.1"
+perlin-noise = "^1.10"
 
 
 [tool.poetry.dev-dependencies]
