@@ -78,11 +78,12 @@ class GameLogic:
                 self.static.half_width_cells_size,
                 self.static.half_height_cells_size,
             )
-        self.item.draw_item(self.display_)
+            self.menu.draw_entity(self.game.currently_selected)
+        # self.item.draw_item(self.display_)
         self.timer.draw_time(self.display_)
-        self.menu.draw_ressources(self.game)
+        self.menu.display(self.game)
         self.menu.draw_fps(self.clock.get_fps())
-        self.menu.draw_pos(self.game, self.static)
+        # self.menu.draw_pos(self.game, self.static)
         if self.menu.pause:
             self.menu.draw()
             self.cheatcode.draw()

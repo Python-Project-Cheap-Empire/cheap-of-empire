@@ -96,6 +96,8 @@ class Game:
             if event.button == 1:
                 if self.map.cells[x][y].entity:
                     self.currently_selected = self.map.cells[x][y].entity
+                    if isinstance(self.currently_selected, Villager):
+                        pass  # afficher menu villager
                 else:
                     self.currently_selected = None
 

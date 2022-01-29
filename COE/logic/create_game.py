@@ -11,6 +11,7 @@ from COE.map.enum.map_types import MapTypes
 from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.logic.game_logic import GameLogic
 from COE.logic.time import Time_
+import datetime
 
 
 class CreateGame:  # pragma: no cover
@@ -93,4 +94,9 @@ class CreateGame:  # pragma: no cover
 
     def save_game(self):
         self.game.map.grass_tiles = None
+        tmp_name = self.game.name
+        game_name = tmp_name + str(datetime.datetime.today()).replace(" ", "_")
+        self.game.name = game_name
         self.saver.save_game(current_game=self.game, save_name=self.game.name)
+        self.game.name = tmp_name
+        self.game.map.blit_world()

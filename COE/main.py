@@ -33,8 +33,10 @@ def main():
 
             while game_logic.playing:
                 game_logic.run()
+                if game_logic.menu.saved:  # si demande de sauvegarde
+                    gen_game.save_game()  # sauvegarde de la partie
+                    game_logic.menu.saved = False
             window.playing = False
-            gen_game.save_game()
             window.menu = MenuPlay(window.display)
 
 
