@@ -1,3 +1,4 @@
+from COE.contents.entity_types import EntityTypes
 from .storage_building import StorageBuilding
 from .market import Market
 
@@ -8,8 +9,8 @@ class Farm(StorageBuilding):
             name="Farm",
             hp=480,
             positions=position,
-            height=1,
-            width=1,
+            height=3,
+            width=3,
             line_of_sight=1,
             resources=resource,
             max_held=250,
@@ -19,6 +20,10 @@ class Farm(StorageBuilding):
             wood_required=75,
             stone_required=0,
             construction_time=24,
+            melee_armor=0,
+            pierce_armor=0,
+            entity_type=EntityTypes.GROUND,
+            sub_entities=[],
         )
 
     def re_seeding_farm(self):

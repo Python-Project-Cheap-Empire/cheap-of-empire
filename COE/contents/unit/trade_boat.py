@@ -1,6 +1,6 @@
 from COE.contents.unit.unit import Unit
 from COE.logic.Player import Player
-from COE.contents.unit.enum.unit_types import UnitTypes
+from COE.contents.entity_types import EntityTypes
 
 
 class TradeBoat(Unit):
@@ -24,5 +24,6 @@ class TradeBoat(Unit):
             melee_armor=0,
             pierce_armor=0,
             player=player,
-            unit_type=UnitTypes.NAVY,
+            entity_type=EntityTypes.NAVY,
+            sub_entities=[],
         )
