@@ -5,7 +5,7 @@ from COE.map.enum.map_sizes import MapSizes
 from COE.map.enum.map_types import MapTypes
 from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.map.enum.cell_types import CellTypes
-from COE.contents.unit.enum.unit_types import UnitTypes
+from COE.contents.entity_types import EntityTypes
 
 
 def test_path_finding():
@@ -22,7 +22,9 @@ def test_path_finding():
     map_1.change_cell(3, 2, CellTypes.WATER)
     map_1.change_cell(3, 3, CellTypes.WATER)
 
-    assert find_move(map_1.dict_binary_cells.get(UnitTypes.GROUND), (0, 0), (4, 2)) == [
+    assert find_move(
+        map_1.dict_binary_cells.get(EntityTypes.GROUND), (0, 0), (4, 2)
+    ) == [
         (1, 0),
         (2, 0),
         (3, 0),
@@ -30,7 +32,9 @@ def test_path_finding():
         (4, 1),
         (4, 2),
     ]
-    assert find_move(map_1.dict_binary_cells.get(UnitTypes.GROUND), (0, 0), (0, 4)) == [
+    assert find_move(
+        map_1.dict_binary_cells.get(EntityTypes.GROUND), (0, 0), (0, 4)
+    ) == [
         (1, 0),
         (2, 0),
         (3, 0),
@@ -44,7 +48,9 @@ def test_path_finding():
         (1, 4),
         (0, 4),
     ]
-    assert find_move(map_1.dict_binary_cells.get(UnitTypes.GROUND), (0, 4), (0, 2)) == [
+    assert find_move(
+        map_1.dict_binary_cells.get(EntityTypes.GROUND), (0, 4), (0, 2)
+    ) == [
         (1, 4),
         (2, 4),
         (3, 4),
@@ -60,7 +66,7 @@ def test_path_finding():
         (0, 1),
         (0, 2),
     ]
-    assert find_move(map_1.dict_binary_cells.get(UnitTypes.NAVY), (1, 1), (3, 3)) == [
+    assert find_move(map_1.dict_binary_cells.get(EntityTypes.NAVY), (1, 1), (3, 3)) == [
         (2, 1),
         (3, 1),
         (3, 2),
@@ -91,7 +97,9 @@ def test_path_finding():
     map_1.populate_cell(4, 2, Tree((4, 2)))
     map_1.populate_cell(4, 3, Tree((4, 3)))
 
-    assert find_move(map_1.dict_binary_cells.get(UnitTypes.GROUND), (0, 0), (3, 2)) == [
+    assert find_move(
+        map_1.dict_binary_cells.get(EntityTypes.GROUND), (0, 0), (3, 2)
+    ) == [
         (1, 0),
         (2, 0),
         (3, 0),

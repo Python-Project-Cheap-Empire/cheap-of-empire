@@ -22,6 +22,8 @@ class Building(Entity):
         required_age: int,
         required_building: set,
         construction_time: int,
+        melee_armor: int,
+        pierce_armor: int,
         **kwargs
     ):
         self.is_buildable = False
@@ -31,6 +33,8 @@ class Building(Entity):
         self.required_age = required_age
         self.required_building = required_building
         self.construction_time = construction_time
+        self.melee_armor = melee_armor
+        self.pierce_armor = pierce_armor
         super().__init__(**kwargs)
 
     def update_is_buildable(self):

@@ -17,6 +17,10 @@ from COE.contents.building import (
     WatchTower,
     SmallWall,
 )
+from COE.map.enum.map_sizes import MapSizes
+from COE.map.enum.map_types import MapTypes
+from COE.map.enum.resources_rarity import ResourcesRarity
+from COE.map.map import Map
 
 
 def test_archery_range():
@@ -133,7 +137,6 @@ def test_house():
 
 def test_watch_tower():
     t = WatchTower((0, 0))
-    assert t.attack(Entity("Enemy", 0, (0, 0), 1, 1, 1)) == "Attacking..."
     assert t.damage == 3
     assert t.required_age == 2
     assert t.required_building == {Granary.__class__.__name__}
@@ -148,3 +151,8 @@ def test_small_wall():
     assert sw.hp == 100
     assert sw.wood_required == 20
     assert sw.construction_time == 10
+
+
+def test_placing_building():
+    m = Map([], MapSizes.MEDIUM, MapTypes.MEDITERRANEAN, ResourcesRarity.LOW)
+    h = House((0, 0))

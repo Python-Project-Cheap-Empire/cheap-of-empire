@@ -1,3 +1,4 @@
+from COE.contents.entity_types import EntityTypes
 from .food import Food
 
 
@@ -11,4 +12,6 @@ class CuttableAnimal(Food):
             height=1,
             width=1,
             line_of_sight=0,
+            entity_type=EntityTypes.GROUND,
+            sub_entities=[],
         )
