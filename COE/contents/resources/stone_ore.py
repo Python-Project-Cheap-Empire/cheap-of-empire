@@ -1,3 +1,4 @@
+from COE.contents.entity_types import EntityTypes
 from .stone import Stone
 from .resource_exceptions import MethodNotPermittedException
 
@@ -12,6 +13,8 @@ class StoneOre(Stone):
             height=1,
             width=1,
             line_of_sight=0,
+            entity_type=EntityTypes.GROUND,
+            sub_entities=[],
         )
 
     def increase_amount(self, amount):

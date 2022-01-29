@@ -1,6 +1,6 @@
 from enum import Enum
 
 
-class UnitTypes(Enum):
+class EntityTypes(Enum):
     GROUND = 1
     NAVY = 2
