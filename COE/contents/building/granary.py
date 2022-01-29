@@ -1,3 +1,4 @@
+from COE.contents.entity_types import EntityTypes
 from .storage_building import StorageBuilding
 from .technology_building import TechnologyBuilding
 from .town_center import TownCenter
@@ -18,8 +19,8 @@ class Granary(StorageBuilding, TechnologyBuilding):
             name="Granary",
             hp=500,
             positions=position,
-            height=1,
-            width=1,
+            height=3,
+            width=3,
             line_of_sight=6,
             resources=0,
             max_held=9999,
@@ -27,6 +28,13 @@ class Granary(StorageBuilding, TechnologyBuilding):
             required_age=1,
             required_researches={},
             researches={},
+            wood_required=120,
+            stone_required=0,
+            construction_time=30,
+            melee_armor=0,
+            pierce_armor=0,
+            entity_type=EntityTypes.GROUND,
+            sub_entities=[],
         )
 
     def upgrade_technology(self):

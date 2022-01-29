@@ -1,6 +1,6 @@
 from COE.contents.unit.unit import Unit
 from .cuttable_animal import CuttableAnimal
-from COE.contents.unit.enum.unit_types import UnitTypes
+from COE.contents.entity_types import EntityTypes
 
 
 class Deer(Unit):
@@ -13,13 +13,15 @@ class Deer(Unit):
             width=1,
             line_of_sight=0,
             attack_damage=0,
-            range=1,
+            pierce_attack=0,
+            range_=1,
             speed=1.5,
             rate_of_fire=0,
             melee_armor=2,
             pierce_armor=0,
             player=None,
-            unit_type=UnitTypes.GROUND,
+            entity_type=EntityTypes.GROUND,
+            sub_entities=[],
         )
         self.state = None  # State change when animal is dead
 

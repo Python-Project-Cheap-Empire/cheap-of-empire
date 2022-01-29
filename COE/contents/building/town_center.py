@@ -1,3 +1,4 @@
+from COE.contents.entity_types import EntityTypes
 from .storage_building import StorageBuilding
 from .military_building import MilitaryBuilding
 
@@ -18,6 +19,13 @@ class TownCenter(StorageBuilding, MilitaryBuilding):
             required_age=1,
             required_researches={},
             researches={},
+            wood_required=200,
+            stone_required=0,
+            construction_time=60,
+            melee_armor=0,
+            pierce_armor=0,
+            entity_type=EntityTypes.GROUND,
+            sub_entities=[],
         )
 
     def train_villager(self):

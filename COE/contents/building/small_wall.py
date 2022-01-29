@@ -1,3 +1,4 @@
+from COE.contents.entity_types import EntityTypes
 from .building import Building
 from .granary import Granary
 
@@ -15,4 +16,11 @@ class SmallWall(Building):
             required_age=2,
             required_researches={},  # Need research small wall
             researches={},
+            wood_required=20,
+            stone_required=0,
+            construction_time=10,
+            melee_armor=0,
+            pierce_armor=0,
+            entity_type=EntityTypes.GROUND,
+            sub_entities=[],
         )

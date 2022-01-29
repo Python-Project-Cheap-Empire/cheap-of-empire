@@ -1,4 +1,5 @@
 from COE.contents.entity import Entity
+from COE.contents.entity_types import EntityTypes
 from .building import Building
 from .granary import Granary
 
@@ -19,6 +20,13 @@ class WatchTower(Building):
             required_age=2,
             required_researches={},  # Watch tower
             researches={},
+            stone_required=150,
+            wood_required=0,
+            construction_time=30,
+            melee_armor=0,
+            pierce_armor=0,
+            entity_type=EntityTypes.GROUND,
+            sub_entities=[],
         )
 
     def attack(

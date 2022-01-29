@@ -5,7 +5,11 @@ from COE.map.cell import Cell
 
 class Static:  # pragma: no cover
     def __init__(self) -> None:
-        self.entities_pos_dict = {"tree": (11, -55), "villager": (25, -50)}
+        self.entities_pos_dict = {
+            "tree": (11, -55),
+            "villager": (25, -50),
+            "house": (0, 0),
+        }
         self.cells_size = Cell.get_pixel_cells_size()
         self.scaled_blocks = Cell.get_scaled_blocks()
         self.images = glob.glob("**/*.png", recursive=True)

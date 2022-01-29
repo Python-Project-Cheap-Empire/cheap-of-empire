@@ -1,3 +1,4 @@
+from COE.contents.entity_types import EntityTypes
 from .building import Building
 from .town_center import TownCenter
 
@@ -8,12 +9,19 @@ class House(Building):
             name="House",
             hp=75,
             positions=position,
-            height=1,
-            width=1,
+            height=2,
+            width=2,
             line_of_sight=4,
             required_building={TownCenter.__class__.__name__},
             required_age=1,
             required_researches={},
+            wood_required=30,
+            stone_required=0,
+            construction_time=15,
+            entity_type=EntityTypes.GROUND,
+            melee_armor=-2,
+            pierce_armor=7,
+            sub_entities=[],
         )
 
     def increase_max_population(self, amount=5) -> str:

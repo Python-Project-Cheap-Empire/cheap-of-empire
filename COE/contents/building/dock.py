@@ -1,3 +1,4 @@
+from COE.contents.entity_types import EntityTypes
 from .military_building import MilitaryBuilding
 from .technology_building import TechnologyBuilding
 from .town_center import TownCenter
@@ -17,6 +18,13 @@ class Dock(MilitaryBuilding, TechnologyBuilding):
             required_age=1,
             required_researches={},
             researches={},
+            wood_required=100,
+            stone_required=0,
+            construction_time=40,
+            melee_armor=0,
+            pierce_armor=0,
+            entity_type=EntityTypes.NAVY,
+            sub_entities=[],
         )
 
     def upgrade_technology(self):

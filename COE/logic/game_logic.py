@@ -30,7 +30,7 @@ class GameLogic:
         self.x_limit = self.display_.get_width() + self.static.width_cells_size
         self.y_limit = self.display_.get_height() + self.static.height_cells_size
         self.cheatcode = CheatCode(self.display_, self.game)
-        self.menu = GameMenu(self.display_, self.manager, self.cheatcode)
+        self.menu = GameMenu(self.display_, self.manager, self.cheatcode, self.timer)
 
     def run(self):
         self.events()
@@ -45,14 +45,14 @@ class GameLogic:
             self.game.event(self.static, event)
 
     def update(self):
+        dt = self.clock.tick(60) / 1000.0
         if not self.menu.pause:
             self.game.update()
             self.game.camera.update()
             # self.game.map.update(self.game.camera)
             self.item.update()
-            self.timer.update()
-        time_delta = self.clock.tick(60) / 1000.0
-        self.manager.update(time_delta)
+            self.timer.update(self.game.speed)
+        self.manager.update(dt)
 
     def draw(self):
         self.display_.fill((0, 0, 0))
@@ -69,21 +69,23 @@ class GameLogic:
             self.x_limit,
             self.y_limit,
         )
-        if self.game.currently_selected:
+        for selected_unit in self.game.currently_selected:
             self.game.map.draw_rect_around(
                 self.display_,
-                self.game.currently_selected.positions[0],
-                self.game.currently_selected.positions[1],
+                selected_unit.positions[0],
+                selected_unit.positions[1],
                 self.game.camera,
                 self.static.half_width_cells_size,
                 self.static.half_height_cells_size,
             )
-            self.menu.draw_entity(self.game.currently_selected)
+            self.menu.draw_entity(self.game.currently_selected[0])
         # self.item.draw_item(self.display_)
         self.timer.draw_time(self.display_)
         self.menu.display(self.game)
         self.menu.draw_fps(self.clock.get_fps())
-        # self.menu.draw_pos(self.game, self.static)
+        self.menu.draw_pos(self.game, self.static)
+        self.menu.draw_selection_rectangle(self.game.selection_rectangle)
+        self.menu.draw_shortcuts(self.game.speed)
         if self.menu.pause:
             self.menu.draw()
             self.cheatcode.draw()

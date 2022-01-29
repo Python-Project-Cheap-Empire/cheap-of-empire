@@ -1,3 +1,5 @@
+import copy
+from COE.contents.building.building import Building
 from COE.contents.entity import Entity
 from COE.contents.unit.unit import Unit
 from COE.logic.Player import Player
@@ -12,7 +14,7 @@ from COE.map.enum.map_types import MapTypes
 from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.map.enum.cell_types import CellTypes
 import pygame
-from COE.contents.unit.enum.unit_types import UnitTypes
+from COE.contents.entity_types import EntityTypes
 from COE.contents.resources.tree import Tree
 from COE.contents.unit.villager import Villager
 from pygame.locals import *
@@ -30,8 +32,8 @@ class Map:
                     players, self.size, self.type, self.resources_rarity
                 )
                 self.dict_binary_cells = {
-                    UnitTypes.GROUND: self.transform_for_unit(UnitTypes.GROUND),
-                    UnitTypes.NAVY: self.transform_for_unit(UnitTypes.NAVY),
+                    EntityTypes.GROUND: self.transform_for_unit(EntityTypes.GROUND),
+                    EntityTypes.NAVY: self.transform_for_unit(EntityTypes.NAVY),
                 }
                 self.grass_tiles = None
         except Exception as e:
@@ -47,8 +49,8 @@ class Map:
                 self.players, self.size, self.type, self.resources_rarity
             )
             self.dict_binary_cells = {
-                UnitTypes.GROUND: self.transform_for_unit(UnitTypes.GROUND),
-                UnitTypes.NAVY: self.transform_for_unit(UnitTypes.NAVY),
+                EntityTypes.GROUND: self.transform_for_unit(EntityTypes.GROUND),
+                EntityTypes.NAVY: self.transform_for_unit(EntityTypes.NAVY),
             }
             self.grass_tiles = None
             print(
@@ -101,7 +103,7 @@ class Map:
 
     def draw_rect_around(
         self, window, x, y, camera, half_width_cells_size, half_height_cells_size
-    ):
+    ):  # pragma: no cover
         _x, _y = self.map_to_screen(
             (x, y),
             camera.x_offset,
@@ -127,17 +129,17 @@ class Map:
         cell_type = self.cells[x][y].cell_type
         if cell_type == CellTypes.GRASS:
             if self.cells[x][y].entity:
-                self.dict_binary_cells.get(UnitTypes.GROUND)[y][x] = 0
+                self.dict_binary_cells.get(EntityTypes.GROUND)[y][x] = 0
             else:
-                self.dict_binary_cells.get(UnitTypes.GROUND)[y][x] = 1
-            self.dict_binary_cells.get(UnitTypes.NAVY)[y][x] = 0
+                self.dict_binary_cells.get(EntityTypes.GROUND)[y][x] = 1
+            self.dict_binary_cells.get(EntityTypes.NAVY)[y][x] = 0
 
         elif cell_type == CellTypes.WATER:
             if self.cells[x][y].entity:
-                self.dict_binary_cells.get(UnitTypes.NAVY)[y][x] = 0
+                self.dict_binary_cells.get(EntityTypes.NAVY)[y][x] = 0
             else:
-                self.dict_binary_cells.get(UnitTypes.NAVY)[y][x] = 1
-            self.dict_binary_cells.get(UnitTypes.GROUND)[y][x] = 0
+                self.dict_binary_cells.get(EntityTypes.NAVY)[y][x] = 1
+            self.dict_binary_cells.get(EntityTypes.GROUND)[y][x] = 0
 
     def change_cell(self, x, y, cell_type):
         self.cells[x][y] = Cell(cell_type, None)
@@ -151,19 +153,36 @@ class Map:
 
     def empty_cell(self, x, y):
         entity_on_cell = self.cells[x][y].entity
-        cell_type = self.cells[x][y].cell_type
-        if isinstance(entity_on_cell, Unit):
-            self.dict_binary_cells.get(entity_on_cell.unit_type)[y][x] = 1
-            self.cells[x][y].entity = None
-        elif isinstance(entity_on_cell, Entity):
-            if cell_type == CellTypes.GRASS:
-                self.dict_binary_cells.get(UnitTypes.GROUND)[y][x] = 1
-                self.cells[x][y].entity = None
-            elif cell_type == CellTypes.WATER:
-                self.dict_binary_cells.get(UnitTypes.WATER)[y][x] = 1
-                self.cells[x][y].entity = None
+        self.dict_binary_cells.get(entity_on_cell.entity_type)[y][x] = 1
+        self.cells[x][y].entity = None
 
-    def transform_for_unit(self, unit_type):
+    def place_building(self, x, y, player, building: Building):
+        for x_ in range(building.width):
+            for y_ in range(building.height):
+                s = self.cells[x + x_][y + y_]
+                if s.entity or s.cell_type.value != building.entity_type.value:
+                    return
+        if (
+            player._wood >= building.wood_required
+            and player._stone >= building.stone_required
+        ):
+
+            self.populate_cell(x, y, building)
+            player.buildings.append(building)
+            for x_ in range(building.width):
+                for y_ in range(building.height):
+                    if x_ != 0 or y_ != 0:
+                        building_ = copy.deepcopy(building)
+                        building_.is_master = False
+                        building_.positions = (x + x_, y + y_)
+                        building_.master = building
+                        self.populate_cell(x + x_, y + y_, building_)
+                        building.sub_entities.append(building_)
+                        player.buildings.append(building_)
+            player._wood -= building.wood_required
+            player._stone -= building.stone_required
+
+    def transform_for_unit(self, entity_type):
         trans_list = [
             [0 for _ in range(self.size.value)] for _ in range(self.size.value)
         ]
@@ -172,19 +191,16 @@ class Map:
                 if self.cells[x][y].entity:
                     trans_list[y][x] = 0
                 elif self.cells[x][y].cell_type.name == CellTypes.WATER.name:
-                    if unit_type == UnitTypes.NAVY:
+                    if entity_type == EntityTypes.NAVY:
                         trans_list[y][x] = 1
                     else:
                         trans_list[y][x] = 0
                 elif self.cells[x][y].cell_type.name == CellTypes.GRASS.name:
-                    if unit_type == UnitTypes.GROUND:
+                    if entity_type == EntityTypes.GROUND:
                         trans_list[y][x] = 1
                     else:
                         trans_list[y][x] = 0
         return trans_list
-
-    def event(self, game_logic):
-        pass
 
     def draw_map(self, window, camera):  # pragma: no cover
         """Draw a map on the screen using the cells"""
@@ -212,23 +228,26 @@ class Map:
         for x, row in enumerate(self.cells):
             for y, column in enumerate(row):
                 if column.entity:
-                    entity_x, entity_y = entities_pos_dict[column.entity.name.lower()]
-                    _x, _y = Map.map_to_screen(
-                        (x, y),
-                        camera.x_offset + entity_x,
-                        camera.y_offset + entity_y,
-                        half_width_cells_size,
-                        half_height_cells_size,
-                    )
-                    if (
-                        _x <= x_limit
-                        and _x >= -width_cells_size
-                        and _y >= -height_cells_size
-                        and _y <= y_limit
-                    ):
-                        window.blit(
-                            entities_images[column.entity.name.lower()], (_x, _y)
+                    if column.entity.is_master:
+                        entity_x, entity_y = entities_pos_dict[
+                            column.entity.name.lower()
+                        ]
+                        _x, _y = Map.map_to_screen(
+                            (x, y),
+                            camera.x_offset + entity_x,
+                            camera.y_offset + entity_y,
+                            half_width_cells_size,
+                            half_height_cells_size,
                         )
+                        if (
+                            _x <= x_limit
+                            and _x >= -width_cells_size
+                            and _y >= -height_cells_size
+                            and _y <= y_limit
+                        ):
+                            window.blit(
+                                entities_images[column.entity.name.lower()], (_x, _y)
+                            )
 
     def blit_world(self):  # pragma: no cover
         scaled_blocks = Cell.get_scaled_blocks()
@@ -251,9 +270,6 @@ class Map:
                 )
                 blit_world.blit(scaled_blocks[column.cell_type.name], (_x, _y))
         self.grass_tiles = blit_world
-
-    def update(self, camera):
-        pass
 
     @staticmethod
     def generate_map(
