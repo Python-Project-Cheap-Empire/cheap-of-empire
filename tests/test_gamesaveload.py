@@ -9,6 +9,7 @@ from COE.contents.unit.villager import Villager
 from COE.contents.building.storage_building import StorageBuilding
 from COE.camera import Camera
 from COE.contents.building.town_center import TownCenter
+from COE.map.MapGenerator import MapGenerator
 
 
 def test_singleton():
@@ -44,7 +45,8 @@ def test_save_and_load():
     storage = TownCenter((54, 78), True)
     players[0].buildings.append(storage)
     players[0].units.append(villager)
-    map = Map(players=players)
+    generator = MapGenerator(players=players)
+    map = generator.generate()
     game_save = Game(players, map, 1.0, Camera(0, 0), "new", None)
 
     try:
