@@ -11,6 +11,8 @@ from .enum.map_types import MapTypes
 from .enum.resources_rarity import ResourcesRarity
 from COE.contents.resources import *
 
+from COE.contents.unit.villager import Villager
+
 
 class MapGenerator:
     def __init__(
@@ -46,6 +48,17 @@ class MapGenerator:
             cells = self.place_water(cells)
             cells = self.place_forest(cells, 0.3)
             cells = self.place_resources(cells)
+
+        # Used for testing
+        if self.players:
+            vlg = Villager((1, 1), self.players[0])
+            cells[1][1].entity = vlg
+            self.players[0].units.append(vlg)
+            if len(self.players) > 1:
+                vlg = Villager((4, 4), self.players[1])
+                cells[4][4].entity = vlg
+                self.players[1].units.append(vlg)
+
         return Map(cells, self.players, self.size, self.type, self.resources_rarity)
 
     def _biome(self, value):
@@ -134,7 +147,7 @@ class MapGenerator:
                                     and not self.is_near_spawn((x + j, y + k))
                                 ):
                                     cells[x + j][y + k].entity = resource_list[rand_r](
-                                        position=(x, y)
+                                        position=(x + j, y + k)
                                     )
                     except IndexError:
                         continue

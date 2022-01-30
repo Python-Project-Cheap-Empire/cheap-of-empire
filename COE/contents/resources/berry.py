@@ -9,7 +9,7 @@ class Berry(Food):
             amount=40,
             position=position,
             name="Berry",
-            hp=1,
+            hp=-1,
             height=1,
             width=1,
             line_of_sight=0,
