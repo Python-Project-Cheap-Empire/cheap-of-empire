@@ -101,6 +101,8 @@ class Map:
     def draw_health_bar(
         self, window, x, y, camera, half_width_cells_size, half_height_cells_size, hp
     ):  # pragma: no cover
+        if hp < 0:
+            return
         _x, _y = self.map_to_screen(
             (x, y),
             camera.x_offset,

@@ -25,7 +25,7 @@ def test_tree():
     assert acacia.positions == (10, 15)
     assert acacia.name == "Tree"
     assert acacia.line_of_sight == 0
-    assert acacia.hp == 1
+    assert acacia.hp == -1
     assert acacia.width == 1
     assert acacia.height == 1
 
@@ -42,7 +42,7 @@ def test_gold_ore():
     assert goldy.amount == 60
     assert goldy.positions == (10, 50)
     assert goldy.name == "Gold ore"
-    assert goldy.hp == 1
+    assert goldy.hp == -1
     assert goldy.width == 1
     assert goldy.height == 1
     assert goldy.line_of_sight == 0
@@ -60,7 +60,7 @@ def test_stone_ore():
     assert pierre.amount == 60
     assert pierre.positions == (10, 15)
     assert pierre.name == "Stone ore"
-    assert pierre.hp == 1
+    assert pierre.hp == -1
     assert pierre.width == 1
     assert pierre.height == 1
     assert pierre.line_of_sight == 0
@@ -79,7 +79,7 @@ def test_berry():
     assert strawberry.amount == 40
     assert strawberry.positions == (15, 10)
     assert strawberry.name == "Berry"
-    assert strawberry.hp == 1
+    assert strawberry.hp == -1
     assert strawberry.width == 1
     assert strawberry.height == 1
     assert strawberry.line_of_sight == 0
