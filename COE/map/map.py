@@ -98,6 +98,31 @@ class Map:
             1,
         )
 
+    def draw_health_bar(
+        self, window, x, y, camera, half_width_cells_size, half_height_cells_size
+    ):  # pragma: no cover
+        _x, _y = self.map_to_screen(
+            (x, y),
+            camera.x_offset,
+            camera.y_offset,
+            half_width_cells_size,
+            half_height_cells_size,
+        )
+        width_cells_size = 2 * half_width_cells_size
+        height_cells_size = 2 * half_height_cells_size
+        # bar_position = [(_x, _y - 1.5*height_cells_size),
+        #                 (_x + width_cells_size, _y - 1.5*height_cells_size), hp, 5]
+        pygame.draw.polygon(
+            window,
+            (50, 205, 50),
+            [
+                (_x, _y - 1.5 * height_cells_size),
+                (_x + width_cells_size, _y - 1.5 * height_cells_size),
+            ],
+            7,
+        )
+        # pygame.draw.rect(window, (50,205,50), bar_position)
+
     def update_cell(self, x, y):
         cell_type = self.cells[x][y].cell_type
         if cell_type == CellTypes.GRASS:
