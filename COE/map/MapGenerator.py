@@ -23,13 +23,13 @@ class MapGenerator:
     ):
         self.size = map_size
         self.type = map_type
-        self.resources_rarity = resources_rarity
+        self.resources_rarity = self._get_threshold(resources_rarity)
         self.players = players
         if seed is None:
             self.seed = random.randint(0, 1000)
         else:
             self.seed = seed
-        self.spawn_point = (10, 10)
+        self.spawn_points = [(10, 10), (self.size.value - 10, self.size.value - 10)]
 
         random.seed(self.seed)
 
@@ -143,8 +143,18 @@ class MapGenerator:
         """
         x, y = coordinate
         return (
-            self.spawn_point[0] - proximity <= x <= self.spawn_point[0] + proximity
-            and self.spawn_point[1] - proximity <= y <= self.spawn_point[1] + proximity
+            self.spawn_points[0][0] - proximity
+            <= x
+            <= self.spawn_points[0][0] + proximity
+            and self.spawn_points[0][1] - proximity
+            <= y
+            <= self.spawn_points[0][1] + proximity
+            and self.spawn_points[1][0] - proximity
+            <= x
+            <= self.spawn_points[1][0] + proximity
+            and self.spawn_points[1][1] - proximity
+            <= y
+            <= self.spawn_points[1][1] + proximity
         )
 
     def _perlin_noise(self, size, octaves=5, seed=None):
@@ -161,3 +171,14 @@ class MapGenerator:
         map_noise = map_noise.tolist()
 
         return map_noise
+
+    def _get_threshold(self, resources_rarity):
+        threshold = 0
+        if resources_rarity.HIGH:
+            threshold = 0.1
+        if resources_rarity.MEDIUM:
+            threshold = 0.5
+        if resources_rarity.LOW:
+            threshold = 0.1
+
+        return threshold

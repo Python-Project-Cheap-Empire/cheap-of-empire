@@ -66,9 +66,7 @@ class CreateGame:  # pragma: no cover
             )
 
         static = Static()
-        generator = MapGenerator(
-            players, MapSizes.TINY, MapTypes.CONTINENTAL, ResourcesRarity.HIGH
-        )
+        generator = MapGenerator(players, size_map, type_map, ressources)
         gen_map = generator.generate()
         gen_map.blit_world()
         self.game = Game(
