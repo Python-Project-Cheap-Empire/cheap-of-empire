@@ -191,7 +191,7 @@ class MapGenerator:
             spawns.append((10, 10))
             spawns.append((self.size.value - 10, self.size.value - 10))
             spawns.append((10, self.size.value - 10))
-        if nb_players == 4:
+        if nb_players >= 4:
             spawns.append((10, 10))
             spawns.append((self.size.value - 10, self.size.value - 10))
             spawns.append((10, self.size.value - 10))
