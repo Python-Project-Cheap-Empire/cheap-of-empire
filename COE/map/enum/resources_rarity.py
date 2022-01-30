@@ -2,6 +2,6 @@ from enum import Enum
 
 
 class ResourcesRarity(Enum):
-    LOW = 1
-    MEDIUM = 2
-    HIGH = 3
+    LOW = 0.01
+    MEDIUM = 0.05
+    HIGH = 0.1
