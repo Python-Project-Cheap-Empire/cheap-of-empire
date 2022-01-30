@@ -51,7 +51,9 @@ class MapGenerator:
 
         # Used for testing
         if self.players is not None:
-            cells[1][1].entity = Villager((1, 1), self.players[0])
+            vlg = Villager((1, 1), self.players[0])
+            cells[1][1].entity = vlg
+            self.players[0].units.append(vlg)
 
         return Map(cells, self.players, self.size, self.type, self.resources_rarity)
 
