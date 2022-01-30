@@ -110,11 +110,10 @@ class Map:
             half_width_cells_size,
             half_height_cells_size,
         )
-        width_cells_size = 2 * half_width_cells_size
         height_cells_size = 2 * half_height_cells_size
-        bar_position1 = [_x, _y - 1.25 * height_cells_size, hp, 5]
-        bar_position2 = [_x, _y - 1.25 * height_cells_size, hp / 2, 5]
-        bar_position3 = [_x, _y - 1.25 * height_cells_size, hp / 4, 5]
+        bar_position1 = [_x + 10, _y - 1.5 * height_cells_size, hp, 5]
+        bar_position2 = [_x + 10, _y - 1.5 * height_cells_size, hp / 2, 5]
+        bar_position3 = [_x + 10, _y - 1.5 * height_cells_size, hp / 4, 5]
         bar_color1 = (50, 205, 50)
         bar_color2 = (255, 165, 0)
         bar_color3 = (255, 0, 0)
