@@ -23,13 +23,18 @@ class MapGenerator:
     ):
         self.size = map_size
         self.type = map_type
-        self.resources_rarity = self._get_threshold(resources_rarity)
+        self.resources_rarity = resources_rarity
         self.players = players
+
         if seed is None:
             self.seed = random.randint(0, 1000)
         else:
             self.seed = seed
-        self.spawn_points = [(10, 10), (self.size.value - 10, self.size.value - 10)]
+
+        if players is not None:
+            self.spawn_points = self.setup_spawns(len(players))
+        else:
+            self.spawn_points = []
 
         random.seed(self.seed)
 
@@ -111,7 +116,9 @@ class MapGenerator:
         for x in range(self.size.value):
             for y in range(self.size.value):
                 placement = random.random()
-                if placement < 0.01 and not self.is_near_spawn((x, y)):
+                if placement < self.resources_rarity.value and not self.is_near_spawn(
+                    (x, y)
+                ):
                     patch = self._perlin_noise(
                         3, octaves=8, seed=random.randint(0, 500)
                     )
@@ -121,7 +128,7 @@ class MapGenerator:
                         for j in range(3):
                             for k in range(3):
                                 if (
-                                    patch[j][k] < 0.6
+                                    patch[j][k] < random.random()
                                     and cells[x + j][y + k].cell_type == CellTypes.GRASS
                                     and not cells[x + j][y + k].entity
                                     and not self.is_near_spawn((x + j, y + k))
@@ -142,20 +149,21 @@ class MapGenerator:
         @return: True if near spawn; if not else
         """
         x, y = coordinate
-        return (
-            self.spawn_points[0][0] - proximity
-            <= x
-            <= self.spawn_points[0][0] + proximity
-            and self.spawn_points[0][1] - proximity
-            <= y
-            <= self.spawn_points[0][1] + proximity
-            and self.spawn_points[1][0] - proximity
-            <= x
-            <= self.spawn_points[1][0] + proximity
-            and self.spawn_points[1][1] - proximity
-            <= y
-            <= self.spawn_points[1][1] + proximity
-        )
+        is_near = False
+
+        for s in range(len(self.spawn_points)):
+            if (
+                self.spawn_points[s][0] - proximity
+                <= x
+                <= self.spawn_points[s][0] + proximity
+                and self.spawn_points[s][1] - proximity
+                <= y
+                <= self.spawn_points[s][1] + proximity
+            ):
+                is_near = True
+                break
+
+        return is_near
 
     def _perlin_noise(self, size, octaves=5, seed=None):
         if seed is None:
@@ -172,13 +180,21 @@ class MapGenerator:
 
         return map_noise
 
-    def _get_threshold(self, resources_rarity):
-        threshold = 0
-        if resources_rarity.HIGH:
-            threshold = 0.1
-        if resources_rarity.MEDIUM:
-            threshold = 0.5
-        if resources_rarity.LOW:
-            threshold = 0.1
+    def setup_spawns(self, nb_players):
+        spawns = []
+        if nb_players == 1:
+            spawns.append((10, 10))
+        if nb_players == 2:
+            spawns.append((10, 10))
+            spawns.append((self.size.value - 10, self.size.value - 10))
+        if nb_players == 3:
+            spawns.append((10, 10))
+            spawns.append((self.size.value - 10, self.size.value - 10))
+            spawns.append((10, self.size.value - 10))
+        if nb_players == 4:
+            spawns.append((10, 10))
+            spawns.append((self.size.value - 10, self.size.value - 10))
+            spawns.append((10, self.size.value - 10))
+            spawns.append((self.size.value - 10, 10))
 
-        return threshold
+        return spawns
