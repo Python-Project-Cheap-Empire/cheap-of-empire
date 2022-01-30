@@ -85,7 +85,7 @@ class GameLogic:
                 self.game.camera,
                 self.static.half_width_cells_size,
                 self.static.half_height_cells_size,
-                # self.hp
+                selected_unit.hp,
             )
         self.item.draw_item(self.display_)
         self.timer.draw_time(self.display_)

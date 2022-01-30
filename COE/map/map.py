@@ -99,7 +99,7 @@ class Map:
         )
 
     def draw_health_bar(
-        self, window, x, y, camera, half_width_cells_size, half_height_cells_size
+        self, window, x, y, camera, half_width_cells_size, half_height_cells_size, hp
     ):  # pragma: no cover
         _x, _y = self.map_to_screen(
             (x, y),
@@ -110,18 +110,18 @@ class Map:
         )
         width_cells_size = 2 * half_width_cells_size
         height_cells_size = 2 * half_height_cells_size
-        # bar_position = [(_x, _y - 1.5*height_cells_size),
-        #                 (_x + width_cells_size, _y - 1.5*height_cells_size), hp, 5]
-        pygame.draw.polygon(
-            window,
-            (50, 205, 50),
-            [
-                (_x, _y - 1.5 * height_cells_size),
-                (_x + width_cells_size, _y - 1.5 * height_cells_size),
-            ],
-            7,
-        )
-        # pygame.draw.rect(window, (50,205,50), bar_position)
+        bar_position1 = [_x, _y - 1.25 * height_cells_size, hp, 5]
+        bar_position2 = [_x, _y - 1.25 * height_cells_size, hp / 2, 5]
+        bar_position3 = [_x, _y - 1.25 * height_cells_size, hp / 4, 5]
+        bar_color1 = (50, 205, 50)
+        bar_color2 = (255, 165, 0)
+        bar_color3 = (255, 0, 0)
+        if hp == hp:
+            pygame.draw.rect(window, bar_color1, bar_position1)
+        if hp == 1 / 2 * hp:
+            pygame.draw.rect(window, bar_color2, bar_position2)
+        if hp == 1 / 4 * hp:
+            pygame.draw.rect(window, bar_color3, bar_position3)
 
     def update_cell(self, x, y):
         cell_type = self.cells[x][y].cell_type
