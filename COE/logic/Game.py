@@ -1,4 +1,6 @@
 from typing import List
+from COE.contents.building.building import Building
+from COE.contents.building.house import House
 from COE.contents.entity import Entity
 from COE.contents.unit.unit import Unit
 from COE.contents.unit.villager import Villager
@@ -57,7 +59,7 @@ class Game:
                     #     unit.current_path = None
                     # else:
                     unit.current_path = find_move(
-                        self.map.dict_binary_cells.get(unit.unit_type),
+                        self.map.dict_binary_cells.get(unit.entity_type),
                         unit.positions,
                         unit.current_path[-1],
                     )
@@ -77,11 +79,60 @@ class Game:
             """
             attack an enemy if is_attack and check_in_range
             """
-            if unit.attacked_entity is None or unit.attacked_entity.hp <= 0:
-                unit.attacked_entity = None
-                unit.is_attacking = False
-            elif unit.is_attacking and unit.check_in_range(unit.attacked_entity):
-                unit.update_attack(self.speed)
+            if (
+                unit.is_attacking
+                and unit.attacked_entity
+                and unit.check_in_range(unit.attacked_entity)
+            ):
+                if unit.attacked_entity.hp <= 0:
+                    unit.attacked_entity = None
+                    unit.is_attacking = False
+                else:
+                    remaining_hp = unit.update_attack(self.speed)
+                    if remaining_hp is not None and remaining_hp <= 0:
+                        if unit.attacked_entity.is_master:
+                            for entity in unit.attacked_entity.sub_entities:
+                                if isinstance(entity, Building):
+                                    self.players[1].buildings.remove(entity)
+                                elif isinstance(entity, Unit):
+                                    self.players[1].units.remove(entity)
+                                self.map.empty_cell(
+                                    entity.positions[0], entity.positions[1]
+                                )
+                            if isinstance(unit.attacked_entity, Building):
+                                self.players[1].buildings.remove(unit.attacked_entity)
+                            elif isinstance(unit.attacked_entity, Unit):
+                                self.players[1].units.remove(unit.attacked_entity)
+                            self.map.empty_cell(
+                                unit.attacked_entity.positions[0],
+                                unit.attacked_entity.positions[1],
+                            )
+
+                        else:
+                            for entity in unit.attacked_entity.master.sub_entities:
+                                if isinstance(entity, Building):
+                                    self.players[1].buildings.remove(entity)
+                                elif isinstance(entity, Unit):
+                                    self.players[1].units.remove(entity)
+                                self.map.empty_cell(
+                                    entity.positions[0], entity.positions[1]
+                                )
+
+                            if isinstance(unit.attacked_entity.master, Building):
+                                self.players[1].buildings.remove(
+                                    unit.attacked_entity.master
+                                )
+                            elif isinstance(unit.attacked_entity.master, Unit):
+                                self.players[1].units.remove(
+                                    unit.attacked_entity.master
+                                )
+                            self.map.empty_cell(
+                                unit.attacked_entity.master.positions[0],
+                                unit.attacked_entity.master.positions[1],
+                            )
+                        unit.attacked_entity = None
+                        unit.is_attacking = False
+
                 # print("mode attack is on")
         for unit in self.players[1].units:
             unit.current_path = unit.current_path
@@ -91,7 +142,7 @@ class Game:
                 ]
                 if next_cell_in_path.entity:
                     unit.current_path = find_move(
-                        self.map.dict_binary_cells.get(unit.unit_type),
+                        self.map.dict_binary_cells.get(unit.entity_type),
                         unit.positions,
                         unit.current_path[-1],
                     )
@@ -102,9 +153,6 @@ class Game:
                     )
                     unit.positions = unit.current_path[0][0], unit.current_path[0][1]
                     unit.current_path.pop(0)
-            if unit.hp <= 0:
-                self.map.empty_cell(unit.positions[0], unit.positions[1])
-                self.players[1].units.remove(unit)
 
     def event(self, static, event):  # pragma: no cover
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -148,24 +196,13 @@ class Game:
                                 or self.map.cells[x][y].entity
                                 in self.players[1].buildings
                             ):
-                                if selected_unit.check_in_range(
-                                    self.map.cells[x][y].entity
-                                ):
-                                    # selected_unit.attack(selected_unit.attacked_entity)
-                                    selected_unit.update_attack(self.speed)
-                                    # print(
-                                    #     "attack unit at pos{}".format(
-                                    #         self.map.cells[x][y]
-                                    #     )
-                                    # )
-                                else:
-                                    selected_unit.current_path = find_move(
-                                        self.map.dict_binary_cells.get(
-                                            selected_unit.unit_type
-                                        ),
-                                        selected_unit.positions,
-                                        (x, y),
-                                    )
+                                selected_unit.current_path = find_move(
+                                    self.map.dict_binary_cells.get(
+                                        selected_unit.entity_type
+                                    ),
+                                    selected_unit.positions,
+                                    (x, y),
+                                )
                                 selected_unit.attacked_entity = self.map.cells[x][
                                     y
                                 ].entity
@@ -173,7 +210,7 @@ class Game:
                             else:
                                 selected_unit.current_path = find_move(
                                     self.map.dict_binary_cells.get(
-                                        selected_unit.unit_type
+                                        selected_unit.entity_type
                                     ),
                                     selected_unit.positions,
                                     (x, y),
@@ -215,3 +252,6 @@ class Game:
 
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_F4:
             self.speed = (self.speed + 2) % 12
+
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_F5:
+            self.map.place_building(15, 15, self.players[1], House((15, 15)))

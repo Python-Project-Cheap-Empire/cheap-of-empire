@@ -11,6 +11,7 @@ class Static:  # pragma: no cover
             "gold ore": (10, -8),
             "stone ore": (10, -8),
             "berry": (8, -27),
+            "house": (0, 0),
         }
         self.cells_size = Cell.get_pixel_cells_size()
         self.scaled_blocks = Cell.get_scaled_blocks()
