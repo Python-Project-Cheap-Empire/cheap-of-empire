@@ -47,25 +47,36 @@ class MapGenerator:
         return Cell(CellTypes.GRASS, None)
 
     def place_biomes(self):
-        cells = self._perlin_noise()
+        cells = self._perlin_noise(self.size.value)
         for x in range(self.size.value):
             for y in range(self.size.value):
                 cells[x][y] = self._biome(cells[x][y])
         return cells
 
     def place_water(self, cells):
+        """
+        Place water in center
+        @param cells:
+        @return:
+        """
         center = int(self.size.value / 2)
 
         # First we do a square
         quarter = int(self.size.value / 4)
-        for x in range(quarter):
-            for y in range(quarter):
+        for x in range(int(-quarter / 2), int(quarter / 2)):
+            for y in range(int(-quarter / 2), int(quarter / 2)):
                 cells[center + x][center + y] = Cell(CellTypes.WATER, None)
 
         return cells
 
     def place_forest(self, cells, threshold):
-        map_tree = self._perlin_noise(octaves=6, seed=self.seed)
+        """
+        Places forest and trees
+        @param cells: cells to populate
+        @param threshold: threshold for the forest
+        @return: cells
+        """
+        map_tree = self._perlin_noise(self.size.value, octaves=6, seed=self.seed)
 
         # place forest
         for x in range(self.size.value):
@@ -73,6 +84,7 @@ class MapGenerator:
                 if (
                     cells[x][y].cell_type == CellTypes.GRASS
                     and map_tree[x][y] < threshold
+                    and not self.is_near_spawn((x, y))
                 ):
                     cells[x][y].entity = Tree((x, y))
 
@@ -89,41 +101,60 @@ class MapGenerator:
         return cells
 
     def place_resources(self, cells):
+        """
+        Places resources inside the map
+        @param cells: the cells to populate
+        @return: cells
+        """
         resource_list = [GoldOre, StoneOre, Berry]
 
         for x in range(self.size.value):
             for y in range(self.size.value):
                 placement = random.random()
-                if placement < 0.1 and not self.is_near_spawn((x, y)):
-                    if (
-                        cells[x][y].cell_type == CellTypes.GRASS
-                        and not cells[x][y].entity
-                    ):
-                        rand_r = random.randint(0, 2)
-                        cells[x][y].entity = resource_list[rand_r](position=(x, y))
+                if placement < 0.01 and not self.is_near_spawn((x, y)):
+                    patch = self._perlin_noise(
+                        3, octaves=8, seed=random.randint(0, 500)
+                    )
+                    rand_r = random.randint(0, 2)
+
+                    try:
+                        for j in range(3):
+                            for k in range(3):
+                                if (
+                                    patch[j][k] < 0.6
+                                    and cells[x + j][y + k].cell_type == CellTypes.GRASS
+                                    and not cells[x + j][y + k].entity
+                                    and not self.is_near_spawn((x + j, y + k))
+                                ):
+                                    cells[x + j][y + k].entity = resource_list[rand_r](
+                                        position=(x, y)
+                                    )
+                    except IndexError:
+                        continue
+
         return cells
 
     def is_near_spawn(self, coordinate: tuple, proximity=5):
+        """
+        Checke if cell is near spawn
+        @param coordinate: coordinate of the cell to check
+        @param proximity: distance to spawn point
+        @return: True if near spawn; if not else
+        """
         x, y = coordinate
         return (
             self.spawn_point[0] - proximity <= x <= self.spawn_point[0] + proximity
             and self.spawn_point[1] - proximity <= y <= self.spawn_point[1] + proximity
         )
 
-    def _perlin_noise(self, octaves=5, seed=None):
+    def _perlin_noise(self, size, octaves=5, seed=None):
         if seed is None:
             noise = PerlinNoise(octaves=5, seed=self.seed)
         else:
             noise = PerlinNoise(octaves=5, seed=seed)
 
         map_noise = np.asarray(
-            [
-                [
-                    noise([i / self.size.value, j / self.size.value])
-                    for j in range(self.size.value)
-                ]
-                for i in range(self.size.value)
-            ]
+            [[noise([i / size, j / size]) for j in range(size)] for i in range(size)]
         )
         map_noise = np.interp(map_noise, (map_noise.min(), map_noise.max()), (0, +1))
 
