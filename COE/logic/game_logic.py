@@ -75,6 +75,15 @@ class GameLogic:
                 self.static.half_width_cells_size,
                 self.static.half_height_cells_size,
             )
+            self.game.map.draw_health_bar(
+                self.display_,
+                selected_unit.positions[0],
+                selected_unit.positions[1],
+                self.game.camera,
+                self.static.half_width_cells_size,
+                self.static.half_height_cells_size,
+                selected_unit.hp,
+            )
         if self.game.currently_selected:
             self.menu.draw_entity(self.game.currently_selected[0])
         self.timer.draw_time(self.display_)

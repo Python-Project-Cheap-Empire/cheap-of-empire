@@ -9,7 +9,7 @@ class StoneOre(Stone):
             amount=60,
             name="Stone ore",
             positions=position,
-            hp=1,
+            hp=-1,
             height=1,
             width=1,
             line_of_sight=0,

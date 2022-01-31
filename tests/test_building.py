@@ -151,8 +151,3 @@ def test_small_wall():
     assert sw.hp == 100
     assert sw.wood_required == 20
     assert sw.construction_time == 10
-
-
-def test_placing_building():
-    m = Map([], MapSizes.MEDIUM, MapTypes.MEDITERRANEAN, ResourcesRarity.LOW)
-    h = House((0, 0))
