@@ -40,7 +40,8 @@ class Unit(Entity):
         self.attacked_entity = None
         self.current_path: list = []
         self.pierce_attack = pierce_attack
-        self.last_update = time.time()
+        self.prev_attack_time = time.time()
+        self.prev_move_time = time.time()
 
     """
     after rate_of_fire (s)
@@ -51,9 +52,11 @@ class Unit(Entity):
         s = None
         if self.is_attacking:
             now = time.time()
-            if (now - self.last_update) * 60 * game_speed * self.rate_of_fire >= 20:
+            if (
+                now - self.prev_attack_time
+            ) * 60 * game_speed * self.rate_of_fire >= 20:
                 s = self.attack()
-                self.last_update = now
+                self.prev_attack_time = now
         return s
 
     def attack(self):

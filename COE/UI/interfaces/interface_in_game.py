@@ -2,6 +2,8 @@ import time
 import pygame
 from pygame.locals import QUIT
 import pygame_gui
+from COE.contents.building.building import Building
+from COE.contents.unit.villager import Villager
 from COE.map.map import Map
 
 # importer la classe static pour les images
@@ -13,10 +15,10 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 class GameMenu:
-    def __init__(self, display_, manager, cheat_code, timer):
+    def __init__(self, display_, manager, cheat_code, timer, static):
         self.display_ = display_
         self.menu_passed = False
-        self.static = Static()
+        self.static = static
         self.screen_size = pygame.display.get_surface().get_size()
         self.width = self.screen_size[0]
         self.height = self.screen_size[1]
@@ -49,7 +51,7 @@ class GameMenu:
             ),
             pygame_gui.elements.UIButton(
                 relative_rect=pygame.Rect(
-                    (self.ESM[0] + 250, self.ESM[1] + 300), (100, 50)
+                    (self.ESM[0] + 250, self.ESM[1] + 150), (100, 50)
                 ),
                 text="Save",
                 manager=self.manager,
@@ -57,57 +59,150 @@ class GameMenu:
             ),
         ]
         self.buttons[0].visible = 0
-        self.multicateur = (
+        self.static.multiplicateur = (
             1 if self.width // 2 > 1000 else ((self.width * (3 / 8)) / (1000))
         )
-        self.mul_pannelmenu = (self.width * (4 / 8)) / 502
-        self.mul_pannelaction = (107 * self.mul_pannelmenu) / 343
-        self.imgs_panel = [
-            pygame.transform.scale(
-                self.static.image_cache["resourcecivpanel_04"],
-                (1000 * self.multicateur, 105 * self.multicateur),
-            ),
-            pygame.transform.scale(
-                self.static.image_cache["menucivpanel_04"],
-                (502 * self.mul_pannelmenu, 107 * self.mul_pannelmenu),
-            ),
-            pygame.transform.scale(
-                self.static.image_cache["actioncivpanel_04"],
-                (674 * self.mul_pannelaction, 343 * self.mul_pannelaction),
-            ),
-        ]
-        self.imgs_icon = [
+        self.font_size = int(35 * self.static.multiplicateur)
+        self.top_panel = ((105 * self.static.multiplicateur) / 2) - (
+            (self.font_size * self.static.multiplicateur) / 2
+        )
+        self.partition_panel = (
+            1000 * self.static.multiplicateur - (30 * self.static.multiplicateur * 2)
+        ) / 5
+        self.static.mul_menu_panel = (self.width * (4 / 8)) / 502
+        self.static.mul_action_panel = (107 * self.static.mul_menu_panel) / 343
+        self.top_x_panel = self.width / 2 - (self.static.mul_menu_panel * 502 / 2)
+        self.top_y_panel = self.height - (self.static.mul_menu_panel * 107)
+        self.top_panel = ((105 * self.static.multiplicateur) / 2) - (
+            (62 * self.static.multiplicateur) / 2
+        )
+        self.partition_panel = (
+            1000 * self.static.multiplicateur - (30 * self.static.multiplicateur * 2)
+        ) / 5
+        self.static.scaled_UI_imgs = {
+            "resource_panel": [
+                pygame.transform.scale(
+                    self.static.image_cache["resourcecivpanel_04"],
+                    (
+                        1000 * self.static.multiplicateur,
+                        105 * self.static.multiplicateur,
+                    ),
+                ),
+                (0, 0),
+            ],
+            "menu_panel": [
+                pygame.transform.scale(
+                    self.static.image_cache["menucivpanel_04"],
+                    (
+                        502 * self.static.mul_menu_panel,
+                        107 * self.static.mul_menu_panel,
+                    ),
+                ),
+                (
+                    self.width / 2 - (self.static.mul_menu_panel * 502 / 2),
+                    self.height - (self.static.mul_menu_panel * 107),
+                ),
+            ],
+            "action_panel": [
+                pygame.transform.scale(
+                    self.static.image_cache["actioncivpanel_04"],
+                    (
+                        674 * self.static.mul_action_panel,
+                        343 * self.static.mul_action_panel,
+                    ),
+                ),
+                (0, self.height - (self.static.mul_menu_panel * 107)),
+            ],
             # icon du bois
-            pygame.transform.scale(
-                self.static.image_cache["resourceicons_18"],
-                (62 * self.multicateur, 62 * self.multicateur),
-            ),
+            "wood": [
+                pygame.transform.scale(
+                    self.static.image_cache["resourceicons_18"],
+                    (62 * self.static.multiplicateur, 62 * self.static.multiplicateur),
+                ),
+                (
+                    self.partition_panel * 0 + (30 * self.static.multiplicateur),
+                    self.top_panel,
+                ),
+            ],
             # icon de la nouriture
-            pygame.transform.scale(
-                self.static.image_cache["resourceicons_03"],
-                (62 * self.multicateur, 62 * self.multicateur),
-            ),
+            "food": [
+                pygame.transform.scale(
+                    self.static.image_cache["resourceicons_03"],
+                    (62 * self.static.multiplicateur, 62 * self.static.multiplicateur),
+                ),
+                (
+                    self.partition_panel * 1 + (30 * self.static.multiplicateur),
+                    self.top_panel,
+                ),
+            ],
             # icon de l'or
-            pygame.transform.scale(
-                self.static.image_cache["resourceicons_06"],
-                (62 * self.multicateur, 62 * self.multicateur),
-            ),
+            "gold": [
+                pygame.transform.scale(
+                    self.static.image_cache["resourceicons_06"],
+                    (62 * self.static.multiplicateur, 62 * self.static.multiplicateur),
+                ),
+                (
+                    self.partition_panel * 2 + (30 * self.static.multiplicateur),
+                    self.top_panel,
+                ),
+            ],
             # icon de pierre
-            pygame.transform.scale(
-                self.static.image_cache["resourceicons_15"],
-                (62 * self.multicateur, 62 * self.multicateur),
-            ),
+            "stone": [
+                pygame.transform.scale(
+                    self.static.image_cache["resourceicons_15"],
+                    (62 * self.static.multiplicateur, 62 * self.static.multiplicateur),
+                ),
+                (
+                    self.partition_panel * 3 + (30 * self.static.multiplicateur),
+                    self.top_panel,
+                ),
+            ],
             # icon du tipi
-            pygame.transform.scale(
-                self.static.image_cache["resourceicons_12"],
-                (62 * self.multicateur, 62 * self.multicateur),
-            ),
+            "tipi": [
+                pygame.transform.scale(
+                    self.static.image_cache["resourceicons_12"],
+                    (62 * self.static.multiplicateur, 62 * self.static.multiplicateur),
+                ),
+                (
+                    self.partition_panel * 4 + (30 * self.static.multiplicateur),
+                    self.top_panel,
+                ),
+            ],
             # icon player
-            pygame.transform.scale(
-                self.static.image_cache["ui_uniticons_01"],
-                (62 * self.mul_pannelmenu, 62 * self.mul_pannelmenu),
-            ),
-        ]
+            "villager": [
+                pygame.transform.scale(
+                    self.static.image_cache["ui_uniticons_01"],
+                    (50 * self.static.mul_menu_panel, 50 * self.static.mul_menu_panel),
+                ),
+                (
+                    self.top_x_panel + (40 * self.static.mul_menu_panel),
+                    self.top_y_panel + (20 * self.static.mul_menu_panel),
+                ),
+            ],
+            "buildings": {
+                "house": [
+                    pygame.transform.scale(
+                        self.static.image_cache["ui_buildinghouse"],
+                        (
+                            100 * self.static.mul_action_panel,
+                            100 * self.static.mul_action_panel,
+                        ),
+                    ),
+                    (200, (self.height - (self.static.mul_menu_panel * 107)) + 20),
+                ],
+                "barrack": [
+                    pygame.transform.scale(
+                        self.static.image_cache["ui_buildingbarrack"],
+                        (
+                            100 * self.static.mul_action_panel,
+                            100 * self.static.mul_action_panel,
+                        ),
+                    ),
+                    (275, (self.height - (self.static.mul_menu_panel * 107)) + 20),
+                ],
+            },
+        }
+
         self.cheat_code = cheat_code
         self.pause = False
         self.clock = pygame.time.Clock()
@@ -145,13 +240,18 @@ class GameMenu:
     def draw_fps(self, fps):
         self.draw_text(
             f"fps={round(fps)}",
-            int(25 * self.multicateur),
+            int(40 * self.static.multiplicateur),
             (0, 255, 0),
-            (0, 0),
+            (self.width - 100, 0),
         )
 
     def draw_shortcuts(self, speed):
-        self.draw_text(f"F4 | speed: {speed}", 30, (0, 255, 0), (self.width - 300, 0))
+        self.draw_text(
+            f"F4 | speed: {speed}",
+            int(40 * self.static.multiplicateur),
+            (0, 255, 0),
+            (self.width - 300, 0),
+        )
 
     def draw(self):
         s = pygame.Surface((self.width, self.height))
@@ -163,64 +263,63 @@ class GameMenu:
         self.display_.blit(s, (0, 0))
 
     def draw_ressources(self, game):
-        font_size = int(35 * self.multicateur)
-        top_pannel = ((105 * self.multicateur) / 2) - (
-            (font_size * self.multicateur) / 2
-        )
-        partition_pannel = (1000 * self.multicateur - (30 * self.multicateur * 2)) / 5
         self.draw_text(
             str(game.players[0]._wood),
-            font_size,
+            self.font_size,
             (255, 255, 255),
             (
-                partition_pannel * 0
-                + (30 * self.multicateur)
-                + (67 * self.multicateur),
-                top_pannel,
+                self.partition_panel * 0
+                + (30 * self.static.multiplicateur)
+                + (67 * self.static.multiplicateur),
+                self.top_panel,
             ),
         )
         self.draw_text(
             str(game.players[0]._food),
-            font_size,
+            self.font_size,
             (255, 255, 255),
             (
-                partition_pannel * 1
-                + (30 * self.multicateur)
-                + (67 * self.multicateur),
-                top_pannel,
+                self.partition_panel * 1
+                + (30 * self.static.multiplicateur)
+                + (67 * self.static.multiplicateur),
+                self.top_panel,
             ),
         )
         self.draw_text(
             str(game.players[0]._gold),
-            font_size,
+            self.font_size,
             (255, 255, 255),
             (
-                partition_pannel * 2
-                + (30 * self.multicateur)
-                + (67 * self.multicateur),
-                top_pannel,
+                self.partition_panel * 2
+                + (30 * self.static.multiplicateur)
+                + (67 * self.static.multiplicateur),
+                self.top_panel,
             ),
         )
         self.draw_text(
             str(game.players[0]._stone),
-            font_size,
+            self.font_size,
             (255, 255, 255),
             (
-                partition_pannel * 3
-                + (30 * self.multicateur)
-                + (67 * self.multicateur),
-                top_pannel,
+                self.partition_panel * 3
+                + (30 * self.static.multiplicateur)
+                + (67 * self.static.multiplicateur),
+                self.top_panel,
             ),
         )
+        nb_house = 0
+        for building in game.players[0].buildings:
+            if building.name == "house":
+                nb_house += 1
         self.draw_text(
-            "?",
-            font_size,
+            f"{len(game.players[0].units)}/{5+(5*nb_house)}",
+            self.font_size,
             (255, 255, 255),
             (
-                partition_pannel * 4
-                + (30 * self.multicateur)
-                + (67 * self.multicateur),
-                top_pannel,
+                self.partition_panel * 4
+                + (30 * self.static.multiplicateur)
+                + (67 * self.static.multiplicateur),
+                self.top_panel,
             ),
         )
 
@@ -230,59 +329,81 @@ class GameMenu:
         self.display_.blit(textsurface, positions)
 
     def display(self, game):
-        self.display_.blit(self.imgs_panel[0], (0, 0))  # panel ressources
-        top_pannel = ((105 * self.multicateur) / 2) - ((62 * self.multicateur) / 2)
-        partition_pannel = (1000 * self.multicateur - (30 * self.multicateur * 2)) / 5
         self.display_.blit(
-            self.imgs_icon[0],
-            (partition_pannel * 0 + (30 * self.multicateur), top_pannel),
+            self.static.scaled_UI_imgs["resource_panel"][0],
+            self.static.scaled_UI_imgs["resource_panel"][1],
+        )  # panel ressources
+        self.display_.blit(
+            self.static.scaled_UI_imgs["wood"][0],
+            self.static.scaled_UI_imgs["wood"][1],
         )  # wood
         self.display_.blit(
-            self.imgs_icon[1],
-            (partition_pannel * 1 + (30 * self.multicateur), top_pannel),
+            self.static.scaled_UI_imgs["food"][0],
+            self.static.scaled_UI_imgs["food"][1],
         )  # food
         self.display_.blit(
-            self.imgs_icon[2],
-            (partition_pannel * 2 + (30 * self.multicateur), top_pannel),
+            self.static.scaled_UI_imgs["gold"][0],
+            self.static.scaled_UI_imgs["gold"][1],
         )  # gold
         self.display_.blit(
-            self.imgs_icon[3],
-            (partition_pannel * 3 + (30 * self.multicateur), top_pannel),
+            self.static.scaled_UI_imgs["stone"][0],
+            self.static.scaled_UI_imgs["stone"][1],
         )  # stone
         self.display_.blit(
-            self.imgs_icon[4],
-            (partition_pannel * 4 + (30 * self.multicateur), top_pannel),
+            self.static.scaled_UI_imgs["tipi"][0],
+            self.static.scaled_UI_imgs["tipi"][1],
         )  # tipi
         self.draw_ressources(game)
 
     def draw_entity(self, entity):
-        top_pannel_y = self.height - (self.mul_pannelmenu * 107)
-        top_pannel_x = self.width / 2 - (self.mul_pannelmenu * 502 / 2)
-        self.display_.blit(self.imgs_panel[1], (top_pannel_x, top_pannel_y))
-        self.display_.blit(self.imgs_panel[2], (0, top_pannel_y))
         self.display_.blit(
-            self.imgs_icon[5],
-            (
-                top_pannel_x + (40 * self.mul_pannelmenu),
-                top_pannel_y + (15 * self.mul_pannelmenu),
-            ),
+            self.static.scaled_UI_imgs["menu_panel"][0],
+            self.static.scaled_UI_imgs["menu_panel"][1],
         )
+        if isinstance(entity, Villager):
+            self.display_.blit(
+                self.static.scaled_UI_imgs["action_panel"][0],
+                self.static.scaled_UI_imgs["action_panel"][1],
+            )
+            self.display_.blit(
+                self.static.scaled_UI_imgs["buildings"]["house"][0],
+                self.static.scaled_UI_imgs["buildings"]["house"][1],
+            )
+            self.display_.blit(
+                self.static.scaled_UI_imgs["buildings"]["barrack"][0],
+                self.static.scaled_UI_imgs["buildings"]["barrack"][1],
+            )
+            self.display_.blit(
+                self.static.scaled_UI_imgs["villager"][0],
+                self.static.scaled_UI_imgs["villager"][1],
+            )
+        elif isinstance(entity, Building):
+            self.display_.blit(
+                self.static.scaled_UI_imgs["buildings"][entity.name.lower()][0],
+                (
+                    self.top_x_panel + (50 * self.static.mul_menu_panel),
+                    self.top_y_panel + (25 * self.static.mul_menu_panel),
+                ),
+            )
+
         self.draw_text(
             entity.name,
             20,
             (255, 255, 255),
             (
-                top_pannel_x + (502 * self.mul_pannelmenu / 2),
-                top_pannel_y + (15 * self.mul_pannelmenu),
+                self.top_x_panel + (502 * self.static.mul_menu_panel / 2),
+                self.top_y_panel + (15 * self.static.mul_menu_panel),
             ),
         )
         self.draw_text(
-            str(entity.hp) + " / ?",
+            f"{entity.hp}/{entity.max_hp}",
             20,
             (255, 255, 255),
             (
-                top_pannel_x + (55 * self.mul_pannelmenu),
-                top_pannel_y + (15 * self.mul_pannelmenu) + (62 * self.mul_pannelmenu),
+                self.top_x_panel + (55 * self.static.mul_menu_panel),
+                self.top_y_panel
+                + (15 * self.static.mul_menu_panel)
+                + (62 * self.static.mul_menu_panel),
             ),
         )
 

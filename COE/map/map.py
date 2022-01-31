@@ -15,7 +15,6 @@ from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.map.enum.cell_types import CellTypes
 import pygame
 from COE.contents.entity_types import EntityTypes
-from COE.contents.resources.tree import Tree
 from COE.contents.unit.villager import Villager
 from pygame.locals import *
 

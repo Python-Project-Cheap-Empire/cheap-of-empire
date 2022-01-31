@@ -26,6 +26,7 @@ class Entity:
     ):  # pragma: no cover
         self.name = name
         self.hp = hp
+        self.max_hp = hp
         self.positions = positions
         self.height = height
         self.width = width

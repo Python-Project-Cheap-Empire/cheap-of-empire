@@ -8,6 +8,7 @@ class Static:  # pragma: no cover
         self.entities_pos_dict = {
             "tree": (11, -55),
             "villager": (25, -50),
+            "barrack": (-50, 0),
             "house": (0, 0),
         }
         self.cells_size = Cell.get_pixel_cells_size()
