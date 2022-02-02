@@ -70,6 +70,7 @@ class MapGenerator:
             for i, p in enumerate(self.players):
                 x, y = self.spawn_points[i]
                 world_map.place_building(x, y, p, TownCenter((x, y), p))
+                p.town_center_pos = x, y
                 for v in range(3):
                     x_pos, y_pos = find_move(
                         world_map.dict_binary_cells.get(EntityTypes.GROUND),

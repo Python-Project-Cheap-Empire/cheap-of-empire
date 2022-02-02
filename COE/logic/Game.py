@@ -11,6 +11,7 @@ from COE.map.map import Map
 from COE.camera.camera import Camera
 from COE.contents.entity_types import EntityTypes
 from COE.contents.unit.axeman import Axeman
+from COE.contents.resources.resource import Resource
 import pygame
 import time
 
@@ -253,6 +254,32 @@ class Game:
                                             (x, y),
                                         )
                                     else:
+                                        # ================================================================
+                                        if isinstance(selected_unit, Villager) and isinstance(self.map.cells[x][y].entity, Resource):
+                                            selected_unit.current_path = find_move(
+                                                self.map.dict_binary_cells.get(
+                                                    selected_unit.entity_type
+                                                ),
+                                                selected_unit.positions,
+                                                (x, y),
+                                            )
+                                            selected_unit.gathering_target = self.map.cells[x][y].entity
+                                            if (selected_unit.check_ressource_and_amount_holding(
+                                                self.map.cells[x][y].entity, x, y)
+                                                ):
+                                                selected_unit.held_ressource_x = x
+                                                selected_unit.held_ressource_y = y
+                                                selected_unit.is_gathering = True
+
+                                        # ================================================================
+                                        else:
+                                            selected_unit.current_path = find_move(
+                                                self.map.dict_binary_cells.get(
+                                                    selected_unit.entity_type
+                                                ),
+                                                selected_unit.positions,
+                                                (x, y),
+                                            )
                                         selected_unit.building = None
                                         selected_unit.current_path = find_move(
                                             self.map.dict_binary_cells.get(
@@ -290,18 +317,10 @@ class Game:
                                         y
                                     ].entity
                                     selected_unit.is_attacking = True
-                                else:
-                                    selected_unit.current_path = find_move(
-                                        self.map.dict_binary_cells.get(
-                                            selected_unit.entity_type
-                                        ),
-                                        selected_unit.positions,
-                                        (x, y),
-                                    )
-                                    if selected_unit.is_attacking:
-                                        selected_unit.is_attacking = False
-                                        selected_unit.attacked_entity = None
-                                        # print("Turnoff attack")
+                                elif selected_unit.is_attacking:
+                                    selected_unit.is_attacking = False
+                                    selected_unit.attacked_entity = None
+                                    # print("Turnoff attack")
 
         elif event.type == pygame.MOUSEMOTION and self.mouse_down:
             x, y = pygame.mouse.get_pos()
@@ -360,6 +379,49 @@ class Game:
                         ):
                             unit.building.master.construction_percent += 1
                             unit.prev_construct_time = now
+# ==================================================================================
+            if (
+                unit.is_gathering
+                and unit.held_ressource is not None
+                and unit.check_in_range(unit.held_ressource)
+            ):
+                # print(unit.held_ressource_x)
+                # print(unit.held_ressource_y)
+                # print(unit.held_ressource.amount)
+                # remaining_amount = unit.update_gathering(self.speed)
+                # if remaining_amount is not None and remaining_amount <= 0:
+                if unit.held_ressource is None or unit.held_ressource.amount <= 0:
+                    self.map.empty_cell(unit.held_ressource_x, unit.held_ressource_y)
+                    unit.held_ressource = None
+                    unit.is_gathering = False
+                elif (
+                    unit.amount_holding >= unit.MAX_AMOUNT_HOLDING
+                    or unit.held_ressource is None
+                ):
+                    town_center = unit.player
+                    town_center_pos = town_center.town_center_pos
+
+                    unit.current_path = find_move(
+                        self.map.dict_binary_cells.get(
+                            unit.entity_type
+                        ),
+                        unit.positions,
+                        (town_center_pos[0], town_center_pos[1])
+                    )
+                    unit.release_resource()
+                    if unit.held_ressource is not None:
+                        unit.current_path = find_move(
+                            self.map.dict_binary_cells.get(
+                                unit.entity_type
+                            ),
+                            unit.positions,
+                            (unit.held_ressource_x, unit.held_ressource_y)
+                        )
+                else:
+                    unit.update_gathering(self.speed)
+                    print(unit.amount_holding)
+                    print(unit.held_ressource.amount)
+# ==============================================================================
         # If the unit is in travel between two points
         if unit.current_path:
             next_cell_in_path = self.map.cells[unit.current_path[0][0]][
