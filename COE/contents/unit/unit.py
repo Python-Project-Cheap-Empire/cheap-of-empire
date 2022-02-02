@@ -42,6 +42,7 @@ class Unit(Entity):
         self.pierce_attack = pierce_attack
         self.prev_attack_time = time.time()
         self.prev_move_time = time.time()
+        self.prev_construct_time = time.time()
 
     """
     after rate_of_fire (s)

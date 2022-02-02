@@ -23,7 +23,7 @@ def test_get_path():
     sl1 = GameSaveLoad()
     root_dir = Path(__file__).parent.parent
 
-    assert sl1.path == os.path.join(root_dir, "save/")
+    assert sl1.path == os.path.join(root_dir, "save")
 
 
 def remove_file_for_test():

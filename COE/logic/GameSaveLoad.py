@@ -14,7 +14,7 @@ class GameSaveLoad:
         Initialize a instance of GameSaveLoad if not created.
         Else return the instance.
         """
-        cls._sl_path = os.path.join(Path(__file__).parent.parent.parent, "save/")
+        cls._sl_path = os.path.join(Path(__file__).parent.parent.parent, "save")
         if not hasattr(cls, "instance"):
             cls.instance = super(GameSaveLoad, cls).__new__(cls)
         return cls.instance

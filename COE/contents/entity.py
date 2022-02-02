@@ -21,7 +21,6 @@ class Entity:
         entity_type: EntityTypes,
         sub_entities,
         is_master: bool = True,
-        master=None,
         **kwargs,
     ):  # pragma: no cover
         self.name = name
@@ -33,5 +32,5 @@ class Entity:
         self.line_of_sight = line_of_sight
         self.entity_type = entity_type
         self.is_master = is_master
-        self.master = master
+        self.master = self
         self.sub_entities = sub_entities

@@ -28,18 +28,4 @@ class Villager(Unit):
             sub_entities=[],
         )
         self.held_ressource = None
-
-    # def build():
-    #     pass
-
-    # def repair():
-    #     pass
-
-    # def seedingFarm():
-    #     pass
-
-    # def gather_resource():
-    #     pass
-
-    # def release_resource():
-    #     pass
+        self.building = None
