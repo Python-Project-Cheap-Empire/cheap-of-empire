@@ -35,6 +35,7 @@ class Building(Entity):
         self.construction_time = construction_time
         self.melee_armor = melee_armor
         self.pierce_armor = pierce_armor
+        self.construction_percent = 0
         super().__init__(**kwargs)
 
     def update_is_buildable(self):

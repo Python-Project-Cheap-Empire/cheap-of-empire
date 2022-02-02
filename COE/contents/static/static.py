@@ -9,6 +9,7 @@ class Static:  # pragma: no cover
             "tree": (-100, -150),
             "villager": (25, -50),
             "axeman": (20, -40),
+            "barrack": (-50, 0),
             "gold ore": (10, -8),
             "stone ore": (10, -8),
             "berry": (8, -27),

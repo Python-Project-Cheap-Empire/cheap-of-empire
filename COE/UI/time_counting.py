@@ -8,6 +8,9 @@ class time_counting:
         self.frame_rate = 60
         self.time = time_
         self.prev_time = time.time()
+        screen_size = pygame.display.get_surface().get_size()
+        width = screen_size[0]
+        self.multicateur = 1 if width // 2 > 1000 else ((width * (3 / 8)) / (1000))
 
     def update(self, game_speed):
         now = time.time()
@@ -25,4 +28,4 @@ class time_counting:
             self.time.h, self.time.m, self.time.s
         )
         text = self.font.render(output_string, True, (255, 255, 255))
-        screen.blit(text, [10, 80])
+        screen.blit(text, [10, 10 + 105 * self.multicateur])  # position

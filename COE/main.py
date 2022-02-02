@@ -1,8 +1,6 @@
 import os
 import sys
 
-# from COE.contents.unit.enum.unit_types import UnitTypes
-
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(script_dir))
 
@@ -34,8 +32,10 @@ def main():
 
             while game_logic.playing:
                 game_logic.run()
+                if game_logic.menu.saved:  # si demande de sauvegarde
+                    gen_game.save_game()  # sauvegarde de la partie
+                    game_logic.menu.saved = False
             window.playing = False
-            gen_game.save_game()
             window.menu = MenuPlay(window.display)
 
 

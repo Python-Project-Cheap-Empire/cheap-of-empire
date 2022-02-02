@@ -1,11 +1,9 @@
-from COE.contents.resources.tree import Tree
-from COE.contents.unit.unit import Unit
 from COE.UI.cheat_code import CheatCode
+from COE.contents.building.building import Building
 import pygame
 from pygame.locals import *
 import pygame_gui
 from COE.UI.interfaces.interface_in_game import GameMenu
-from COE.UI.item import Item
 from COE.UI.time_counting import time_counting
 from COE.logic.Game import Game
 from map.cell import Cell
@@ -25,12 +23,13 @@ class GameLogic:
         self.height = self.screen_size[1]
         self.scaled_cell = Cell.get_scaled_blocks()
         self.playing = True
-        self.item = Item(self.width, self.height)
         self.timer = time_counting(self.game.timer)
         self.x_limit = self.display_.get_width() + self.static.width_cells_size
         self.y_limit = self.display_.get_height() + self.static.height_cells_size
         self.cheatcode = CheatCode(self.display_, self.game)
-        self.menu = GameMenu(self.display_, self.manager, self.cheatcode, self.timer)
+        self.menu = GameMenu(
+            self.display_, self.manager, self.cheatcode, self.timer, self.static
+        )
 
     def run(self):
         self.events()
@@ -50,7 +49,6 @@ class GameLogic:
             self.game.update()
             self.game.camera.update()
             # self.game.map.update(self.game.camera)
-            self.item.update()
             self.timer.update(self.game.speed)
         self.manager.update(dt)
 
@@ -72,28 +70,57 @@ class GameLogic:
         for selected_unit in self.game.currently_selected:
             self.game.map.draw_rect_around(
                 self.display_,
-                selected_unit.positions[0],
-                selected_unit.positions[1],
+                selected_unit,
                 self.game.camera,
                 self.static.half_width_cells_size,
                 self.static.half_height_cells_size,
             )
-            self.game.map.draw_health_bar(
-                self.display_,
-                selected_unit.positions[0],
-                selected_unit.positions[1],
-                self.game.camera,
-                self.static.half_width_cells_size,
-                self.static.half_height_cells_size,
-                selected_unit.hp,
-            )
-        self.item.draw_item(self.display_)
+            if isinstance(selected_unit, Building):
+                if selected_unit.master.construction_percent >= 100:
+                    self.game.map.draw_health_bar(
+                        self.display_,
+                        selected_unit.master.positions[0],
+                        selected_unit.master.positions[1],
+                        self.game.camera,
+                        self.static.half_width_cells_size,
+                        self.static.half_height_cells_size,
+                        selected_unit.master.hp,
+                        selected_unit.master.max_hp,
+                    )
+            else:
+                self.game.map.draw_health_bar(
+                    self.display_,
+                    selected_unit.positions[0],
+                    selected_unit.positions[1],
+                    self.game.camera,
+                    self.static.half_width_cells_size,
+                    self.static.half_height_cells_size,
+                    selected_unit.hp,
+                    selected_unit.master.max_hp,
+                )
+        for building in self.game.players[0].buildings:
+            if building.master.construction_percent < 100:
+                self.game.map.draw_construction_bar(
+                    self.display_,
+                    building.master.positions[0],
+                    building.master.positions[1],
+                    self.game.camera,
+                    self.static.half_width_cells_size,
+                    self.static.half_height_cells_size,
+                    building.master.construction_percent,
+                )
+
+        if self.game.currently_selected:
+            self.menu.draw_entity(self.game.currently_selected[0])
         self.timer.draw_time(self.display_)
-        self.menu.draw_ressources(self.game)
+        self.menu.display(self.game)
         self.menu.draw_fps(self.clock.get_fps())
         self.menu.draw_pos(self.game, self.static)
         self.menu.draw_selection_rectangle(self.game.selection_rectangle)
         self.menu.draw_shortcuts(self.game.speed)
+        if self.game.selected_building:
+            img = self.static.image_cache.get(self.game.selected_building)
+            self.display_.blit(img, pygame.mouse.get_pos())
         if self.menu.pause:
             self.menu.draw()
             self.cheatcode.draw()

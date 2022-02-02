@@ -1,4 +1,5 @@
 from typing import List
+from COE.contents.building.barrack import Barrack
 from COE.contents.building.building import Building
 from COE.contents.building.house import House
 from COE.contents.entity import Entity
@@ -8,6 +9,8 @@ from COE.logic.Player import Player
 from COE.logic.path_finding import find_move
 from COE.map.map import Map
 from COE.camera.camera import Camera
+from COE.contents.entity_types import EntityTypes
+from COE.contents.unit.axeman import Axeman
 import pygame
 import time
 
@@ -36,6 +39,7 @@ class Game:
         self.timer = timer
         self.currently_selected: List[Entity] = []
         self.x_, self.y_, self.x, self.y = -1, -1, -1, -1
+        self.selected_building = None
         self.prev_time = time.time()
 
     def set_speed(self, new_speed):
@@ -45,8 +49,59 @@ class Game:
         self.speed = new_speed
 
     def update(self):  # pragma: no cover
+
+        # Spawning IA units
+        ia_list = self.players[1:]
+        now = time.time()
+
+        spawn_rate = 100
+        if (now - self.prev_time) * 60 * self.speed > spawn_rate:
+            ia_list = self.players[1:]
+            for ia in ia_list:
+                spw_x, spw_y = ia.buildings[0].positions
+                print(ia.buildings[0].positions)
+                paths = find_move(
+                    self.map.dict_binary_cells.get(EntityTypes.GROUND),
+                    (spw_x, spw_y),
+                    (spw_x - 4, spw_y + 4),
+                )
+                if paths:
+                    # Getting free cell
+                    x_pos, y_pos = paths[-1]
+                    axe = Axeman((x_pos, y_pos), ia)
+                    ia.units.append(axe)
+                    self.map.populate_cell(x_pos, y_pos, axe)
+
+                    axe.attacked_entity = self.players[0].buildings[0]
+                    axe.is_attacking = True
+                    axe.current_path = find_move(
+                        self.map.dict_binary_cells.get(axe.entity_type),
+                        axe.positions,
+                        self.players[0].buildings[0].positions,
+                    )
+            spawn_rate -= 16
+            if spawn_rate < 60:
+                spawn_rate = 60
+            self.prev_time = now
+
         # For each unit of the human player
+        now = time.time()
         for unit in self.players[0].units:
+            if unit.building:
+                if unit.building.construction_percent < 100:
+                    if (
+                        abs(unit.positions[0] - unit.building.positions[0]) <= 3
+                        and abs(unit.positions[1] - unit.building.positions[1]) <= 3
+                    ):
+                        if (
+                            (now - unit.prev_construct_time)
+                            * 60
+                            * self.speed
+                            * unit.speed
+                            > unit.building.construction_time
+                        ):
+                            unit.building.master.construction_percent += 1
+                            unit.prev_construct_time = now
             # If the unit is in travel between two points
             if unit.current_path:
                 next_cell_in_path = self.map.cells[unit.current_path[0][0]][
@@ -64,8 +119,7 @@ class Game:
                         unit.current_path[-1],
                     )
                 else:
-                    now = time.time()
-                    if (now - self.prev_time) * 60 * self.speed * unit.speed > 20:
+                    if (now - unit.prev_move_time) * 60 * self.speed * unit.speed > 20:
                         self.map.empty_cell(unit.positions[0], unit.positions[1])
                         self.map.populate_cell(
                             unit.current_path[0][0], unit.current_path[0][1], unit
@@ -75,7 +129,7 @@ class Game:
                             unit.current_path[0][1],
                         )
                         unit.current_path.pop(0)
-                        self.prev_time = now
+                        unit.prev_move_time = now
             """
             attack an enemy if is_attack and check_in_range
             """
@@ -167,58 +221,194 @@ class Game:
             x, y = int(x), int(y)
 
             if event.button == 1:
-                if not self.mouse_down:
-                    self.mouse_down = True
-                    self.x, self.y = x, y
-                    self.currently_selected = []
-                if (
-                    x >= 0
-                    and x < self.map.size.value
-                    and y >= 0
-                    and y < self.map.size.value
-                ):
-                    if self.map.cells[x][y].entity:
-                        self.currently_selected = [self.map.cells[x][y].entity]
+                if any(
+                    isinstance(entity, Villager) for entity in self.currently_selected
+                ):  # Bottom left action panel is displayed
+                    if (
+                        static.scaled_UI_imgs["menu_panel"][0]
+                        .get_rect(topleft=static.scaled_UI_imgs["menu_panel"][1])
+                        .collidepoint(mouse_pos)
+                    ):
+                        pass
+                    elif (
+                        static.scaled_UI_imgs["action_panel"][0]
+                        .get_rect(topleft=static.scaled_UI_imgs["action_panel"][1])
+                        .collidepoint(mouse_pos)
+                    ):
+                        for building, img in static.scaled_UI_imgs["buildings"].items():
+                            if img[0].get_rect(topleft=img[1]).collidepoint(mouse_pos):
+                                self.selected_building = building
                     else:
-                        self.currently_selected = []
+                        if (
+                            x >= 0
+                            and x < self.map.size.value
+                            and y >= 0
+                            and y < self.map.size.value
+                        ):
+                            if self.selected_building:
+                                building = None
+                                if self.selected_building == "house":
+                                    building = House((x, y))
+                                elif self.selected_building == "barrack":
+                                    building = Barrack((x, y))
+                                if building:
+                                    self.map.place_building(
+                                        x, y, self.players[0], building
+                                    )
+                                    self.selected_building = None
+                                    for entity in self.currently_selected:
+                                        if isinstance(entity, Villager):
+                                            entity.is_building = True
+                                            entity.building = building
+                                            entity.current_path = find_move(
+                                                self.map.dict_binary_cells.get(
+                                                    entity.entity_type
+                                                ),
+                                                entity.positions,
+                                                building.positions,
+                                            )
+                                return
+
+                        if not self.mouse_down:
+                            self.mouse_down = True
+                            self.x, self.y = x, y
+                            if self.map.cells[x][y].entity:
+                                self.currently_selected = [self.map.cells[x][y].entity]
+                            else:
+                                self.currently_selected = []
+
+                else:
+                    if (
+                        x >= 0
+                        and x < self.map.size.value
+                        and y >= 0
+                        and y < self.map.size.value
+                    ):
+                        if self.map.cells[x][y].entity:
+                            self.currently_selected = [self.map.cells[x][y].entity]
+                        else:
+                            self.currently_selected = []
+
+                        if self.selected_building:
+                            if self.selected_building == "house":
+                                building = House((x, y))
+                                self.map.place_building(x, y, self.players[0], building)
+                            elif self.selected_building == "barrack":
+                                building = Barrack((x, y))
+                                self.map.place_building(x, y, self.players[0], building)
+
+                    if not self.mouse_down:
+                        self.mouse_down = True
+                        self.x, self.y = x, y
+                        if self.map.cells[x][y].entity:
+                            self.currently_selected = [self.map.cells[x][y].entity]
+                        else:
+                            self.currently_selected = []
 
             elif event.button == 3:
-                if (
-                    x >= 0
-                    and x < self.map.size.value
-                    and y >= 0
-                    and y < self.map.size.value
-                ):
-                    for selected_unit in self.currently_selected:
-                        if selected_unit in self.players[0].units:
-                            if (
-                                self.map.cells[x][y].entity in self.players[1].units
-                                or self.map.cells[x][y].entity
-                                in self.players[1].buildings
-                            ):
-                                selected_unit.current_path = find_move(
-                                    self.map.dict_binary_cells.get(
-                                        selected_unit.entity_type
-                                    ),
-                                    selected_unit.positions,
-                                    (x, y),
-                                )
-                                selected_unit.attacked_entity = self.map.cells[x][
-                                    y
-                                ].entity
-                                selected_unit.is_attacking = True
-                            else:
-                                selected_unit.current_path = find_move(
-                                    self.map.dict_binary_cells.get(
-                                        selected_unit.entity_type
-                                    ),
-                                    selected_unit.positions,
-                                    (x, y),
-                                )
-                                if selected_unit.is_attacking:
-                                    selected_unit.is_attacking = False
-                                    selected_unit.attacked_entity = None
-                                    # print("Turnoff attack")
+                self.selected_building = None
+                if self.currently_selected:  # Bottom left action panel is displayed
+                    if not static.scaled_UI_imgs["action_panel"][0].get_rect(
+                        topleft=static.scaled_UI_imgs["action_panel"][1]
+                    ).collidepoint(mouse_pos) and not static.scaled_UI_imgs[
+                        "menu_panel"
+                    ][
+                        0
+                    ].get_rect(
+                        topleft=static.scaled_UI_imgs["menu_panel"][1]
+                    ).collidepoint(
+                        mouse_pos
+                    ):
+                        if (
+                            x >= 0
+                            and x < self.map.size.value
+                            and y >= 0
+                            and y < self.map.size.value
+                        ):
+                            for selected_unit in self.currently_selected:
+                                if selected_unit in self.players[0].units:
+                                    if (
+                                        self.map.cells[x][y].entity
+                                        in self.players[1].units
+                                        or self.map.cells[x][y].entity
+                                        in self.players[1].buildings
+                                    ):
+                                        selected_unit.current_path = find_move(
+                                            self.map.dict_binary_cells.get(
+                                                selected_unit.entity_type
+                                            ),
+                                            selected_unit.positions,
+                                            (x, y),
+                                        )
+                                        selected_unit.attacked_entity = self.map.cells[
+                                            x
+                                        ][y].entity
+                                        selected_unit.is_attacking = True
+
+                                    elif (
+                                        self.map.cells[x][y].entity
+                                        in self.players[0].buildings
+                                    ):
+                                        selected_unit.building = self.map.cells[x][
+                                            y
+                                        ].entity
+                                        selected_unit.current_path = find_move(
+                                            self.map.dict_binary_cells.get(
+                                                selected_unit.entity_type
+                                            ),
+                                            selected_unit.positions,
+                                            (x, y),
+                                        )
+                                    else:
+                                        selected_unit.building = None
+                                        selected_unit.current_path = find_move(
+                                            self.map.dict_binary_cells.get(
+                                                selected_unit.entity_type
+                                            ),
+                                            selected_unit.positions,
+                                            (x, y),
+                                        )
+                                        if selected_unit.is_attacking:
+                                            selected_unit.is_attacking = False
+                                            selected_unit.attacked_entity = None
+                                            # print("Turnoff attack")
+                else:
+                    if (
+                        x >= 0
+                        and x < self.map.size.value
+                        and y >= 0
+                        and y < self.map.size.value
+                    ):
+                        for selected_unit in self.currently_selected:
+                            if selected_unit in self.players[0].units:
+                                if (
+                                    self.map.cells[x][y].entity in self.players[1].units
+                                    or self.map.cells[x][y].entity
+                                    in self.players[1].buildings
+                                ):
+                                    selected_unit.current_path = find_move(
+                                        self.map.dict_binary_cells.get(
+                                            selected_unit.entity_type
+                                        ),
+                                        selected_unit.positions,
+                                        (x, y),
+                                    )
+                                    selected_unit.attacked_entity = self.map.cells[x][
+                                        y
+                                    ].entity
+                                    selected_unit.is_attacking = True
+                                else:
+                                    selected_unit.current_path = find_move(
+                                        self.map.dict_binary_cells.get(
+                                            selected_unit.entity_type
+                                        ),
+                                        selected_unit.positions,
+                                        (x, y),
+                                    )
+                                    if selected_unit.is_attacking:
+                                        selected_unit.is_attacking = False
+                                        selected_unit.attacked_entity = None
+                                        # print("Turnoff attack")
 
         elif event.type == pygame.MOUSEMOTION and self.mouse_down:
             x, y = pygame.mouse.get_pos()

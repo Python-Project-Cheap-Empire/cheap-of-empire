@@ -15,7 +15,6 @@ from COE.map.enum.resources_rarity import ResourcesRarity
 from COE.map.enum.cell_types import CellTypes
 import pygame
 from COE.contents.entity_types import EntityTypes
-from COE.contents.resources.tree import Tree
 from COE.contents.unit.villager import Villager
 from pygame.locals import *
 
@@ -75,10 +74,15 @@ class Map:
         return x, y
 
     def draw_rect_around(
-        self, window, x, y, camera, half_width_cells_size, half_height_cells_size
+        self,
+        window,
+        selected_entity,
+        camera,
+        half_width_cells_size,
+        half_height_cells_size,
     ):  # pragma: no cover
         _x, _y = self.map_to_screen(
-            (x, y),
+            (selected_entity.master.positions[0], selected_entity.master.positions[1]),
             camera.x_offset,
             camera.y_offset,
             half_width_cells_size,
@@ -91,15 +95,59 @@ class Map:
             (255, 255, 255),
             [
                 (_x + half_width_cells_size, _y),
-                (_x + width_cells_size, _y + half_height_cells_size),
-                (_x + half_width_cells_size, _y + height_cells_size),
-                (_x, _y + half_height_cells_size),
+                (
+                    _x
+                    + width_cells_size
+                    + (half_width_cells_size * (selected_entity.width - 1)),
+                    _y + (half_height_cells_size * (selected_entity.height)),
+                ),
+                (
+                    _x + half_width_cells_size,
+                    _y + (height_cells_size * (selected_entity.height)),
+                ),
+                (
+                    _x - (half_width_cells_size * (selected_entity.width - 1)),
+                    _y + (half_height_cells_size * selected_entity.height),
+                ),
             ],
             1,
         )
 
+    def draw_construction_bar(
+        self,
+        window,
+        x,
+        y,
+        camera,
+        half_width_cells_size,
+        half_height_cells_size,
+        construct_percent,
+    ):
+        _x, _y = self.map_to_screen(
+            (x, y),
+            camera.x_offset,
+            camera.y_offset,
+            half_width_cells_size,
+            half_height_cells_size,
+        )
+        height_cells_size = 2 * half_height_cells_size
+        bar = [_x + 10, _y - 1.5 * height_cells_size, construct_percent, 5]
+        bar_color = (0, 0, 255)
+        bar2 = [_x + 10, _y - 1.5 * height_cells_size, 100, 5]
+        bar_color2 = (255, 0, 0)
+        pygame.draw.rect(window, bar_color2, bar2)
+        pygame.draw.rect(window, bar_color, bar)
+
     def draw_health_bar(
-        self, window, x, y, camera, half_width_cells_size, half_height_cells_size, hp
+        self,
+        window,
+        x,
+        y,
+        camera,
+        half_width_cells_size,
+        half_height_cells_size,
+        hp,
+        max_hp,
     ):  # pragma: no cover
         if hp < 0:
             return
@@ -110,19 +158,14 @@ class Map:
             half_width_cells_size,
             half_height_cells_size,
         )
+        ratio = hp / max_hp
         height_cells_size = 2 * half_height_cells_size
-        bar_position1 = [_x + 10, _y - 1.5 * height_cells_size, hp, 5]
-        bar_position2 = [_x + 10, _y - 1.5 * height_cells_size, hp / 2, 5]
-        bar_position3 = [_x + 10, _y - 1.5 * height_cells_size, hp / 4, 5]
+        bar_position1 = [_x + 10, _y - 1.5 * height_cells_size, 50 * ratio, 5]
         bar_color1 = (50, 205, 50)
-        bar_color2 = (255, 165, 0)
-        bar_color3 = (255, 0, 0)
-        if hp == hp:
-            pygame.draw.rect(window, bar_color1, bar_position1)
-        if hp == 1 / 2 * hp:
-            pygame.draw.rect(window, bar_color2, bar_position2)
-        if hp == 1 / 4 * hp:
-            pygame.draw.rect(window, bar_color3, bar_position3)
+        bar_position2 = [_x + 10, _y - 1.5 * height_cells_size, 50, 5]
+        bar_color2 = (255, 0, 0)
+        pygame.draw.rect(window, bar_color2, bar_position2)
+        pygame.draw.rect(window, bar_color1, bar_position1)
 
     def update_cell(self, x, y):
         cell_type = self.cells[x][y].cell_type
