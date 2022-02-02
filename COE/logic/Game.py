@@ -54,7 +54,7 @@ class Game:
         ia_list = self.players[1:]
         now = time.time()
 
-        spawn_rate = 100
+        spawn_rate = 900
         if (now - self.prev_time) * 60 * self.speed > spawn_rate:
             ia_list = self.players[1:]
             for ia in ia_list:
@@ -72,112 +72,25 @@ class Game:
                     ia.units.append(axe)
                     self.map.populate_cell(x_pos, y_pos, axe)
 
-                    axe.attacked_entity = self.players[0].buildings[0]
-                    axe.is_attacking = True
-                    axe.current_path = find_move(
-                        self.map.dict_binary_cells.get(axe.entity_type),
-                        axe.positions,
-                        self.players[0].buildings[0].positions,
-                    )
-            spawn_rate -= 16
+                    if len(self.players[0].buildings) > 0:
+                        axe.attacked_entity = self.players[0].buildings[0]
+                        axe.is_attacking = True
+
+                        axe.current_path = find_move(
+                            self.map.dict_binary_cells.get(axe.entity_type),
+                            axe.positions,
+                            self.players[0].buildings[0].positions,
+                        )
+
+            spawn_rate -= 15
             if spawn_rate < 60:
                 spawn_rate = 60
             self.prev_time = now
 
         # For each unit of the human player
-        now = time.time()
-        for unit in self.players[0].units:
-            if unit.building:
-                if unit.building.construction_percent < 100:
-                    if any(
-                        abs(unit.positions[0] - sub_entity.positions[0]) == 1
-                        and abs(unit.positions[1] - sub_entity.positions[1]) == 1
-                        for sub_entity in unit.building.master.sub_entities
-                    ):
-                        if (
-                            (now - unit.prev_construct_time)
-                            * 60
-                            * self.speed
-                            * unit.speed
-                            > unit.building.construction_time
-                        ):
-                            unit.building.master.construction_percent += 1
-                            unit.prev_construct_time = now
-            # If the unit is in travel between two points
-            if unit.current_path:
-                next_cell_in_path = self.map.cells[unit.current_path[0][0]][
-                    unit.current_path[0][1]
-                ]
-                # If the next cell where the unit is supposed to go to has
-                # already an entity
-                if next_cell_in_path.entity:
-                    # if len(unit.current_path) == 1:
-                    #     unit.current_path = None
-                    # else:
-                    unit.current_path = find_move(
-                        self.map.dict_binary_cells.get(unit.entity_type),
-                        unit.positions,
-                        unit.current_path[-1],
-                    )
-                else:
-                    if (now - unit.prev_move_time) * 60 * self.speed * unit.speed > 20:
-                        self.map.empty_cell(unit.positions[0], unit.positions[1])
-                        self.map.populate_cell(
-                            unit.current_path[0][0], unit.current_path[0][1], unit
-                        )
-                        unit.positions = (
-                            unit.current_path[0][0],
-                            unit.current_path[0][1],
-                        )
-                        unit.current_path.pop(0)
-                        unit.prev_move_time = now
-            """
-            attack an enemy if is_attack and check_in_range
-            """
-            if (
-                unit.is_attacking
-                and unit.attacked_entity
-                and unit.check_in_range(unit.attacked_entity)
-            ):
-                if unit.attacked_entity.hp <= 0:
-                    unit.attacked_entity = None
-                    unit.is_attacking = False
-                else:
-                    remaining_hp = unit.update_attack(self.speed)
-                    if remaining_hp is not None and remaining_hp <= 0:
-                        # if unit.attacked_entity.is_master:
-                        for entity in unit.attacked_entity.master.sub_entities[::-1]:
-                            if isinstance(entity, Building):
-                                self.players[1].buildings.remove(entity)
-                            elif isinstance(entity, Unit):
-                                self.players[1].units.remove(entity)
-                            self.map.empty_cell(
-                                entity.positions[0], entity.positions[1]
-                            )
-
-                        unit.attacked_entity = None
-                        unit.is_attacking = False
-
-                # print("mode attack is on")
-        for unit in self.players[1].units:
-            unit.current_path = unit.current_path
-            if unit.current_path:
-                next_cell_in_path = self.map.cells[unit.current_path[0][0]][
-                    unit.current_path[0][1]
-                ]
-                if next_cell_in_path.entity:
-                    unit.current_path = find_move(
-                        self.map.dict_binary_cells.get(unit.entity_type),
-                        unit.positions,
-                        unit.current_path[-1],
-                    )
-                else:
-                    self.map.empty_cell(unit.positions[0], unit.positions[1])
-                    self.map.populate_cell(
-                        unit.current_path[0][0], unit.current_path[0][1], unit
-                    )
-                    unit.positions = unit.current_path[0][0], unit.current_path[0][1]
-                    unit.current_path.pop(0)
+        all_units = self.players[0].units + self.players[1].units
+        for unit in all_units:
+            self.unit_action(unit)
 
     def event(self, static, event):  # pragma: no cover
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -427,3 +340,76 @@ class Game:
             self.map.place_building(
                 15, 15, self.players[1], House((15, 15), self.players[1])
             )
+
+    def unit_action(self, unit):
+        now = time.time()
+        if isinstance(unit, Villager):
+            if unit.building:
+                if unit.building.construction_percent < 100:
+                    if any(
+                        abs(unit.positions[0] - sub_entity.positions[0]) == 1
+                        and abs(unit.positions[1] - sub_entity.positions[1]) == 1
+                        for sub_entity in unit.building.master.sub_entities
+                    ):
+                        if (
+                            (now - unit.prev_construct_time)
+                            * 60
+                            * self.speed
+                            * unit.speed
+                            > unit.building.construction_time
+                        ):
+                            unit.building.master.construction_percent += 1
+                            unit.prev_construct_time = now
+        # If the unit is in travel between two points
+        if unit.current_path:
+            next_cell_in_path = self.map.cells[unit.current_path[0][0]][
+                unit.current_path[0][1]
+            ]
+            # If the next cell where the unit is supposed to go to has
+            # already an entity
+            if next_cell_in_path.entity:
+                # if len(unit.current_path) == 1:
+                #     unit.current_path = None
+                # else:
+                unit.current_path = find_move(
+                    self.map.dict_binary_cells.get(unit.entity_type),
+                    unit.positions,
+                    unit.current_path[-1],
+                )
+            else:
+                if (now - unit.prev_move_time) * 60 * self.speed * unit.speed > 20:
+                    self.map.empty_cell(unit.positions[0], unit.positions[1])
+                    self.map.populate_cell(
+                        unit.current_path[0][0], unit.current_path[0][1], unit
+                    )
+                    unit.positions = (
+                        unit.current_path[0][0],
+                        unit.current_path[0][1],
+                    )
+                    unit.current_path.pop(0)
+                    unit.prev_move_time = now
+        """
+        attack an enemy if is_attack and check_in_range
+        """
+        if (
+            unit.is_attacking
+            and unit.attacked_entity
+            and unit.check_in_range(unit.attacked_entity)
+        ):
+            attacked_player = unit.attacked_entity.player
+            if unit.attacked_entity.hp <= 0:
+                unit.attacked_entity = None
+                unit.is_attacking = False
+            else:
+                remaining_hp = unit.update_attack(self.speed)
+                if remaining_hp is not None and remaining_hp <= 0:
+                    # if unit.attacked_entity.is_master:
+                    for entity in unit.attacked_entity.master.sub_entities[::-1]:
+                        if isinstance(entity, Building):
+                            attacked_player.buildings.remove(entity)
+                        elif isinstance(entity, Unit):
+                            attacked_player.units.remove(entity)
+                        self.map.empty_cell(entity.positions[0], entity.positions[1])
+
+                    unit.attacked_entity = None
+                    unit.is_attacking = False
