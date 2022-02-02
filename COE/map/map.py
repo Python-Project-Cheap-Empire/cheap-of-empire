@@ -214,7 +214,7 @@ class Map:
             for x_ in range(building.width):
                 for y_ in range(building.height):
                     if x_ != 0 or y_ != 0:
-                        building_ = copy.deepcopy(building)
+                        building_ = copy.copy(building)
                         building_.is_master = False
                         building_.positions = (x + x_, y + y_)
                         building_.master = building

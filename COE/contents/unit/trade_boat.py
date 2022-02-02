@@ -25,5 +25,4 @@ class TradeBoat(Unit):
             pierce_armor=0,
             player=player,
             entity_type=EntityTypes.NAVY,
-            sub_entities=[],
         )

@@ -1,4 +1,5 @@
 from COE.contents.entity_types import EntityTypes
+from COE.logic.Player import Player
 from .technology_building import TechnologyBuilding
 from .granary import Granary
 
@@ -9,8 +10,7 @@ class Market(TechnologyBuilding):
     Once market has been built, its tribute feature will last forever
     """
 
-    def __init__(self, position: tuple, enable_tribute: bool = False):
-        self.enabled_tribute = enable_tribute
+    def __init__(self, position: tuple, player: Player):
         super().__init__(
             name="Market",
             hp=350,
@@ -28,7 +28,7 @@ class Market(TechnologyBuilding):
             melee_armor=0,
             pierce_armor=0,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
+            player=player,
         )
 
     def enable_tribute(self):

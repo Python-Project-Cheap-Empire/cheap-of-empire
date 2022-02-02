@@ -14,7 +14,6 @@ class GoldOre(Gold):
             width=1,
             line_of_sight=0,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
         )
 
     def increase_amount(self, amount):

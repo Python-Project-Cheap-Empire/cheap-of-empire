@@ -21,7 +21,6 @@ class Deer(Unit):
             pierce_armor=0,
             player=None,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
         )
         self.state = None  # State change when animal is dead
 

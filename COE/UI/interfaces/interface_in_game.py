@@ -1,9 +1,12 @@
 import time
+from COE.contents.building.barrack import Barrack
 from COE.contents.building.house import House
 import pygame
 from pygame.locals import QUIT
 import pygame_gui
 from COE.contents.building.building import Building
+from COE.contents.building.military_building import MilitaryBuilding
+from COE.contents.building.town_center import TownCenter
 from COE.contents.unit.villager import Villager
 from COE.map.map import Map
 
@@ -179,6 +182,13 @@ class GameMenu:
                     self.top_x_panel + (40 * self.static.mul_menu_panel),
                     self.top_y_panel + (20 * self.static.mul_menu_panel),
                 ),
+            ],
+            "clubman": [
+                pygame.transform.scale(
+                    self.static.image_cache["ui_uniticons_03"],
+                    (50 * self.static.mul_menu_panel, 50 * self.static.mul_menu_panel),
+                ),
+                (200, (self.height - (self.static.mul_menu_panel * 107)) + 20),
             ],
             "buildings": {
                 "house": [
@@ -358,57 +368,105 @@ class GameMenu:
         )  # tipi
         self.draw_ressources(game)
 
-    def draw_entity(self, entity):
-        self.display_.blit(
-            self.static.scaled_UI_imgs["menu_panel"][0],
-            self.static.scaled_UI_imgs["menu_panel"][1],
-        )
-        if isinstance(entity, Villager):
-            self.display_.blit(
-                self.static.scaled_UI_imgs["action_panel"][0],
-                self.static.scaled_UI_imgs["action_panel"][1],
-            )
-            self.display_.blit(
-                self.static.scaled_UI_imgs["buildings"]["house"][0],
-                self.static.scaled_UI_imgs["buildings"]["house"][1],
-            )
-            self.display_.blit(
-                self.static.scaled_UI_imgs["buildings"]["barrack"][0],
-                self.static.scaled_UI_imgs["buildings"]["barrack"][1],
-            )
-            self.display_.blit(
-                self.static.scaled_UI_imgs["villager"][0],
-                self.static.scaled_UI_imgs["villager"][1],
-            )
-        elif isinstance(entity, Building):
-            self.display_.blit(
-                self.static.scaled_UI_imgs["buildings"][entity.name.lower()][0],
+    def draw_entity(self, selected_entities):
+        entity_ = None
+        for entity in selected_entities:
+            if isinstance(entity, Villager) or isinstance(entity, Building):
+                # entity_ = entity
+                self.display_.blit(
+                    self.static.scaled_UI_imgs["menu_panel"][0],
+                    self.static.scaled_UI_imgs["menu_panel"][1],
+                )
+
+                if entity.player._is_human:
+                    self.display_.blit(
+                        self.static.scaled_UI_imgs["action_panel"][0],
+                        self.static.scaled_UI_imgs["action_panel"][1],
+                    )
+                    break
+
+        for entity in selected_entities:
+            if isinstance(entity, Villager):
+                self.display_.blit(
+                    self.static.scaled_UI_imgs["villager"][0],
+                    self.static.scaled_UI_imgs["villager"][1],
+                )
+                entity_ = entity
+                if entity.player._is_human:
+                    self.display_.blit(
+                        self.static.scaled_UI_imgs["buildings"]["house"][0],
+                        self.static.scaled_UI_imgs["buildings"]["house"][1],
+                    )
+                    self.display_.blit(
+                        self.static.scaled_UI_imgs["buildings"]["barrack"][0],
+                        self.static.scaled_UI_imgs["buildings"]["barrack"][1],
+                    )
+
+                    break
+
+        if not entity_:
+            for entity in selected_entities:
+                if isinstance(entity, TownCenter):
+                    entity_ = entity
+                    if entity.player._is_human:
+                        self.display_.blit(
+                            self.static.scaled_UI_imgs["villager"][0],
+                            (
+                                self.top_x_panel + (50 * self.static.mul_menu_panel),
+                                self.top_y_panel + (25 * self.static.mul_menu_panel),
+                            ),
+                        )
+                        break
+
+        if not entity_:
+            # print("no entity")
+            for entity in selected_entities:
+                if isinstance(entity, Barrack):
+                    entity_ = entity
+                    if entity.player._is_human:
+                        self.display_.blit(
+                            self.static.scaled_UI_imgs["clubman"][0],
+                            self.static.scaled_UI_imgs["clubman"][1],
+                        )
+                        # entity_ = entity
+                        break
+
+        if not entity_:
+            for entity in selected_entities:
+                if isinstance(selected_entities[0], Building):
+                    self.display_.blit(
+                        self.static.scaled_UI_imgs["buildings"][
+                            selected_entities[0].name.lower()
+                        ][0],
+                        (
+                            self.top_x_panel + (50 * self.static.mul_menu_panel),
+                            self.top_y_panel + (25 * self.static.mul_menu_panel),
+                        ),
+                    )
+                    entity_ = entity
+                    break
+
+        if entity_:
+            self.draw_text(
+                entity_.name,
+                20,
+                (255, 255, 255),
                 (
-                    self.top_x_panel + (50 * self.static.mul_menu_panel),
-                    self.top_y_panel + (25 * self.static.mul_menu_panel),
+                    self.top_x_panel + (502 * self.static.mul_menu_panel / 2),
+                    self.top_y_panel + (15 * self.static.mul_menu_panel),
                 ),
             )
-
-        self.draw_text(
-            entity.name,
-            20,
-            (255, 255, 255),
-            (
-                self.top_x_panel + (502 * self.static.mul_menu_panel / 2),
-                self.top_y_panel + (15 * self.static.mul_menu_panel),
-            ),
-        )
-        self.draw_text(
-            f"{entity.hp}/{entity.max_hp}",
-            20,
-            (255, 255, 255),
-            (
-                self.top_x_panel + (55 * self.static.mul_menu_panel),
-                self.top_y_panel
-                + (15 * self.static.mul_menu_panel)
-                + (62 * self.static.mul_menu_panel),
-            ),
-        )
+            self.draw_text(
+                f"{entity_.hp}/{entity_.max_hp}",
+                20,
+                (255, 255, 255),
+                (
+                    self.top_x_panel + (55 * self.static.mul_menu_panel),
+                    self.top_y_panel
+                    + (15 * self.static.mul_menu_panel)
+                    + (62 * self.static.mul_menu_panel),
+                ),
+            )
 
     def event(self, event):
         if event.type == pygame.USEREVENT:

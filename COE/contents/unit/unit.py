@@ -24,11 +24,8 @@ class Unit(Entity):
         melee_armor: int,
         pierce_armor: int,
         player: Player,
-        sub_entities,
     ):  # pragma: no cover
-        super().__init__(
-            name, hp, positions, height, width, line_of_sight, entity_type, sub_entities
-        )
+        super().__init__(name, hp, positions, height, width, line_of_sight, entity_type)
         self.attack_damage = attack_damage
         self.range = range_
         self.speed = speed

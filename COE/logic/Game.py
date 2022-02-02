@@ -89,9 +89,10 @@ class Game:
         for unit in self.players[0].units:
             if unit.building:
                 if unit.building.construction_percent < 100:
-                    if (
-                        abs(unit.positions[0] - unit.building.positions[0]) <= 3
-                        and abs(unit.positions[1] - unit.building.positions[1]) <= 3
+                    if any(
+                        abs(unit.positions[0] - sub_entity.positions[0]) == 1
+                        and abs(unit.positions[1] - sub_entity.positions[1]) == 1
+                        for sub_entity in unit.building.master.sub_entities
                     ):
                         if (
                             (now - unit.prev_construct_time)
@@ -144,46 +145,16 @@ class Game:
                 else:
                     remaining_hp = unit.update_attack(self.speed)
                     if remaining_hp is not None and remaining_hp <= 0:
-                        if unit.attacked_entity.is_master:
-                            for entity in unit.attacked_entity.sub_entities:
-                                if isinstance(entity, Building):
-                                    self.players[1].buildings.remove(entity)
-                                elif isinstance(entity, Unit):
-                                    self.players[1].units.remove(entity)
-                                self.map.empty_cell(
-                                    entity.positions[0], entity.positions[1]
-                                )
-                            if isinstance(unit.attacked_entity, Building):
-                                self.players[1].buildings.remove(unit.attacked_entity)
-                            elif isinstance(unit.attacked_entity, Unit):
-                                self.players[1].units.remove(unit.attacked_entity)
+                        # if unit.attacked_entity.is_master:
+                        for entity in unit.attacked_entity.master.sub_entities[::-1]:
+                            if isinstance(entity, Building):
+                                self.players[1].buildings.remove(entity)
+                            elif isinstance(entity, Unit):
+                                self.players[1].units.remove(entity)
                             self.map.empty_cell(
-                                unit.attacked_entity.positions[0],
-                                unit.attacked_entity.positions[1],
+                                entity.positions[0], entity.positions[1]
                             )
 
-                        else:
-                            for entity in unit.attacked_entity.master.sub_entities:
-                                if isinstance(entity, Building):
-                                    self.players[1].buildings.remove(entity)
-                                elif isinstance(entity, Unit):
-                                    self.players[1].units.remove(entity)
-                                self.map.empty_cell(
-                                    entity.positions[0], entity.positions[1]
-                                )
-
-                            if isinstance(unit.attacked_entity.master, Building):
-                                self.players[1].buildings.remove(
-                                    unit.attacked_entity.master
-                                )
-                            elif isinstance(unit.attacked_entity.master, Unit):
-                                self.players[1].units.remove(
-                                    unit.attacked_entity.master
-                                )
-                            self.map.empty_cell(
-                                unit.attacked_entity.master.positions[0],
-                                unit.attacked_entity.master.positions[1],
-                            )
                         unit.attacked_entity = None
                         unit.is_attacking = False
 
@@ -219,65 +190,74 @@ class Game:
                 static.half_height_cells_size,
             )
             x, y = int(x), int(y)
-
+            ally_villager_in_selected_units = False
             if event.button == 1:
-                if any(
-                    isinstance(entity, Villager) for entity in self.currently_selected
-                ):  # Bottom left action panel is displayed
-                    if (
-                        static.scaled_UI_imgs["menu_panel"][0]
-                        .get_rect(topleft=static.scaled_UI_imgs["menu_panel"][1])
-                        .collidepoint(mouse_pos)
-                    ):
-                        pass
-                    elif (
-                        static.scaled_UI_imgs["action_panel"][0]
-                        .get_rect(topleft=static.scaled_UI_imgs["action_panel"][1])
-                        .collidepoint(mouse_pos)
-                    ):
-                        for building, img in static.scaled_UI_imgs["buildings"].items():
-                            if img[0].get_rect(topleft=img[1]).collidepoint(mouse_pos):
-                                self.selected_building = building
-                    else:
+                for entity in self.currently_selected:
+                    if isinstance(entity, Villager) and entity.player._is_human:
                         if (
-                            x >= 0
-                            and x < self.map.size.value
-                            and y >= 0
-                            and y < self.map.size.value
+                            static.scaled_UI_imgs["menu_panel"][0]
+                            .get_rect(topleft=static.scaled_UI_imgs["menu_panel"][1])
+                            .collidepoint(mouse_pos)
                         ):
-                            if self.selected_building:
-                                building = None
-                                if self.selected_building == "house":
-                                    building = House((x, y))
-                                elif self.selected_building == "barrack":
-                                    building = Barrack((x, y))
-                                if building:
-                                    self.map.place_building(
-                                        x, y, self.players[0], building
-                                    )
-                                    self.selected_building = None
-                                    for entity in self.currently_selected:
-                                        if isinstance(entity, Villager):
-                                            entity.is_building = True
-                                            entity.building = building
-                                            entity.current_path = find_move(
-                                                self.map.dict_binary_cells.get(
-                                                    entity.entity_type
-                                                ),
-                                                entity.positions,
-                                                building.positions,
-                                            )
-                                return
+                            pass
+                        elif (
+                            static.scaled_UI_imgs["action_panel"][0]
+                            .get_rect(topleft=static.scaled_UI_imgs["action_panel"][1])
+                            .collidepoint(mouse_pos)
+                        ):
+                            for building, img in static.scaled_UI_imgs[
+                                "buildings"
+                            ].items():
+                                if (
+                                    img[0]
+                                    .get_rect(topleft=img[1])
+                                    .collidepoint(mouse_pos)
+                                ):
+                                    self.selected_building = building
+                        else:
+                            if (
+                                x >= 0
+                                and x < self.map.size.value
+                                and y >= 0
+                                and y < self.map.size.value
+                            ):
+                                if self.selected_building:
+                                    building = None
+                                    if self.selected_building == "house":
+                                        building = House((x, y), self.players[0])
+                                    elif self.selected_building == "barrack":
+                                        building = Barrack((x, y), self.players[0])
+                                    if building:
+                                        self.map.place_building(
+                                            x, y, self.players[0], building
+                                        )
+                                        self.selected_building = None
+                                        for entity in self.currently_selected:
+                                            if isinstance(entity, Villager):
+                                                entity.is_building = True
+                                                entity.building = building
+                                                entity.current_path = find_move(
+                                                    self.map.dict_binary_cells.get(
+                                                        entity.entity_type
+                                                    ),
+                                                    entity.positions,
+                                                    building.positions,
+                                                )
+                                    return
 
-                        if not self.mouse_down:
-                            self.mouse_down = True
-                            self.x, self.y = x, y
-                            if self.map.cells[x][y].entity:
-                                self.currently_selected = [self.map.cells[x][y].entity]
-                            else:
-                                self.currently_selected = []
+                            if not self.mouse_down:
+                                self.mouse_down = True
+                                self.x, self.y = x, y
+                                if self.map.cells[x][y].entity:
+                                    self.currently_selected = [
+                                        self.map.cells[x][y].entity
+                                    ]
+                                else:
+                                    self.currently_selected = []
+                        ally_villager_in_selected_units = True
+                        break
 
-                else:
+                if not ally_villager_in_selected_units:
                     if (
                         x >= 0
                         and x < self.map.size.value
@@ -291,10 +271,10 @@ class Game:
 
                         if self.selected_building:
                             if self.selected_building == "house":
-                                building = House((x, y))
+                                building = House((x, y), self.players[0])
                                 self.map.place_building(x, y, self.players[0], building)
                             elif self.selected_building == "barrack":
-                                building = Barrack((x, y))
+                                building = Barrack((x, y), self.players[0])
                                 self.map.place_building(x, y, self.players[0], building)
 
                     if not self.mouse_down:
@@ -351,7 +331,7 @@ class Game:
                                     ):
                                         selected_unit.building = self.map.cells[x][
                                             y
-                                        ].entity
+                                        ].entity.master
                                         selected_unit.current_path = find_move(
                                             self.map.dict_binary_cells.get(
                                                 selected_unit.entity_type
@@ -444,4 +424,6 @@ class Game:
             self.speed = (self.speed + 2) % 12
 
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_F5:
-            self.map.place_building(15, 15, self.players[1], House((15, 15)))
+            self.map.place_building(
+                15, 15, self.players[1], House((15, 15), self.players[1])
+            )

@@ -1,10 +1,11 @@
 from COE.contents.entity_types import EntityTypes
+from COE.logic.Player import Player
 from .building import Building
 from .granary import Granary
 
 
 class SmallWall(Building):
-    def __init__(self, position: tuple):
+    def __init__(self, position: tuple, player: Player):
         super().__init__(
             name="Small Wall",
             hp=100,
@@ -22,5 +23,5 @@ class SmallWall(Building):
             melee_armor=0,
             pierce_armor=0,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
+            player=player,
         )
