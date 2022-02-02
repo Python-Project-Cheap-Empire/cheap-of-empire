@@ -1,4 +1,5 @@
 import time
+from COE.contents.building.house import House
 import pygame
 from pygame.locals import QUIT
 import pygame_gui
@@ -309,8 +310,10 @@ class GameMenu:
         )
         nb_house = 0
         for building in game.players[0].buildings:
-            if building.name == "house":
-                nb_house += 1
+            if isinstance(building, House):
+                if building.is_master:
+                    if building.construction_percent == 100:
+                        nb_house += 1
         self.draw_text(
             f"{len(game.players[0].units)}/{5+(5*nb_house)}",
             self.font_size,

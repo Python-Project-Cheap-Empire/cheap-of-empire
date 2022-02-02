@@ -51,12 +51,13 @@ class MapGenerator:
 
         # Used for testing
         if self.players:
-            vlg = Villager((1, 1), self.players[0])
-            cells[1][1].entity = vlg
-            self.players[0].units.append(vlg)
+            for i in range(2):
+                vlg = Villager((i, i), self.players[0])
+                cells[i][i].entity = vlg
+                self.players[0].units.append(vlg)
             if len(self.players) > 1:
-                vlg = Villager((4, 4), self.players[1])
-                cells[4][4].entity = vlg
+                vlg = Villager((6, 6), self.players[1])
+                cells[6][6].entity = vlg
                 self.players[1].units.append(vlg)
 
         return Map(cells, self.players, self.size, self.type, self.resources_rarity)

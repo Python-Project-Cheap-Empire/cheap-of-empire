@@ -47,7 +47,23 @@ class Game:
 
     def update(self):  # pragma: no cover
         # For each unit of the human player
+        now = time.time()
         for unit in self.players[0].units:
+            if unit.building:
+                if unit.building.construction_percent < 100:
+                    if (
+                        abs(unit.positions[0] - unit.building.positions[0]) <= 3
+                        and abs(unit.positions[1] - unit.building.positions[1]) <= 3
+                    ):
+                        if (
+                            (now - unit.prev_construct_time)
+                            * 60
+                            * self.speed
+                            * unit.speed
+                            > unit.building.construction_time
+                        ):
+                            unit.building.master.construction_percent += 1
+                            unit.prev_construct_time = now
             # If the unit is in travel between two points
             if unit.current_path:
                 next_cell_in_path = self.map.cells[unit.current_path[0][0]][
@@ -65,7 +81,6 @@ class Game:
                         unit.current_path[-1],
                     )
                 else:
-                    now = time.time()
                     if (now - unit.prev_move_time) * 60 * self.speed * unit.speed > 20:
                         self.map.empty_cell(unit.positions[0], unit.positions[1])
                         self.map.populate_cell(
@@ -193,18 +208,27 @@ class Game:
                             and y < self.map.size.value
                         ):
                             if self.selected_building:
+                                building = None
                                 if self.selected_building == "house":
                                     building = House((x, y))
-                                    self.map.place_building(
-                                        x, y, self.players[0], building
-                                    )
-                                    self.selected_building = None
                                 elif self.selected_building == "barrack":
                                     building = Barrack((x, y))
+                                if building:
                                     self.map.place_building(
                                         x, y, self.players[0], building
                                     )
                                     self.selected_building = None
+                                    for entity in self.currently_selected:
+                                        if isinstance(entity, Villager):
+                                            entity.is_building = True
+                                            entity.building = building
+                                            entity.current_path = find_move(
+                                                self.map.dict_binary_cells.get(
+                                                    entity.entity_type
+                                                ),
+                                                entity.positions,
+                                                building.positions,
+                                            )
                                 return
 
                         if not self.mouse_down:
@@ -282,7 +306,23 @@ class Game:
                                             x
                                         ][y].entity
                                         selected_unit.is_attacking = True
+
+                                    elif (
+                                        self.map.cells[x][y].entity
+                                        in self.players[0].buildings
+                                    ):
+                                        selected_unit.building = self.map.cells[x][
+                                            y
+                                        ].entity
+                                        selected_unit.current_path = find_move(
+                                            self.map.dict_binary_cells.get(
+                                                selected_unit.entity_type
+                                            ),
+                                            selected_unit.positions,
+                                            (x, y),
+                                        )
                                     else:
+                                        selected_unit.building = None
                                         selected_unit.current_path = find_move(
                                             self.map.dict_binary_cells.get(
                                                 selected_unit.entity_type

@@ -1,4 +1,5 @@
 from COE.UI.cheat_code import CheatCode
+from COE.contents.building.building import Building
 import pygame
 from pygame.locals import *
 import pygame_gui
@@ -69,21 +70,46 @@ class GameLogic:
         for selected_unit in self.game.currently_selected:
             self.game.map.draw_rect_around(
                 self.display_,
-                selected_unit.positions[0],
-                selected_unit.positions[1],
+                selected_unit,
                 self.game.camera,
                 self.static.half_width_cells_size,
                 self.static.half_height_cells_size,
             )
-            self.game.map.draw_health_bar(
-                self.display_,
-                selected_unit.positions[0],
-                selected_unit.positions[1],
-                self.game.camera,
-                self.static.half_width_cells_size,
-                self.static.half_height_cells_size,
-                selected_unit.hp,
-            )
+            if isinstance(selected_unit, Building):
+                if selected_unit.master.construction_percent >= 100:
+                    self.game.map.draw_health_bar(
+                        self.display_,
+                        selected_unit.master.positions[0],
+                        selected_unit.master.positions[1],
+                        self.game.camera,
+                        self.static.half_width_cells_size,
+                        self.static.half_height_cells_size,
+                        selected_unit.master.hp,
+                        selected_unit.master.max_hp,
+                    )
+            else:
+                self.game.map.draw_health_bar(
+                    self.display_,
+                    selected_unit.positions[0],
+                    selected_unit.positions[1],
+                    self.game.camera,
+                    self.static.half_width_cells_size,
+                    self.static.half_height_cells_size,
+                    selected_unit.hp,
+                    selected_unit.master.max_hp,
+                )
+        for building in self.game.players[0].buildings:
+            if building.master.construction_percent < 100:
+                self.game.map.draw_construction_bar(
+                    self.display_,
+                    building.master.positions[0],
+                    building.master.positions[1],
+                    self.game.camera,
+                    self.static.half_width_cells_size,
+                    self.static.half_height_cells_size,
+                    building.master.construction_percent,
+                )
+
         if self.game.currently_selected:
             self.menu.draw_entity(self.game.currently_selected[0])
         self.timer.draw_time(self.display_)
