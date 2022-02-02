@@ -1,17 +1,19 @@
 import random
 
-from perlin_noise import PerlinNoise
 import numpy as np
+from perlin_noise import PerlinNoise
 
+from COE.contents.building.town_center import TownCenter
+from COE.contents.resources import *
+from COE.contents.unit.villager import Villager
 from .cell import Cell
 from .enum.cell_types import CellTypes
-from .map import Map
 from .enum.map_sizes import MapSizes
 from .enum.map_types import MapTypes
 from .enum.resources_rarity import ResourcesRarity
-from COE.contents.resources import *
-
-from COE.contents.unit.villager import Villager
+from .map import Map
+from COE.contents.entity_types import EntityTypes
+from COE.logic.path_finding import find_move
 
 
 class MapGenerator:
@@ -60,7 +62,25 @@ class MapGenerator:
                 cells[6][6].entity = vlg
                 self.players[1].units.append(vlg)
 
-        return Map(cells, self.players, self.size, self.type, self.resources_rarity)
+        world_map = Map(
+            cells, self.players, self.size, self.type, self.resources_rarity
+        )
+
+        if self.players:
+            for i, p in enumerate(self.players):
+                x, y = self.spawn_points[i]
+                world_map.place_building(x, y, p, TownCenter((x, y), p))
+                for v in range(3):
+                    x_pos, y_pos = find_move(
+                        world_map.dict_binary_cells.get(EntityTypes.GROUND),
+                        (x, y),
+                        (x + 4, y + 4),
+                    )[-1]
+                    villager = Villager((x_pos, y_pos), p)
+                    p.units.append(villager)
+                    world_map.populate_cell(x_pos, y_pos, villager)
+
+        return world_map
 
     def _biome(self, value):
         return Cell(CellTypes.GRASS, None)

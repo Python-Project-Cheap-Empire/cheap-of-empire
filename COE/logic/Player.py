@@ -50,6 +50,10 @@ class Player:
         return self._username
 
     @property
+    def is_human(self):
+        return self._is_human
+
+    @property
     def gold(self):
         return self._gold
 

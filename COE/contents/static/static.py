@@ -6,13 +6,15 @@ from COE.map.cell import Cell
 class Static:  # pragma: no cover
     def __init__(self) -> None:
         self.entities_pos_dict = {
-            "tree": (8, -50),
+            "tree": (-100, -150),
             "villager": (25, -50),
+            "axeman": (20, -40),
             "barrack": (-50, 0),
             "gold ore": (10, -8),
             "stone ore": (10, -8),
             "berry": (8, -27),
             "house": (-5, 10),
+            "towncenter": (-55, -10),
         }
         self.cells_size = Cell.get_pixel_cells_size()
         self.scaled_blocks = Cell.get_scaled_blocks()
