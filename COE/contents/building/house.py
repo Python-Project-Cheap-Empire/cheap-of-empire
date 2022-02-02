@@ -1,10 +1,11 @@
 from COE.contents.entity_types import EntityTypes
+from COE.logic.Player import Player
 from .building import Building
 from .town_center import TownCenter
 
 
 class House(Building):
-    def __init__(self, position: tuple):
+    def __init__(self, position: tuple, player: Player):
         super().__init__(
             name="House",
             hp=75,
@@ -21,7 +22,7 @@ class House(Building):
             entity_type=EntityTypes.GROUND,
             melee_armor=-2,
             pierce_armor=7,
-            sub_entities=[],
+            player=player,
         )
 
     def increase_max_population(self, amount=5) -> str:

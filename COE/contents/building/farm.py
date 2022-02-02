@@ -1,10 +1,11 @@
 from COE.contents.entity_types import EntityTypes
+from COE.logic.Player import Player
 from .storage_building import StorageBuilding
 from .market import Market
 
 
 class Farm(StorageBuilding):
-    def __init__(self, resource, position: tuple):
+    def __init__(self, resource, position: tuple, player: Player):
         super().__init__(
             name="Farm",
             hp=480,
@@ -23,7 +24,7 @@ class Farm(StorageBuilding):
             melee_armor=0,
             pierce_armor=0,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
+            player=player,
         )
 
     def re_seeding_farm(self):

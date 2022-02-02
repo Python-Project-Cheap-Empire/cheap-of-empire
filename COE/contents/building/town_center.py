@@ -1,11 +1,11 @@
 from COE.contents.entity_types import EntityTypes
+from COE.logic.Player import Player
 from .storage_building import StorageBuilding
 from .military_building import MilitaryBuilding
 
 
 class TownCenter(StorageBuilding, MilitaryBuilding):
-    def __init__(self, position: tuple, is_drop_point: bool):
-        self.is_drop_point = is_drop_point
+    def __init__(self, position: tuple, player: Player):
         super().__init__(
             name="TownCenter",
             hp=600,
@@ -25,7 +25,7 @@ class TownCenter(StorageBuilding, MilitaryBuilding):
             melee_armor=0,
             pierce_armor=0,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
+            player=player,
         )
 
     def train_villager(self):

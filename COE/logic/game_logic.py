@@ -111,7 +111,7 @@ class GameLogic:
                 )
 
         if self.game.currently_selected:
-            self.menu.draw_entity(self.game.currently_selected[0])
+            self.menu.draw_entity(self.game.currently_selected)
         self.timer.draw_time(self.display_)
         self.menu.display(self.game)
         self.menu.draw_fps(self.clock.get_fps())

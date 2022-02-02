@@ -25,7 +25,6 @@ class Villager(Unit):
             pierce_armor=0,
             player=player,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
         )
         self.held_ressource = None
         self.building = None

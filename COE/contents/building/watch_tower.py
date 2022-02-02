@@ -1,11 +1,12 @@
 from COE.contents.entity import Entity
 from COE.contents.entity_types import EntityTypes
+from COE.logic.Player import Player
 from .building import Building
 from .granary import Granary
 
 
 class WatchTower(Building):
-    def __init__(self, position: tuple):
+    def __init__(self, position: tuple, player: Player):
         self.damage = 3
         self.range = 5
         self.attack_speed = 1.5
@@ -26,7 +27,7 @@ class WatchTower(Building):
             melee_armor=0,
             pierce_armor=0,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
+            player=player,
         )
 
     def attack(

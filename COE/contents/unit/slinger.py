@@ -25,5 +25,4 @@ class Slinger(Unit):
             pierce_armor=2,
             player=player,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
         )

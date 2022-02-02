@@ -1,12 +1,12 @@
 from COE.contents.entity_types import EntityTypes
+from COE.logic.Player import Player
 from .storage_building import StorageBuilding
 from .technology_building import TechnologyBuilding
 from .town_center import TownCenter
 
 
 class StoragePit(StorageBuilding, TechnologyBuilding):
-    def __init__(self, position: tuple, is_drop_point: bool = True):
-        self.is_drop_point = is_drop_point
+    def __init__(self, position: tuple, player: Player):
         super().__init__(
             name="Storage Pit",
             hp=350,
@@ -26,7 +26,7 @@ class StoragePit(StorageBuilding, TechnologyBuilding):
             melee_armor=0,
             pierce_armor=0,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
+            player=player,
         )
 
     def upgrade_technology(self):

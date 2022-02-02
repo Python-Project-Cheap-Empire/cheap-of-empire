@@ -24,7 +24,7 @@ from COE.map.map import Map
 
 
 def test_archery_range():
-    a = ArcheryRange((0, 0))
+    a = ArcheryRange((0, 0), None)
 
     a.train_bowman()
     a.train_bowman()
@@ -36,7 +36,7 @@ def test_archery_range():
 
 
 def test_barrack():
-    b = Barrack((0, 0))
+    b = Barrack((0, 0), None)
     b.train_axeman()
     b.train_clubman()
     b.train_slinger()
@@ -48,7 +48,7 @@ def test_barrack():
 
 
 def test_dock():
-    d = Dock((0, 0))
+    d = Dock((0, 0), None)
     d.train_fishing_boat()
     d.train_trade_boat()
     d.train_scout_ship()
@@ -66,7 +66,7 @@ def test_dock():
 
 
 def test_farm():
-    f = Farm(175, (0, 0))
+    f = Farm(175, (0, 0), None)
     assert f.resources == 175
     assert f.re_seeding_farm() == "ReSeeding Farm"
     assert f.max_held == 250
@@ -76,7 +76,7 @@ def test_farm():
 
 
 def test_granary():
-    g = Granary((0, 0))
+    g = Granary((0, 0), None)
     assert g.upgrade_technology() == "Upgrading..."
     assert g.line_of_sight == 6
     assert g.required_age == 1
@@ -85,7 +85,7 @@ def test_granary():
 
 
 def test_market():
-    m = Market((0, 0))
+    m = Market((0, 0), None)
     m.enable_tribute()
     assert m.enabled_tribute
     assert m.research_economic_technology() == "Research Economic Technologies"
@@ -97,7 +97,7 @@ def test_market():
 
 
 def test_stable():
-    s = Stable((0, 0))
+    s = Stable((0, 0), None)
     s.train_scout()
     s.train_scout()
     assert s.pending_units == ["Scout", "Scout"]
@@ -107,15 +107,14 @@ def test_stable():
 
 
 def test_storage_pit():
-    sp = StoragePit((0, 0))
+    sp = StoragePit((0, 0), None)
     assert sp.upgrade_technology() == "Upgrading..."
-    assert sp.is_drop_point
     assert sp.wood_required == 120
     assert sp.construction_time == 30
 
 
 def test_town_center():
-    tc = TownCenter((0, 0), True)
+    tc = TownCenter((0, 0), None)
     assert tc.advance_age() == "Advancing Age..."
     tc.train_villager()
     tc.train_villager()
@@ -126,7 +125,7 @@ def test_town_center():
 
 
 def test_house():
-    h = House((0, 0))
+    h = House((0, 0), None)
     assert h.increase_max_population() == "Max pop +5"
     assert h.decrease_max_population() == "Max pop -5"
     assert h.required_age == 1
@@ -136,7 +135,7 @@ def test_house():
 
 
 def test_watch_tower():
-    t = WatchTower((0, 0))
+    t = WatchTower((0, 0), None)
     assert t.damage == 3
     assert t.required_age == 2
     assert t.required_building == {Granary.__class__.__name__}
@@ -146,7 +145,7 @@ def test_watch_tower():
 
 
 def test_small_wall():
-    sw = SmallWall((0, 0))
+    sw = SmallWall((0, 0), None)
     assert sw.name == "Small Wall"
     assert sw.hp == 100
     assert sw.wood_required == 20
