@@ -1,11 +1,12 @@
 from COE.contents.entity_types import EntityTypes
+from COE.logic.Player import Player
 from .military_building import MilitaryBuilding
 from .technology_building import TechnologyBuilding
 from .barrack import Barrack
 
 
 class Stable(MilitaryBuilding, TechnologyBuilding):
-    def __init__(self, position: tuple):
+    def __init__(self, position: tuple, player: Player):
         super().__init__(
             name="Stable",
             hp=350,
@@ -23,7 +24,7 @@ class Stable(MilitaryBuilding, TechnologyBuilding):
             melee_armor=0,
             pierce_armor=0,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
+            player=player,
         )
 
     def upgrade_technology(self):

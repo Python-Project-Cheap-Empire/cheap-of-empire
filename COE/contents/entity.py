@@ -19,7 +19,6 @@ class Entity:
         width: int,
         line_of_sight: int,
         entity_type: EntityTypes,
-        sub_entities,
         is_master: bool = True,
         **kwargs,
     ):  # pragma: no cover
@@ -33,4 +32,4 @@ class Entity:
         self.entity_type = entity_type
         self.is_master = is_master
         self.master = self
-        self.sub_entities = sub_entities
+        self.sub_entities = [self]

@@ -25,5 +25,4 @@ class Axeman(Unit):
             pierce_armor=0,
             player=player,
             entity_type=EntityTypes.GROUND,
-            sub_entities=[],
         )

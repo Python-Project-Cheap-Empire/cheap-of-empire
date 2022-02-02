@@ -23,7 +23,7 @@ def test_unit():
     p1.units[0].attacked_entity = p2.units[0]
     p1.units[0].is_attacking = True
     p1.units[0].attack()
-    assert p2.units[0].hp == 46
+    assert p2.units[0].hp == 42
     p2.units[0].hp = 0
     assert p2.units[0].hp <= 0
     assert not p1.units[0].hp <= 0
