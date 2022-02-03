@@ -31,7 +31,7 @@ class MainMenu:
                     (self.width / 2 - 200, self.height / 2 + 50),
                     (400, 100),
                 ),
-                text="OPTIONS",
+                text="CHEAT CODES",
                 manager=self.manager,
             ),
             pygame_gui.elements.UIButton(
