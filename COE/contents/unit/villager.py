@@ -1,3 +1,4 @@
+from COE.contents.resources.resource_type import ResourceType
 from COE.contents.unit.unit import Unit
 from COE.logic.Player import Player
 from COE.contents.entity_types import EntityTypes
@@ -38,71 +39,73 @@ class Villager(Unit):
             entity_type=EntityTypes.GROUND,
         )
 
-        self.held_ressource = None
+        self.gathered_resource = None
+        self.gathered_resource_type: ResourceType = None
         self.amount_holding = 0
-        # self.gathering_target = None
         self.MAX_AMOUNT_HOLDING = 15
         self.building = None
-        self.is_gathering = False
+        self.is_returning = False
         self.gathering_time = 100
         self.last_gather_time = time.time()
-        self.held_ressource_x, self.held_ressource_y = -1, -1
-    # def build():
-    #     pass
-
-    # def repair():
-    #     pass
-
-    # def seedingFarm():
-    #     pass
 
     def update_gathering(self, game_speed):
-        # s = None
-        if self.is_gathering and self.check_in_range(self.held_ressource):
+        if self.gathered_resource is not None and self.check_in_range(
+            self.gathered_resource
+        ):
             now = time.time()
-            if ((now - self.last_gather_time) * 60 * game_speed * self.gathering_time >= 20
-                    ):
-                # s = self.gather_resource()
+            if (
+                now - self.last_gather_time
+            ) * 60 * game_speed * self.gathering_time >= 20:
                 self.gather_resource()
                 self.last_gather_time = now
-        # return s
-    '''
+
+    """
     Check   if amount >= MAX_AMOUNT_HOLDING => return to towncenter to release
             if not => move to resource and gather
 
-    '''
+    """
 
-    def check_ressource_and_amount_holding(self, u, x, y):
-        if (self.held_ressource is None or
-            (isinstance(self.held_ressource, Gold) and isinstance(u, Gold))
-            or (isinstance(self.held_ressource, Stone) and isinstance(u, Stone))
-            or (isinstance(self.held_ressource, Wood) and isinstance(u, Wood))
-                or (isinstance(self.held_ressource, Food) and isinstance(u, Food))):
-            print("GO HERE")
-            self.held_ressource = u
-            self.is_gathering = True
-            print(self.held_ressource, "==== ")
+    def check_ressource(self, clicked_resource):
+        if self.amount_holding <= 0 and (
+            self.gathered_resource is None
+            or (
+                self.gathered_resource_type == ResourceType.GOLD
+                and isinstance(clicked_resource, Gold)
+            )
+            or (
+                self.gathered_resource_type == ResourceType.STONE
+                and isinstance(clicked_resource, Stone)
+            )
+            or (
+                self.gathered_resource_type == ResourceType.WOOD
+                and isinstance(clicked_resource, Wood)
+            )
+            or (
+                self.gathered_resource_type == ResourceType.FOOD
+                and isinstance(clicked_resource, Food)
+            )
+        ):
             return True
         return False
 
     def gather_resource(self):
-        if self.held_ressource is not None and self.held_ressource.amount > 0:
-            if self.held_ressource.amount > 5:
+        if self.gathered_resource.amount > 0:
+            if self.gathered_resource.amount > 5:
                 self.amount_holding += 5
-                self.held_ressource.decrease_amount(5)
+                self.gathered_resource.decrease_amount(5)
             else:
-                self.amount_holding += self.held_ressource.amount
-                self.held_ressource.decrease_amount(self.held_ressource.amount)
+                self.amount_holding += self.gathered_resource.amount
+                self.gathered_resource.decrease_amount(self.gathered_resource.amount)
 
-        # return self.held_ressource.amount
+        # return self.gathered_resource.amount
 
-    def release_resource(self):
-        if isinstance(self.held_ressource, Gold):
+    def transfer_resource_to_player(self):
+        if self.gathered_resource_type == ResourceType.GOLD:
             self.player._gold += self.amount_holding
-        if isinstance(self.held_ressource, Wood):
+        if self.gathered_resource_type == ResourceType.WOOD:
             self.player._wood += self.amount_holding
-        if isinstance(self.held_ressource, Stone):
+        if self.gathered_resource_type == ResourceType.STONE:
             self.player._stone += self.amount_holding
-        if isinstance(self.held_ressource, Food):
+        if self.gathered_resource_type == ResourceType.FOOD:
             self.player._food += self.amount_holding
         self.amount_holding = 0

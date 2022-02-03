@@ -195,8 +195,9 @@ class Map:
 
     def empty_cell(self, x, y):
         entity_on_cell = self.cells[x][y].entity
-        self.dict_binary_cells.get(entity_on_cell.entity_type)[y][x] = 1
-        self.cells[x][y].entity = None
+        if entity_on_cell is not None:
+            self.dict_binary_cells.get(entity_on_cell.entity_type)[y][x] = 1
+            self.cells[x][y].entity = None
 
     def place_building(self, x, y, player, building: Building):
         for x_ in range(building.width):
