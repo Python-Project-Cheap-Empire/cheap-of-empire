@@ -254,8 +254,12 @@ class Game:
                                             (x, y),
                                         )
                                     else:
-                                        # ================================================================
-                                        if isinstance(selected_unit, Villager) and isinstance(self.map.cells[x][y].entity, Resource):
+                                        # ==========================================
+                                        if isinstance(
+                                            selected_unit, Villager
+                                        ) and isinstance(
+                                            self.map.cells[x][y].entity, Resource
+                                        ):
                                             selected_unit.current_path = find_move(
                                                 self.map.dict_binary_cells.get(
                                                     selected_unit.entity_type
@@ -263,15 +267,17 @@ class Game:
                                                 selected_unit.positions,
                                                 (x, y),
                                             )
-                                            selected_unit.gathering_target = self.map.cells[x][y].entity
-                                            if (selected_unit.check_ressource_and_amount_holding(
-                                                self.map.cells[x][y].entity, x, y)
-                                                ):
+                                            selected_unit.gathering_target = (
+                                                self.map.cells[x][y].entity
+                                            )
+                                            if selected_unit.check_ressource_and_amount_holding(
+                                                self.map.cells[x][y].entity, x, y
+                                            ):
                                                 selected_unit.held_ressource_x = x
                                                 selected_unit.held_ressource_y = y
                                                 selected_unit.is_gathering = True
 
-                                        # ================================================================
+                                        # ==================================
                                         else:
                                             selected_unit.current_path = find_move(
                                                 self.map.dict_binary_cells.get(
@@ -379,7 +385,7 @@ class Game:
                         ):
                             unit.building.master.construction_percent += 1
                             unit.prev_construct_time = now
-# ==================================================================================
+            # ==================================================================================
             if (
                 unit.is_gathering
                 and unit.held_ressource is not None
@@ -402,26 +408,22 @@ class Game:
                     town_center_pos = town_center.town_center_pos
 
                     unit.current_path = find_move(
-                        self.map.dict_binary_cells.get(
-                            unit.entity_type
-                        ),
+                        self.map.dict_binary_cells.get(unit.entity_type),
                         unit.positions,
-                        (town_center_pos[0], town_center_pos[1])
+                        (town_center_pos[0], town_center_pos[1]),
                     )
                     unit.release_resource()
                     if unit.held_ressource is not None:
                         unit.current_path = find_move(
-                            self.map.dict_binary_cells.get(
-                                unit.entity_type
-                            ),
+                            self.map.dict_binary_cells.get(unit.entity_type),
                             unit.positions,
-                            (unit.held_ressource_x, unit.held_ressource_y)
+                            (unit.held_ressource_x, unit.held_ressource_y),
                         )
                 else:
                     unit.update_gathering(self.speed)
                     print(unit.amount_holding)
                     print(unit.held_ressource.amount)
-# ==============================================================================
+        # ==============================================================================
         # If the unit is in travel between two points
         if unit.current_path:
             next_cell_in_path = self.map.cells[unit.current_path[0][0]][
