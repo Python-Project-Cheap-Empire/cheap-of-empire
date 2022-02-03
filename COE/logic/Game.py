@@ -1,19 +1,20 @@
+import time
+import pygame
+from COE.contents.resources.resource import Resource
+from COE.contents.unit.axeman import Axeman
+from COE.contents.entity_types import EntityTypes
+from COE.camera.camera import Camera
+from COE.map.map import Map
+from COE.logic.path_finding import find_move
+from COE.logic.Player import Player
+from COE.contents.unit.villager import Villager
+from COE.contents.unit.unit import Unit
+from COE.contents.entity import Entity
 from typing import List
 from COE.contents.building.barrack import Barrack
 from COE.contents.building.building import Building
 from COE.contents.building.house import House
-from COE.contents.entity import Entity
-from COE.contents.unit.unit import Unit
-from COE.contents.unit.villager import Villager
-from COE.logic.Player import Player
-from COE.logic.path_finding import find_move
-from COE.map.map import Map
-from COE.camera.camera import Camera
-from COE.contents.entity_types import EntityTypes
-from COE.contents.unit.axeman import Axeman
-from COE.contents.resources.resource import Resource
-import pygame
-import time
+from COE.contents.building.town_center import TownCenter
 
 
 class Game:
@@ -42,6 +43,7 @@ class Game:
         self.x_, self.y_, self.x, self.y = -1, -1, -1, -1
         self.selected_building = None
         self.prev_time = time.time()
+        self.training_time = 12
 
     def set_speed(self, new_speed):
         assert (
@@ -55,7 +57,7 @@ class Game:
         ia_list = self.players[1:]
         now = time.time()
 
-        spawn_rate = 900
+        spawn_rate = 10000000000
         if (now - self.prev_time) * 60 * self.speed > spawn_rate:
             ia_list = self.players[1:]
             for ia in ia_list:
@@ -87,7 +89,17 @@ class Game:
             if spawn_rate < 60:
                 spawn_rate = 60
             self.prev_time = now
-
+        for building in self.players[0].buildings:
+            if isinstance(building, Barrack):
+                # print('xpxo')
+                if building.update_training(self.speed):
+                    print('building.update_training(self.speed)')
+                    x, y = building.pop_unit(self.map)
+                    if list((x, y)) != [-1, -1]:
+                        print("pop")
+                        u = Axeman((x, y), building.player)
+                        building.player.units.append(u)
+                        self.map.populate_cell(x, y, u)
         # For each unit of the human player
         all_units = self.players[0].units + self.players[1].units
         for unit in all_units:
@@ -170,7 +182,22 @@ class Game:
                                     self.currently_selected = []
                         ally_villager_in_selected_units = True
                         break
-
+                    if isinstance(entity, Barrack) and entity.player._is_human:
+                        img, pos = static.scaled_UI_imgs["clubman"][0], static.scaled_UI_imgs["clubman"][1]
+                        if (
+                            img
+                            .get_rect(topleft=pos)
+                            .collidepoint(mouse_pos)
+                        ):
+                            entity.train_axeman(x, y, self.training_time)
+                    if isinstance(entity, TownCenter) and entity.player._is_human:
+                        img, pos = static.scaled_UI_imgs["villager"][0], static.scaled_UI_imgs["villager"][1]
+                        if (
+                            img
+                            .get_rect(topleft=pos)
+                            .collidepoint(mouse_pos)
+                        ):
+                            entity.train_villager(x, y, self.training_time)
                 if not ally_villager_in_selected_units:
                     if (
                         x >= 0
@@ -273,6 +300,7 @@ class Game:
                                             if selected_unit.check_ressource_and_amount_holding(
                                                 self.map.cells[x][y].entity, x, y
                                             ):
+                                                selected_unit.held_ressource = self.map.cells[x][y].entity
                                                 selected_unit.held_ressource_x = x
                                                 selected_unit.held_ressource_y = y
                                                 selected_unit.is_gathering = True
@@ -362,9 +390,9 @@ class Game:
             self.speed = (self.speed + 2) % 12
 
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_F5:
-            self.map.place_building(
-                15, 15, self.players[1], House((15, 15), self.players[1])
-            )
+            self.training_time = (self.training_time - 2)
+            if self.training_time <= 0:
+                self.training_time = 15
 
     def unit_action(self, unit):
         now = time.time()
@@ -423,6 +451,7 @@ class Game:
                     unit.update_gathering(self.speed)
                     print(unit.amount_holding)
                     print(unit.held_ressource.amount)
+
         # ==============================================================================
         # If the unit is in travel between two points
         if unit.current_path:
