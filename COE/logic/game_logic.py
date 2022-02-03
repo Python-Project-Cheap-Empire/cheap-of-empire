@@ -55,9 +55,9 @@ class GameLogic:
     def draw_victory_defeat(self):
         print(f"Half screen is {self.width*0.5}")
         if self.game.is_victory:
-            self.display_.blit(self.static.victory_image, (self.width * 0.4, 0))
+            self.display_.blit(self.static.victory_image, (self.width * 0.45, 0))
         if self.game.is_victory is False:
-            self.display_.blit(self.static.defeat_image, (self.width * 0.4, 0))
+            self.display_.blit(self.static.defeat_image, (self.width * 0.45, 0))
 
     def draw(self):
         self.display_.fill((0, 0, 0))
