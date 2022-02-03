@@ -51,17 +51,6 @@ class MapGenerator:
             cells = self.place_forest(cells, 0.3)
             cells = self.place_resources(cells)
 
-        # Used for testing
-        if self.players:
-            for i in range(2):
-                vlg = Villager((i, i), self.players[0])
-                cells[i][i].entity = vlg
-                self.players[0].units.append(vlg)
-            if len(self.players) > 1:
-                vlg = Villager((6, 6), self.players[1])
-                cells[6][6].entity = vlg
-                self.players[1].units.append(vlg)
-
         world_map = Map(
             cells, self.players, self.size, self.type, self.resources_rarity
         )
@@ -70,15 +59,16 @@ class MapGenerator:
             for i, p in enumerate(self.players):
                 x, y = self.spawn_points[i]
                 world_map.place_building(x, y, p, TownCenter((x, y), p))
-                for v in range(3):
-                    x_pos, y_pos = find_move(
-                        world_map.dict_binary_cells.get(EntityTypes.GROUND),
-                        (x, y),
-                        (x + 4, y + 4),
-                    )[-1]
-                    villager = Villager((x_pos, y_pos), p)
-                    p.units.append(villager)
-                    world_map.populate_cell(x_pos, y_pos, villager)
+                if p.is_human:
+                    for v in range(3):
+                        x_pos, y_pos = find_move(
+                            world_map.dict_binary_cells.get(EntityTypes.GROUND),
+                            (x, y),
+                            (x + 4, y + 4),
+                        )[-1]
+                        villager = Villager((x_pos, y_pos), p)
+                        p.units.append(villager)
+                        world_map.populate_cell(x_pos, y_pos, villager)
 
         return world_map
 

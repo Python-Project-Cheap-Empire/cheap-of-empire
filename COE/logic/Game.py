@@ -11,6 +11,7 @@ from COE.map.map import Map
 from COE.camera.camera import Camera
 from COE.contents.entity_types import EntityTypes
 from COE.contents.unit.axeman import Axeman
+from COE.contents.building.town_center import TownCenter
 import pygame
 import time
 
@@ -41,6 +42,8 @@ class Game:
         self.x_, self.y_, self.x, self.y = -1, -1, -1, -1
         self.selected_building = None
         self.prev_time = time.time()
+        self.ia_defenders = []
+        self.is_victory = None
 
     def set_speed(self, new_speed):
         assert (
@@ -48,13 +51,39 @@ class Game:
         ), "new_speed is a float and new_speed > 0"
         self.speed = new_speed
 
+    def set_attack(self, unit, unit_atk_by):  # pragma: no cover
+        unit.is_attacking = True
+        unit.attacked_entity = unit_atk_by.is_attacked_by.pop(0)
+        if not unit.check_in_range(unit.attacked_entity):
+            x, y = unit.positions
+            j, k = unit.attacked_entity.positions
+            unit.current_path = find_move(
+                self.map.dict_binary_cells.get(unit.entity_type),
+                (x, y),
+                (j, k),
+            )
+
+    def check_win_def_for_player(self, player):  # pragma: no cover
+        is_tc = False
+        for batiment in player.buildings:
+            if isinstance(batiment, TownCenter):
+                is_tc = True
+        if not is_tc:
+            if player._is_human:
+                self.is_victory = False
+            else:
+                self.is_victory = True
+
     def update(self):  # pragma: no cover
+
+        for player in self.players:
+            self.check_win_def_for_player(player)
 
         # Spawning IA units
         ia_list = self.players[1:]
         now = time.time()
 
-        spawn_rate = 900
+        spawn_rate = 1100
         if (now - self.prev_time) * 60 * self.speed > spawn_rate:
             ia_list = self.players[1:]
             for ia in ia_list:
@@ -72,22 +101,46 @@ class Game:
                     ia.units.append(axe)
                     self.map.populate_cell(x_pos, y_pos, axe)
 
-                    if len(self.players[0].buildings) > 0:
-                        axe.attacked_entity = self.players[0].buildings[0]
-                        axe.is_attacking = True
+                    if len(self.ia_defenders) == 3:
+                        for batiment in self.players[0].buildings:
+                            if isinstance(batiment, TownCenter):
+                                axe.attacked_entity = batiment
+                                axe.is_attacking = True
 
-                        axe.current_path = find_move(
-                            self.map.dict_binary_cells.get(axe.entity_type),
-                            axe.positions,
-                            self.players[0].buildings[0].positions,
-                        )
+                                axe.current_path = find_move(
+                                    self.map.dict_binary_cells.get(axe.entity_type),
+                                    axe.positions,
+                                    batiment.positions,
+                                )
+                    else:
+                        self.ia_defenders.append(axe)
+                        print(f"Number of defenders : {len(self.ia_defenders)}")
 
             spawn_rate -= 15
             if spawn_rate < 60:
                 spawn_rate = 60
             self.prev_time = now
 
-        # For each unit of the human player
+        # defenders check if an enemy is in range
+        for ia_unit in self.players[1].units:
+            if len(ia_unit.is_attacked_by) > 0:
+                self.set_attack(ia_unit, ia_unit)
+
+        for defender in self.ia_defenders:
+            if len(self.players[1].buildings[0].is_attacked_by) > 0:
+                tc = self.players[1].buildings[0]
+                self.set_attack(defender, tc)
+            if defender.is_attacking:
+                if not defender.check_in_range(defender.attacked_entity):
+                    x, y = defender.positions
+                    j, k = defender.attacked_entity.positions
+                    defender.current_path = find_move(
+                        self.map.dict_binary_cells.get(defender.entity_type),
+                        (x, y),
+                        (j, k),
+                    )
+
+        # For each unit
         all_units = self.players[0].units + self.players[1].units
         for unit in all_units:
             self.unit_action(unit)
@@ -237,6 +290,9 @@ class Game:
                                             x
                                         ][y].entity
                                         selected_unit.is_attacking = True
+                                        self.map.cells[x][
+                                            y
+                                        ].entity.is_attacked_by.append(selected_unit)
 
                                     elif (
                                         self.map.cells[x][y].entity
@@ -341,7 +397,7 @@ class Game:
                 15, 15, self.players[1], House((15, 15), self.players[1])
             )
 
-    def unit_action(self, unit):
+    def unit_action(self, unit):  # pragma: no cover
         now = time.time()
         if isinstance(unit, Villager):
             if unit.building:
@@ -400,6 +456,11 @@ class Game:
             if unit.attacked_entity.hp <= 0:
                 unit.attacked_entity = None
                 unit.is_attacking = False
+                if not unit.player.is_human and unit not in self.ia_defenders:
+                    unit.is_attacking = True
+                    for batiment in self.players[0].buildings:
+                        if isinstance(batiment, TownCenter):
+                            unit.attacked_entity = batiment
             else:
                 remaining_hp = unit.update_attack(self.speed)
                 if remaining_hp is not None and remaining_hp <= 0:
@@ -409,6 +470,8 @@ class Game:
                             attacked_player.buildings.remove(entity)
                         elif isinstance(entity, Unit):
                             attacked_player.units.remove(entity)
+                            if entity in self.ia_defenders:
+                                self.ia_defenders.remove(entity)
                         self.map.empty_cell(entity.positions[0], entity.positions[1])
 
                     unit.attacked_entity = None
