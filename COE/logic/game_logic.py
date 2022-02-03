@@ -52,6 +52,13 @@ class GameLogic:
             self.timer.update(self.game.speed)
         self.manager.update(dt)
 
+    def draw_victory_defeat(self):
+        print(f"Half screen is {self.width*0.5}")
+        if self.game.is_victory:
+            self.display_.blit(self.static.victory_image, (self.width * 0.4, 0))
+        if self.game.is_victory is False:
+            self.display_.blit(self.static.defeat_image, (self.width * 0.4, 0))
+
     def draw(self):
         self.display_.fill((0, 0, 0))
         self.game.map.draw_map(self.display_, self.game.camera)
@@ -124,5 +131,11 @@ class GameLogic:
         if self.menu.pause:
             self.menu.draw()
             self.cheatcode.draw()
+        if self.game.is_victory is not None:
+            self.menu.pause = True
+            self.menu.draw()
+            self.cheatcode.draw()
+            self.draw_victory_defeat()
+
         self.manager.draw_ui(self.display_)
         pygame.display.update()
