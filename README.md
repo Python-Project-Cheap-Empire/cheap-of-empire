@@ -4,3 +4,10 @@ Cheap of Empire is a project by 6 students from INSA CVL engineering school
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 The aim of this project is to make an RTS game, AoE like, developed in Python.
+
+Setup
+-----
+To be able to launch the game, you need poetry.
+Then type "poetry install". 
+
+If every dependencies are installed without issues, you can launch the game with the following command : "./COE/main.py"
