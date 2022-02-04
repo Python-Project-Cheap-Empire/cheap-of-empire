@@ -183,6 +183,16 @@ class GameMenu:
                     self.top_y_panel + (20 * self.static.mul_menu_panel),
                 ),
             ],
+            "villager_production": [
+                pygame.transform.scale(
+                    self.static.image_cache["ui_uniticons_01"],
+                    (
+                        100 * self.static.mul_action_panel,
+                        100 * self.static.mul_action_panel,
+                    ),
+                ),
+                (200, (self.height - (self.static.mul_menu_panel * 80)) + 20),
+            ],
             "clubman": [
                 pygame.transform.scale(
                     self.static.image_cache["ui_uniticons_03"],
@@ -410,11 +420,8 @@ class GameMenu:
                     entity_ = entity
                     if entity.player._is_human:
                         self.display_.blit(
-                            self.static.scaled_UI_imgs["villager"][0],
-                            (
-                                self.top_x_panel + (50 * self.static.mul_menu_panel),
-                                self.top_y_panel + (25 * self.static.mul_menu_panel),
-                            ),
+                            self.static.scaled_UI_imgs["villager_production"][0],
+                            self.static.scaled_UI_imgs["villager_production"][1],
                         )
                         break
 

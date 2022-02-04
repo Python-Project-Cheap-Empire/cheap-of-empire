@@ -28,8 +28,6 @@ def test_archery_range():
 
     a.train_bowman()
     a.train_bowman()
-    assert a.pending_units == ["BowMan", "BowMan"]
-    # assert a.required == {"Long Bow"}
     assert a.required_building == {Barrack.__class__.__name__}
     assert a.wood_required == 150
     assert a.construction_time == 40
@@ -37,11 +35,6 @@ def test_archery_range():
 
 def test_barrack():
     b = Barrack((0, 0), None)
-    b.train_axeman()
-    b.train_clubman()
-    b.train_slinger()
-    assert b.pending_units == ["AxeMan", "ClubMan", "Slinger"]
-    assert b.upgrade_technology() == "Upgrading..."
     assert b.required_building == {TownCenter.__class__.__name__}
     assert b.wood_required == 130
     assert b.construction_time == 40
@@ -115,10 +108,6 @@ def test_storage_pit():
 
 def test_town_center():
     tc = TownCenter((0, 0), None)
-    assert tc.advance_age() == "Advancing Age..."
-    tc.train_villager()
-    tc.train_villager()
-    assert tc.pending_units == ["Villager", "Villager"]
     assert tc.required_building == {}
     assert tc.wood_required == 200
     assert tc.construction_time == 60
