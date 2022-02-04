@@ -44,6 +44,7 @@ class Game:
         self.x_, self.y_, self.x, self.y = -1, -1, -1, -1
         self.selected_building = None
         self.prev_time = time.time()
+        self.training_time = 12
 
     def set_speed(self, new_speed):
         assert (
@@ -57,7 +58,7 @@ class Game:
         ia_list = self.players[1:]
         now = time.time()
 
-        spawn_rate = 900
+        spawn_rate = 10000000000
         if (now - self.prev_time) * 60 * self.speed > spawn_rate:
             ia_list = self.players[1:]
             for ia in ia_list:
@@ -88,7 +89,29 @@ class Game:
             if spawn_rate < 60:
                 spawn_rate = 60
             self.prev_time = now
+        for building in self.players[0].buildings:
+            nb_house = 0
+            for building_ in self.players[0].buildings:
+                if isinstance(building_, House):
+                    if building_.is_master:
+                        if building_.construction_percent == 100:
+                            nb_house += 1
 
+            if len(building.player.units) < 5 + (5 * nb_house):
+                if isinstance(building, Barrack):
+                    if building.update_training(self.speed):
+                        x, y = building.pop_unit(self.map)
+                        if list((x, y)) != [-1, -1]:
+                            u = Axeman((x, y), building.player)
+                            building.player.units.append(u)
+                            self.map.populate_cell(x, y, u)
+                elif isinstance(building, TownCenter):
+                    if building.update_training(self.speed):
+                        x, y = building.pop_unit(self.map)
+                        if list((x, y)) != [-1, -1]:
+                            u = Villager((x, y), building.player)
+                            building.player.units.append(u)
+                            self.map.populate_cell(x, y, u)
         # For each unit of the human player
         all_units = self.players[0].units + self.players[1].units
         for unit in all_units:
@@ -171,7 +194,20 @@ class Game:
                                     self.currently_selected = []
                         ally_villager_in_selected_units = True
                         break
-
+                    if isinstance(entity, Barrack) and entity.player._is_human:
+                        img, pos = (
+                            static.scaled_UI_imgs["clubman"][0],
+                            static.scaled_UI_imgs["clubman"][1],
+                        )
+                        if img.get_rect(topleft=pos).collidepoint(mouse_pos):
+                            entity.train_axeman(x, y, self.training_time)
+                    if isinstance(entity, TownCenter) and entity.player._is_human:
+                        img, pos = (
+                            static.scaled_UI_imgs["villager_production"][0],
+                            static.scaled_UI_imgs["villager_production"][1],
+                        )
+                        if img.get_rect(topleft=pos).collidepoint(mouse_pos):
+                            entity.train_villager(x, y, self.training_time)
                 if not ally_villager_in_selected_units:
                     if (
                         x >= 0
@@ -379,9 +415,9 @@ class Game:
             self.speed = (self.speed + 2) % 12
 
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_F5:
-            self.map.place_building(
-                15, 15, self.players[1], House((15, 15), self.players[1])
-            )
+            self.training_time = self.training_time - 2
+            if self.training_time <= 0:
+                self.training_time = 15
 
     def unit_action(self, unit):  # pragma: no cover
         now = time.time()

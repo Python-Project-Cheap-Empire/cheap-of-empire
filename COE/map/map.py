@@ -284,8 +284,8 @@ class Map:
                         )
                         if (
                             _x <= x_limit
-                            and _x >= -width_cells_size
-                            and _y >= -height_cells_size
+                            and _x >= -width_cells_size * 4
+                            and _y >= -height_cells_size * 4
                             and _y <= y_limit
                         ):
                             window.blit(

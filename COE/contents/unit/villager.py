@@ -2,20 +2,14 @@ from COE.contents.resources.resource_type import ResourceType
 from COE.contents.unit.unit import Unit
 from COE.logic.Player import Player
 from COE.contents.entity_types import EntityTypes
-from COE.contents.building.town_center import TownCenter
 from COE.contents.resources.gold import Gold
 from COE.contents.resources.stone import Stone
 from COE.contents.resources.food import Food
 from COE.contents.resources.wood import Wood
-from COE.contents.resources.gold_ore import GoldOre
-from COE.contents.resources.stone_ore import StoneOre
-from COE.contents.resources.tree import Tree
-from COE.contents.resources.cuttable_animal import CuttableAnimal
-from COE.contents.resources.resource import Resource
 import time
 
 
-class Villager(Unit):
+class Villager(Unit):  # pragma: no cover
     def __init__(
         self,
         positions: tuple,
@@ -47,6 +41,12 @@ class Villager(Unit):
         self.is_returning = False
         self.gathering_time = 100
         self.last_gather_time = time.time()
+        self.cost = {
+            "GOLD": 0,
+            "STONE": 0,
+            "WOOD": 0,
+            "FOOD": 50,
+        }
 
     def update_gathering(self, game_speed):
         if self.gathered_resource is not None and self.check_in_range(
@@ -86,7 +86,8 @@ class Villager(Unit):
             )
         ):
             return True
-        return False
+        else:
+            return False
 
     def gather_resource(self):
         if self.gathered_resource.amount > 0:
