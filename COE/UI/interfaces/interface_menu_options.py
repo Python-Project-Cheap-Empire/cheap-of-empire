@@ -13,15 +13,6 @@ class MenuOptions:
         self.screen_size = pygame.display.get_surface().get_size()
         self.width = self.screen_size[0]
         self.height = self.screen_size[1]
-
-        self.mul_width = (self.width * 1 / 2) / self.width
-        self.mul_height = (self.height * 1 / 2) / self.height
-        # a modifier pour les taille d'ecrans
-        self.ESM = (
-            self.screen_size[0] / 2 - (self.width * self.mul_width / 2),
-            self.screen_size[1] / 2 - (self.height * self.mul_height / 2),
-        )
-
         self.manager = pygame_gui.UIManager(self.screen_size)
         self.bouttons = [
             pygame_gui.elements.ui_button.UIButton(
@@ -32,6 +23,14 @@ class MenuOptions:
                 text="BACK",
                 manager=self.manager,
             ),
+            pygame_gui.elements.ui_button.UIButton(
+                relative_rect=pygame.Rect(
+                    (self.width / 2, self.height / 2),
+                    (100, 50),
+                ),
+                text="q",
+                manager=self.manager,
+            ),
         ]
         self.img = [
             pygame.image.load(script_dir + "/images/background_menu.png").convert()
@@ -39,18 +38,6 @@ class MenuOptions:
         self.img[0] = pygame.transform.scale(self.img[0], (300, 199))
         self.clock = pygame.time.Clock()
         self.currante_key = ""
-        self.font = pygame.font.Font(None, 25)
-        self.text = [
-            self.font.render(
-                "NINJALUI : give 10,000 for all ressources", True, (255, 255, 255)
-            ),
-            self.font.render("COINAGE : give 1,000 golds", True, (255, 255, 255)),
-            self.font.render(
-                "PEPPERONI PIZZA : give 1,000 of foods", True, (255, 255, 255)
-            ),
-            self.font.render("QUARRY : give 1,000 of stones", True, (255, 255, 255)),
-            self.font.render("WOODSTOCK : give 1,000 of woods", True, (255, 255, 255)),
-        ]
 
     def display(self):
         time_delta = self.clock.tick(60) / 1000.0
@@ -58,23 +45,24 @@ class MenuOptions:
         self.display_.blit(self.img[0], (self.width - 275, 0))
         self.manager.update(time_delta)
         self.manager.draw_ui(self.display_)
-        pygame.draw.rect(
-            self.display_,
-            (99, 104, 107),
-            (
-                self.ESM[0],
-                self.ESM[1],
-                self.width * self.mul_width,
-                self.height * self.mul_height,
-            ),
-        )
-        for i in range(len(self.text)):
-            self.display_.blit(
-                self.text[i], (self.ESM[0] + 50, self.ESM[1] + (i + 1) * 50)
-            )
 
     def event(self, isTest=False):
         for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                for button in self.bouttons:
+                    if button.text == "press key":
+                        button.set_text(self.currante_key)
+                        button.rebuild()
+
+            # recuperations des touches du clavier appuyers
+            if event.type == KEYDOWN:
+                # assigner la touche apuyer boutton qui a etais selectionner
+                for button in self.bouttons:
+                    if button.text == "press key":
+                        button.set_text(chr(event.key))
+                        button.rebuild()
+
             # stopper le programme si on click sur la crois
             if event.type == QUIT:
                 self.loop = False
@@ -90,6 +78,17 @@ class MenuOptions:
 
                         # on retourne sur le menu principale
                         return MainMenu(self.display_)
+
+                    # action pour le boutton de choix de touche
+                    if event.ui_element == self.bouttons[1]:
+                        if self.bouttons[1].text != "press key":
+                            self.currante_key = self.bouttons[1].text
+                            self.bouttons[1].set_text("press key")
+                            self.bouttons[1].rebuild()
+                        else:
+                            self.bouttons[1].set_text(self.currante_key)
+                            self.bouttons[1].rebuild()
+                            self.currante_key = ""
 
             self.manager.process_events(event)
         return self

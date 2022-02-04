@@ -27,3 +27,5 @@ class Static:  # pragma: no cover
         self.height_cells_size = self.cells_size[1]
         self.half_width_cells_size = self.width_cells_size / 2
         self.half_height_cells_size = self.height_cells_size / 2
+        self.victory_image = self.image_cache["victory"]
+        self.defeat_image = self.image_cache["defeat"]

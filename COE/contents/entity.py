@@ -33,3 +33,4 @@ class Entity:
         self.is_master = is_master
         self.master = self
         self.sub_entities = [self]
+        self.is_attacked_by = []
