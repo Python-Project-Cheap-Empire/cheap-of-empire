@@ -48,12 +48,10 @@ class GameLogic:
         if not self.menu.pause:
             self.game.update()
             self.game.camera.update()
-            # self.game.map.update(self.game.camera)
             self.timer.update(self.game.speed)
         self.manager.update(dt)
 
     def draw_victory_defeat(self):
-        print(f"Half screen is {self.width*0.5}")
         if self.game.is_victory:
             self.display_.blit(self.static.victory_image, (self.width * 0.45, 0))
         if self.game.is_victory is False:
@@ -132,9 +130,6 @@ class GameLogic:
             self.menu.draw()
             self.cheatcode.draw()
         if self.game.is_victory is not None:
-            self.menu.pause = True
-            self.menu.draw()
-            self.cheatcode.draw()
             self.draw_victory_defeat()
 
         self.manager.draw_ui(self.display_)

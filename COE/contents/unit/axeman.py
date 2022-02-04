@@ -26,3 +26,10 @@ class Axeman(Unit):
             player=player,
             entity_type=EntityTypes.GROUND,
         )
+        self.training_time = 10  # 10s to train a unit
+        self.cost = {
+            "GOLD": 0,
+            "STONE": 0,
+            "WOOD": 0,
+            "FOOD": 50,
+        }
